@@ -69,7 +69,7 @@ export default function Home() {
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
           </div>
           <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1a202c', margin: '0 0 10px' }}>ส่งเรื่องสำเร็จแล้ว!</h2>
-          <button onClick={() => { setStatus('idle'); setSelected(''); setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' }); setFile(null); }} style={btnGreen}>ส่งเรื่องใหม่</button>
+          <button onClick={() => { setStatus('idle'); setSelected(''); setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' }); setFile(null); }} className="modern-button" style={{ marginTop: 24 }}>ส่งเรื่องใหม่</button>
         </div>
       </div>
     );
@@ -107,14 +107,19 @@ export default function Home() {
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={card}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#005C4B', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🖋️</div>
-              <h2 style={{ fontSize: '0.95rem', fontWeight: 800, margin: 0 }}>รายละเอียดเรื่องที่แจ้ง</h2>
+          <div className="section-box">
+            <div className="section-header">
+              <div className="section-icon" style={{ background: 'linear-gradient(135deg, #059669, #047857)', color: 'white' }}>📋</div>
+              <div>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>รายละเอียดเรื่องที่แจ้ง</h2>
+                <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '4px 0 0' }}>กรุณาระบุข้อมูลให้ครบถ้วนเพื่อความรวดเร็วในการแก้ไข</p>
+              </div>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={lb}>ประเภทบริการที่เกี่ยวข้อง <Req /></label>
+            <div style={{ marginBottom: 28 }}>
+              <label className="modern-label">
+                <span style={{ fontSize: '1.2rem' }}>🔖</span> ประเภทบริการที่เกี่ยวข้อง <Req />
+              </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(100px,1fr))', gap: 8 }}>
                 {TYPE_CARDS.map(tc => (
                   <button key={tc.key} type="button" onClick={() => set('type', tc.key)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 10px', borderRadius: 12, border: `2px solid ${form.type === tc.key ? tc.color : '#e5e7eb'}`, background: form.type === tc.key ? tc.bg : 'white', cursor: 'pointer', transition: 'all 0.2s', fontFamily: "'Sarabun',sans-serif" }}>
@@ -126,40 +131,93 @@ export default function Home() {
               {errors.type && <ErrMsg msg={errors.type} />}
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={lb}>รายละเอียด <Req /></label>
-              <textarea value={form.detail} onChange={e => set('detail', e.target.value)} rows={4} style={{ ...inp, ...(errors.detail ? errBorder : {}) }} placeholder="ระบุเหตุการณ์..." />
+            <div style={{ marginBottom: 28 }}>
+              <label className="modern-label"><span style={{ fontSize: '1.2rem' }}>📝</span> รายละเอียด <Req /></label>
+              <textarea value={form.detail} onChange={e => set('detail', e.target.value)} rows={4} className={`modern-input ${errors.detail ? 'error' : ''}`} placeholder="ระบุเหตุการณ์ วันเวลา สถานที่ และรายละเอียดที่ท่านพบ..." />
               {errors.detail && <ErrMsg msg={errors.detail} />}
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={lb}>ข้อมูลผู้แจ้ง <span style={{ fontWeight: 400, color: '#94a3b8' }}>(เพื่อการติดต่อกลับ)</span></label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {[['name', 'ชื่อ-นามสกุล'], ['tel', 'เบอร์โทร'], ['line', 'Line ID (ถ้ามี)'], ['email', 'อีเมล']].map(([k, l]) => (
-                  <div key={k}><label style={{ fontSize: '0.7rem', color: '#64748b' }}>{l}</label><input value={form[k as keyof FormData]} onChange={e => set(k as keyof FormData, e.target.value)} style={{ ...inp, ...(errors[k as keyof FormData] ? errBorder : {}) }} /></div>
-                ))}
+            <div style={{ marginBottom: 10 }}>
+              <label className="modern-label"><span style={{ fontSize: '1.2rem' }}>📎</span> รูปภาพ / เอกสารแนบ <span style={{fontWeight:500,color:'#94a3b8',fontSize:'.75rem'}}>(ถ้ามี)</span></label>
+              <input type="file" ref={fileRef} onChange={e => setFile(e.target.files?.[0] || null)} style={{ display: 'none' }} accept="image/*,.pdf" />
+              <div 
+                onClick={() => fileRef.current?.click()}
+                style={{ border: '2px dashed #cbd5e1', borderRadius: 14, padding: '24px', textAlign: 'center', cursor: 'pointer', background: '#f8fafc', transition: 'all 0.2s', color: '#64748b' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#005C4B'; e.currentTarget.style.background = '#f0fdf4'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
+              >
+                {file ? (
+                  <div style={{ color: '#005C4B', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: '2rem' }}>✅</span>
+                    {file.name}
+                    <span style={{ fontSize: '0.7rem', color: '#059669', opacity: 0.8 }}>คลิกเพื่อเปลี่ยนไฟล์</span>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ fontSize: '2rem', marginBottom: 12 }}>📸</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>คลิกเพื่อแนบรูปภาพหรือเอกสาร</div>
+                    <div style={{ fontSize: '0.75rem', marginTop: 4, color: '#94a3b8' }}>รองรับไฟล์รูปภาพและ PDF</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="section-box">
+            <div className="section-header">
+              <div className="section-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: 'white' }}>👤</div>
+              <div>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>ข้อมูลผู้แจ้ง</h2>
+                <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '4px 0 0' }}>ข้อมูลของท่านจะถูกเก็บรักษาเป็นความลับ ใช้เพื่อการติดต่อกลับเท่านั้น</p>
               </div>
             </div>
 
-            <button type="submit" disabled={status === 'loading'} style={{ ...btnGreen, width: '100%', marginTop: 10 }}>{status === 'loading' ? 'กำลังส่ง...' : 'ส่งข้อมูล'}</button>
+            <div className="grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              {[['name', 'ชื่อ-นามสกุล', '👤'], ['tel', 'เบอร์โทรศัพท์', '📞'], ['line', 'Line ID (ถ้ามี)', '💬'], ['email', 'อีเมล', '✉️']].map(([k, l, icon]) => (
+                <div key={k}>
+                  <label className="modern-label"><span style={{ fontSize: '1.1rem' }}>{icon}</span> {l} {['name','email'].includes(k as string) && <Req />}</label>
+                  <input value={form[k as keyof FormData]} onChange={e => set(k as keyof FormData, e.target.value)} className={`modern-input ${errors[k as keyof FormData] ? 'error' : ''}`} placeholder={`ระบุ${l}...`} />
+                  {errors[k as keyof FormData] && <ErrMsg msg={errors[k as keyof FormData] as string} />}
+                </div>
+              ))}
+            </div>
           </div>
+
+          <button type="submit" disabled={status === 'loading'} className="modern-button">
+            {status === 'loading' ? '⏳ กำลังส่งข้อมูล...' : '🚀 ยืนยันการส่งข้อมูล'}
+          </button>
         </form>
       </div>
 
-      <footer style={{ background: '#002d24', padding: '32px 16px', color: 'white', textAlign: 'center' }}>
-        <p style={{ fontSize: '0.75rem', margin: '0 0 8px' }}>📞 ติดต่อ: 042-261135-6</p>
-        <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', margin: 0 }}>© {new Date().getFullYear()} โรงพยาบาลหนองหาน</p>
+      <footer style={{ background: '#002d24', padding: '40px 20px', color: 'white', textAlign: 'center', marginTop: 20 }}>
+        <img src="https://img1.pic.in.th/images/nhh.png" alt="Hospital Logo" style={{ width: 48, height: 48, opacity: 0.5, margin: '0 auto 16px', filter: 'grayscale(100%) brightness(200%)' }} />
+        <p style={{ fontSize: '0.8rem', fontWeight: 600, margin: '0 0 6px', opacity: 0.9 }}>ศูนย์รับเรื่องร้องเรียน โรงพยาบาลหนองหาน</p>
+        <p style={{ fontSize: '0.75rem', margin: '0 0 16px', opacity: 0.7 }}>📞 ติดต่อด่วน: 042-261135-6</p>
+        <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', margin: 0 }}>© {new Date().getFullYear()} โรงพยาบาลหนองหาน. All rights reserved.</p>
       </footer>
-      <style>{`* { box-sizing: border-box; } input:focus, textarea:focus { outline: none; border-color: #005C4B !important; box-shadow: 0 0 0 3px rgba(0,92,75,0.1); }`}</style>
+
+      <style>{`
+        * { box-sizing: border-box; }
+        .modern-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+        .modern-input { width: 100%; padding: 14px 16px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; font-family: 'Sarabun', sans-serif; color: #0f172a; transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .modern-input:focus { border-color: #005C4B; background: white; box-shadow: 0 0 0 4px rgba(0,92,75,0.1); outline: none; }
+        .modern-input.error { border-color: #fca5a5; background: #fff5f5; }
+        .modern-button { width: 100%; padding: 18px; background: linear-gradient(135deg, #005C4B, #003d32); border: none; border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 800; cursor: pointer; font-family: 'Sarabun', sans-serif; box-shadow: 0 10px 25px rgba(0,92,75,0.3); transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px; }
+        .modern-button:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,92,75,0.4); }
+        .modern-button:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+        .section-box { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9; }
+        .section-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        @media (max-width: 640px) { 
+          .grid-cols-2 { grid-template-columns: 1fr !important; } 
+          .section-box { padding: 20px; }
+        }
+      `}</style>
     </div>
   );
 }
 
-const ErrMsg = ({ msg }: { msg: string }) => <p style={{ color: '#ef4444', fontSize: '0.65rem', margin: '4px 0 0' }}>⚠️ {msg}</p>;
+const ErrMsg = ({ msg }: { msg: string }) => <p style={{ color: '#ef4444', fontSize: '0.7rem', margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>⚠️ {msg}</p>;
 const Req = () => <span style={{ color: '#ef4444' }}>*</span>;
-const card = { background: 'white', borderRadius: 16, border: '1px solid #e5e7eb', padding: '24px', marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' };
-const sectionTag = { fontSize: '0.75rem', fontWeight: 800, color: '#64748b', marginBottom: 14 };
-const lb = { display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 6 };
-const inp = { width: '100%', padding: '10px 12px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '0.85rem', fontFamily: "'Sarabun',sans-serif" };
-const errBorder = { borderColor: '#fca5a5', background: '#fff5f5' };
-const btnGreen = { padding: '14px', background: '#005C4B', color: 'white', border: 'none', borderRadius: 12, fontSize: '0.9rem', fontWeight: 800, cursor: 'pointer' };
+const card = { background: 'white', borderRadius: 20, border: '1px solid rgba(0,0,0,0.04)', padding: '24px', marginBottom: 20, boxShadow: '0 4px 20px rgba(0,0,0,0.03)' };
+const sectionTag = { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', fontWeight: 800, color: '#475569', background: '#f1f5f9', padding: '6px 12px', borderRadius: 10, marginBottom: 16 };
