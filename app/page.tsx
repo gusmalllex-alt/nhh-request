@@ -136,31 +136,6 @@ export default function Home() {
               <textarea value={form.detail} onChange={e => set('detail', e.target.value)} rows={4} className={`modern-input ${errors.detail ? 'error' : ''}`} placeholder="ระบุเหตุการณ์ วันเวลา สถานที่ และรายละเอียดที่ท่านพบ..." />
               {errors.detail && <ErrMsg msg={errors.detail} />}
             </div>
-
-            <div style={{ marginBottom: 10 }}>
-              <label className="modern-label"><span style={{ fontSize: '1.2rem' }}>📎</span> รูปภาพ / เอกสารแนบ <span style={{fontWeight:500,color:'#94a3b8',fontSize:'.75rem'}}>(ถ้ามี)</span></label>
-              <input type="file" ref={fileRef} onChange={e => setFile(e.target.files?.[0] || null)} style={{ display: 'none' }} accept="image/*,.pdf" />
-              <div 
-                onClick={() => fileRef.current?.click()}
-                style={{ border: '2px dashed #cbd5e1', borderRadius: 14, padding: '24px', textAlign: 'center', cursor: 'pointer', background: '#f8fafc', transition: 'all 0.2s', color: '#64748b' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#005C4B'; e.currentTarget.style.background = '#f0fdf4'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.background = '#f8fafc'; }}
-              >
-                {file ? (
-                  <div style={{ color: '#005C4B', fontWeight: 700, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: '2rem' }}>✅</span>
-                    {file.name}
-                    <span style={{ fontSize: '0.7rem', color: '#059669', opacity: 0.8 }}>คลิกเพื่อเปลี่ยนไฟล์</span>
-                  </div>
-                ) : (
-                  <div>
-                    <div style={{ fontSize: '2rem', marginBottom: 12 }}>📸</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}>คลิกเพื่อแนบรูปภาพหรือเอกสาร</div>
-                    <div style={{ fontSize: '0.75rem', marginTop: 4, color: '#94a3b8' }}>รองรับไฟล์รูปภาพและ PDF</div>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           <div className="section-box">
