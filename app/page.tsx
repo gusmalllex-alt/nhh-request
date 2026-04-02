@@ -55,25 +55,16 @@ export default function Home() {
         payload.fileInfo = { filename: file.name, mimeType: file.type, base64: b64 };
       }
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      setStatus('success');
+      alert('บันทึกและส่งข้อมูลสำเร็จแล้ว! ระบบได้รับเรื่องของท่านเรียบร้อยแล้ว');
+      setStatus('idle');
+      setSelected('');
+      setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' });
+      setFile(null);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch { setStatus('error'); }
   };
 
   const selectedType = COMPLAINT_TYPES.find(c => c.key === selected);
-
-  if (status === 'success') {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#003d32,#005C4B,#1a7a5e)', padding: 20, fontFamily: "'Sarabun',sans-serif" }}>
-        <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', textAlign: 'center', maxWidth: 420, width: '100%', boxShadow: '0 32px 80px rgba(0,0,0,0.25)' }}>
-          <div style={{ width: 80, height: 80, background: 'linear-gradient(135deg,#d1fae5,#6ee7b7)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: '0 8px 24px rgba(16,185,129,0.35)' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-          </div>
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#1a202c', margin: '0 0 10px' }}>ส่งเรื่องสำเร็จแล้ว!</h2>
-          <button onClick={() => { setStatus('idle'); setSelected(''); setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' }); setFile(null); }} className="modern-button" style={{ marginTop: 24 }}>ส่งเรื่องใหม่</button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f4f3', fontFamily: "'Sarabun',sans-serif", display: 'flex', flexDirection: 'column' }}>
