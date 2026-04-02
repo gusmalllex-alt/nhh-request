@@ -55,12 +55,7 @@ export default function Home() {
         payload.fileInfo = { filename: file.name, mimeType: file.type, base64: b64 };
       }
       await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      alert('บันทึกและส่งข้อมูลสำเร็จแล้ว! ระบบได้รับเรื่องของท่านเรียบร้อยแล้ว');
-      setStatus('idle');
-      setSelected('');
-      setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' });
-      setFile(null);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setStatus('success');
     } catch { setStatus('error'); }
   };
 
@@ -68,6 +63,26 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f4f3', fontFamily: "'Sarabun',sans-serif", display: 'flex', flexDirection: 'column' }}>
+
+      {/* Success Modal Overlay */}
+      {status === 'success' && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', animation: 'fadeIn 0.3s ease-out' }}>
+          <div style={{ background: 'white', borderRadius: 28, padding: '48px 36px', textAlign: 'center', maxWidth: 360, width: '90%', boxShadow: '0 24px 60px rgba(0,0,0,0.4)', animation: 'slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', transform: 'translateY(0)' }}>
+            <div style={{ width: 80, height: 80, background: 'linear-gradient(135deg,#d1fae5,#34d399)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: '0 12px 24px rgba(16,185,129,0.35)' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#047857" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', margin: '0 0 12px' }}>ส่งข้อมูลสำเร็จ!</h2>
+            <p style={{ color: '#64748b', fontSize: '0.95rem', margin: '0 0 28px', lineHeight: 1.6 }}>ระบบได้รับเรื่องของท่านเรียบร้อยแล้ว<br/>ขอบพระคุณที่ร่วมพัฒนาโรงพยาบาล</p>
+            <button 
+              onClick={() => { setStatus('idle'); setSelected(''); setForm({ papade: '', type: '', detail: '', name: '', tel: '', line: '', email: '' }); setFile(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              style={{ width: '100%', padding: '16px', background: '#005C4B', color: 'white', border: 'none', borderRadius: 16, fontSize: '1.05rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", transition: 'all 0.2s', boxShadow: '0 8px 16px rgba(0,92,75,0.25)' }}
+            >
+              ตกลง
+            </button>
+          </div>
+        </div>
+      )}
+
       <div style={{ background: 'linear-gradient(155deg,#002d24 0%,#004d3d 40%,#005C4B 70%,#2d8a70 100%)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '40px 20px 80px', textAlign: 'center' }}>
