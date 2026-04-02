@@ -56,7 +56,7 @@ export default function AdminPage() {
       mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
       mk('s2',s2,'bar',Object.keys(isC),Object.values(isC),['#10b981','#059669','#047857','#065f46','#064e3b']);
       const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]).slice(0,7);
-      mk('s3',s3,'bar',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),'#6366f1','y');
+      mk('s3',s3,'bar',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#6366f1'],'y');
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if(!(window as any).Chart){const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js';sc.onload=build;document.head.appendChild(sc);}else build();
@@ -291,8 +291,8 @@ export default function AdminPage() {
                             </td>
                             <td style={{padding:'10px 14px',textAlign:'center'}}>
                               <div style={{display:'flex',gap:4,justifyContent:'center'}}>
-                                {[['👁','#2563eb','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#dc2626','ลบ',()=>del(row[0])]].map(([em,c,t,fn])=>(
-                                  <button key={t as string} title={t as string} onClick={fn as ()=>void} style={{width:30,height:30,borderRadius:8,border:'1.5px solid #e5e7eb',background:'white',cursor:'pointer',fontSize:'.85rem',color:c as string,display:'flex',alignItems:'center',justifyContent:'center'}}>{em}</button>
+                                {([['👁','#2563eb','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#dc2626','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
+                                  <button key={t} title={t} onClick={fn} style={{width:30,height:30,borderRadius:8,border:'1.5px solid #e5e7eb',background:'white',cursor:'pointer',fontSize:'.85rem',color:c,display:'flex',alignItems:'center',justifyContent:'center'}}>{em}</button>
                                 ))}
                               </div>
                             </td>
