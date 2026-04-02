@@ -178,52 +178,53 @@ export default function AdminPage() {
     <div className="admin-layout" style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
 
       {/* SIDEBAR */}
-      <aside className="admin-sidebar" style={{width:280,background:'#020617',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid #1e293b'}}>
+      <aside className="admin-sidebar" style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)'}}>
         {/* Logo */}
-        <div style={{padding:'32px 24px 24px',display:'flex',alignItems:'center',gap:14}}>
-          <div style={{width:46,height:46,borderRadius:12,background:'linear-gradient(135deg,#0ea5e9,#3b82f6)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 4px 20px rgba(14,165,233,0.4)'}}>
-            <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{width:28,height:28,objectFit:'contain',filter:'brightness(200%)'}}/>
+        <div style={{padding:'40px 28px 28px',display:'flex',alignItems:'center',gap:16}}>
+          <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#38bdf8,#2563eb)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(37,99,235,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
+            <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{width:32,height:32,objectFit:'contain',filter:'brightness(200%)'}}/>
           </div>
           <div>
-            <div style={{color:'white',fontWeight:900,fontSize:'1.2rem',lineHeight:1.2,letterSpacing:-0.5}}>NHH Admin</div>
-            <div style={{color:'#94a3b8',fontSize:'.75rem',fontWeight:600}}>รพ.หนองหาน</div>
+            <div style={{color:'white',fontWeight:900,fontSize:'1.3rem',lineHeight:1.1,letterSpacing:'-0.5px'}}>NHH Admin</div>
+            <div style={{color:'#94a3b8',fontSize:'.8rem',fontWeight:600,marginTop:4,letterSpacing:'0.5px'}}>รพ.หนองหาน</div>
           </div>
         </div>
         {/* Nav */}
-        <nav style={{flex:1,padding:'24px 16px'}}>
-          <div style={{fontSize:'.7rem',fontWeight:800,color:'#475569',letterSpacing:1.5,padding:'0 16px',marginBottom:12}}>MAIN MENU</div>
-          {([['dash','📊','Dashboard Overview'],['list','📋','รายการรับแจ้งทั้งหมด']] as ['dash'|'list',string,string][]).map(([id,ic,lb])=>(
-            <button key={id} onClick={()=>sn(id)} style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'14px 16px',borderRadius:14,border:'none',cursor:'pointer',marginBottom:8,background:nav===id?'rgba(56,189,248,0.1)':'transparent',color:nav===id?'#38bdf8':'#94a3b8',fontWeight:nav===id?700:600,fontSize:'0.95rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .2s',position:'relative'}}>
-              <span style={{fontSize:'1.2rem',filter:nav===id?'drop-shadow(0 2px 4px rgba(56,189,248,0.5))':'none'}}>{ic}</span>{lb}
-              {nav===id&&<div style={{marginLeft:'auto',width:6,height:6,borderRadius:'50%',background:'#38bdf8',boxShadow:'0 0 10px #38bdf8'}}/>}
+        <nav style={{flex:1,padding:'16px 20px'}}>
+          <div style={{fontSize:'.75rem',fontWeight:800,color:'#475569',letterSpacing:2,padding:'0 16px',marginBottom:16}}>MAIN MENU</div>
+          {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน']] as ['dash'|'list',string,string][]).map(([id,ic,lb])=>(
+            <button key={id} onClick={()=>sn(id)} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(56,189,248,0.2)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(56,189,248,0.1) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #38bdf8':'none'}}>
+              <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(56,189,248,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
+              {lb}
             </button>
           ))}
         </nav>
         {/* Bottom */}
-        <div style={{padding:'24px',borderTop:'1px solid #1e293b'}}>
-          <div style={{display:'flex',alignItems:'center',gap:12,padding:'14px',background:'rgba(255,255,255,0.03)',borderRadius:16,marginBottom:16}}>
-            <div style={{width:38,height:38,borderRadius:'50%',background:'#3b82f6',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'.9rem',color:'white',fontWeight:800,flexShrink:0}}>A</div>
-            <div style={{flex:1,minWidth:0}}><div style={{color:'white',fontSize:'.9rem',fontWeight:700}}>Admin User</div><div style={{color:'#10b981',fontSize:'.75rem',fontWeight:600,display:'flex',alignItems:'center',gap:4}}><span style={{width:6,height:6,borderRadius:'50%',background:'#10b981',boxShadow:'0 0 8px #10b981'}}/> Online</div></div>
+        <div style={{padding:'28px 24px',borderTop:'1px solid rgba(255,255,255,0.05)',background:'rgba(0,0,0,0.2)'}}>
+          <div style={{display:'flex',alignItems:'center',gap:14,padding:'16px',background:'rgba(255,255,255,0.03)',borderRadius:18,marginBottom:20,border:'1px solid rgba(255,255,255,0.02)'}}>
+            <div style={{width:42,height:42,borderRadius:'50%',background:'linear-gradient(135deg, #10b981, #059669)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.1rem',color:'white',fontWeight:900,flexShrink:0,boxShadow:'0 4px 12px rgba(16,185,129,0.3)'}}>A</div>
+            <div style={{flex:1,minWidth:0}}><div style={{color:'white',fontSize:'.95rem',fontWeight:800}}>Admin User</div><div style={{color:'#34d399',fontSize:'.75rem',fontWeight:700,display:'flex',alignItems:'center',gap:6,marginTop:2}}><span style={{width:8,height:8,borderRadius:'50%',background:'#34d399',boxShadow:'0 0 10px #34d399',animation:'pulse 2s infinite'}}/> Online</div></div>
           </div>
-          <button onClick={()=>{sv('login');su('');sp('');sd([]);}} style={{width:'100%',padding:'14px',background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.2)',borderRadius:14,color:'#f87171',fontSize:'.9rem',fontWeight:700,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.2s'}}>
+          <button className="sidebar-btn" onClick={()=>{sv('login');su('');sp('');sd([]);}} style={{width:'100%',padding:'16px',background:'rgba(239,68,68,0.08)',border:'1px solid rgba(239,68,68,0.2)',borderRadius:16,color:'#fca5a5',fontSize:'.95rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.3s'}}>
             ออกจากระบบ
           </button>
         </div>
       </aside>
 
       {/* MAIN */}
-      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f1f5f9'}}>
+      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f8fafc'}}>
+        <style>{`.sidebar-btn:hover { background: rgba(255,255,255,0.05) !important; transform: translateX(6px); }`}</style>
         {/* Topbar */}
-        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(16px)',padding:'0 40px',height:80,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #e2e8f0',boxShadow:'0 4px 20px rgba(0,0,0,0.02)'}}>
+        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
           <div>
-            <h2 style={{margin:0,fontSize:'1.4rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Overview':'📋 รายการรับแจ้งทั้งหมด'}</h2>
-            <p style={{margin:'4px 0 0',fontSize:'0.85rem',color:'#64748b',fontWeight:500}}>ระบบรับเรื่องร้องเรียน โรงพยาบาลหนองหาน</p>
+            <h2 style={{margin:0,fontSize:'1.6rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Analytics':'📋 รายการเรื่องร้องเรียน'}</h2>
+            <p style={{margin:'6px 0 0',fontSize:'0.9rem',color:'#64748b',fontWeight:600}}>ระบบจัดการและรับฟังความคิดเห็น โรงพยาบาลหนองหาน</p>
           </div>
           <div style={{display:'flex',gap:16,alignItems:'center'}}>
-            {ferr&&<div style={{background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:12,padding:'8px 16px',color:'#dc2626',fontSize:'0.8rem',fontWeight:700,boxShadow:'0 4px 12px rgba(220,38,38,0.1)'}}>⚠ {ferr}</div>}
-            {sav==='ok'&&<div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:12,padding:'8px 16px',color:'#16a34a',fontSize:'0.8rem',fontWeight:700,boxShadow:'0 4px 12px rgba(22,163,74,0.1)'}}>✅ บันทึกสำเร็จ</div>}
-            <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:load?'#e2e8f0':'white',border:load?'none':'1.5px solid #cbd5e1',borderRadius:12,color:load?'#64748b':'#0f172a',fontSize:'0.9rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 4px 10px rgba(0,0,0,0.05)',transition:'all 0.2s'}}>
-              {load?'⏳ กำลังโหลด...':'🔄 รีเฟรชข้อมูล'}
+            {ferr&&<div style={{background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:16,padding:'10px 20px',color:'#dc2626',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(220,38,38,0.1)'}}>⚠ {ferr}</div>}
+            {sav==='ok'&&<div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:16,padding:'10px 20px',color:'#16a34a',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(22,163,74,0.1)'}}>✅ บันทึกสำเร็จ</div>}
+            <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:10,padding:'12px 24px',background:load?'#e2e8f0':'white',border:load?'none':'2px solid #e2e8f0',borderRadius:16,color:load?'#64748b':'#0f172a',fontSize:'0.95rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 8px 20px rgba(0,0,0,0.05)',transition:'all 0.2s'}}>
+              {load?'⏳ กำลังโหลด...':'🔄 เบิกข้อมูลล่าสุด'}
             </button>
           </div>
         </header>
