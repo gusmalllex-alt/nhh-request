@@ -85,7 +85,7 @@ export default function Home() {
 
       <div style={{ background: 'linear-gradient(155deg,#002d24 0%,#004d3d 40%,#005C4B 70%,#2d8a70 100%)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '40px 20px 80px', textAlign: 'center' }}>
+        <div className="hero-header" style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '40px 20px 80px', textAlign: 'center' }}>
           <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 96, height: 96, margin: '0 auto 20px' }} />
           <h1 style={{ fontSize: 'clamp(1.6rem,4vw,2.5rem)', fontWeight: 900, color: 'white', margin: '0 0 8px' }}>ร้องเรียนและเสนอแนะ</h1>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem' }}>โรงพยาบาลหนองหาน จังหวัดอุดรธานี</p>
@@ -99,10 +99,10 @@ export default function Home() {
         </div>
       </div>
 
-      <div style={{ flex: 1, maxWidth: 640, width: '100%', margin: '-36px auto 0', padding: '0 16px 48px', position: 'relative', zIndex: 10 }}>
+      <div className="main-container-pad" style={{ flex: 1, maxWidth: 640, width: '100%', margin: '-36px auto 0', padding: '0 16px 48px', position: 'relative', zIndex: 10 }}>
         <div style={card}>
           <div style={sectionTag}>📌 เลือกประเด็นที่ต้องการแจ้ง</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div className="grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {COMPLAINT_TYPES.map(ct => (
               <button key={ct.key} type="button" onClick={() => selectType(ct.key)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 12, border: `2px solid ${selected === ct.key ? ct.color : '#e5e7eb'}`, background: selected === ct.key ? ct.activeBg : 'white', cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left', fontFamily: "'Sarabun',sans-serif" }}>
                 <div style={{ fontSize: '1.2rem', width: 32, textAlign: 'center' }}>{ct.emoji}</div>

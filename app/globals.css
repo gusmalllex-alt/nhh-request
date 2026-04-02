@@ -24,3 +24,34 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 📱 Responsive Utils */
+@media (max-width: 900px) {
+  /* Admin Layout */
+  .admin-layout { flex-direction: column !important; }
+  .admin-sidebar { width: 100% !important; height: auto !important; position: static !important; border-right: none !important; border-bottom: 1px solid #1e293b !important; }
+  .admin-main { margin-left: 0 !important; }
+  .admin-topbar { flex-direction: column; align-items: flex-start !important; height: auto !important; padding: 16px 20px !important; gap: 12px; }
+  .admin-topbar > div:last-child { width: 100%; justify-content: space-between; }
+  .admin-content-pad { padding: 20px !important; }
+  .admin-table-row td { padding: 12px 10px !important; }
+
+  /* Login Page */
+  .login-split { flex-direction: column !important; height: auto !important; min-height: 100vh; }
+  .login-left, .login-right { width: 100% !important; height: auto !important; padding: 40px 24px !important; }
+  .login-left { min-height: 40vh; display: flex; flex-direction: column; justify-content: center; }
+  
+  /* Generic Grids */
+  .grid-mobile-single { grid-template-columns: 1fr !important; }
+  
+  /* Form Wrappers & Utilities */
+  .hide-on-mobile { display: none !important; }
+  .w-full-mobile { width: 100% !important; }
+  .hero-header { padding: 30px 16px 60px !important; }
+  .hero-header h1 { font-size: 1.8rem !important; }
+  .main-container-pad { padding: 0 16px !important; }
+  .form-section-pad { padding: 24px 20px !important; }
+}
+
+/* 🌟 Utilities */
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

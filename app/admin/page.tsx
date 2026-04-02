@@ -85,7 +85,8 @@ export default function AdminPage() {
   if(view==='login') return (
     <div className="login-container">
       <div className="login-brand">
-        <div className="login-brand-overlay"/>
+        <div className="login-bg-img"/>
+        <div className="login-brand-blobs"/>
         <div className="login-content">
           <div className="login-logo-wrapper">
             <img src="https://img1.pic.in.th/images/nhh.png" alt="Logo" className="login-logo"/>
@@ -98,67 +99,75 @@ export default function AdminPage() {
         <div className="login-box">
           <div className="login-box-header">
             <img src="https://img1.pic.in.th/images/nhh.png" alt="Mobile Logo" className="mobile-logo"/>
-            <h2>ลงชื่อเข้าใช้</h2>
-            <p>กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบผู้ดูแล</p>
+            <h2>ยินดีต้อนรับ</h2>
+            <p>กรุณากรอกข้อมูลเพื่อเข้าสู่การจัดการระบบ</p>
           </div>
           <form onSubmit={login}>
             <div className="input-group">
               <label>ชื่อผู้ใช้</label>
               <input type="text" value={u} onChange={e=>su(e.target.value)} className="modern-inp" placeholder="Username" />
             </div>
-            <div className="input-group" style={{marginTop: 16}}>
+            <div className="input-group" style={{marginTop: 20}}>
               <label>รหัสผ่าน</label>
               <input type="password" value={p} onChange={e=>sp(e.target.value)} className="modern-inp" placeholder="Password" />
             </div>
             {le && <div className="err-msg">⚠ {le}</div>}
-            <button type="submit" className="btn-modern" style={{marginTop: 24}}>เข้าสู่ระบบ</button>
+            <button type="submit" className="btn-modern">เข้าสู่ระบบ</button>
           </form>
           <div className="login-footer">
-            <a href="/nhh-request/">← กลับสู่หน้าแจ้งเรื่อง</a>
-            <p>© {new Date().getFullYear()} รพ.หนองหาน</p>
+            <a href="/nhh-request/">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              กลับสู่หน้าแจ้งเรื่อง
+            </a>
+            <p>© {new Date().getFullYear()} โรงพยาบาลหนองหาน</p>
           </div>
         </div>
       </div>
       <style>{`
         * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
-        .login-container { display: flex; min-height: 100vh; background: #0f172a; }
-        .login-brand { width: 50%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .login-brand-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #0f172a 100%); }
-        .login-brand-overlay::before { content: ''; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%); border-radius: 50%; animation: pulse 8s infinite alternate;}
-        .login-brand-overlay::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 70%; height: 70%; background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%); border-radius: 50%; animation: pulse 12s infinite alternate-reverse;}
-        @keyframes pulse { 0% {transform: scale(1);} 100% {transform: scale(1.1);} }
+        .login-container { display: flex; min-height: 100vh; background: #ffffff; }
+        .login-brand { width: 55%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0f172a; }
+        .login-brand::before { content: ''; position: absolute; top: -20%; left: -10%; width: 60%; height: 60%; background: radial-gradient(circle, rgba(14,165,233,0.3) 0%, transparent 70%); border-radius: 50%; filter: blur(60px); animation: pulse 8s infinite alternate;}
+        .login-brand::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 70%; height: 70%; background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: pulse 12s infinite alternate-reverse;}
+        @keyframes pulse { 0% {transform: scale(1);} 100% {transform: scale(1.15);} }
+        .login-bg-img { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2673&auto=format&fit=crop') center/cover; opacity: 0.15; mix-blend-mode: overlay; pointer-events: none; }
         .login-content { position: relative; z-index: 1; text-align: center; color: white; padding: 40px; }
-        .login-logo-wrapper { width: 120px; height: 120px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 32px; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; backdrop-filter: blur(20px); box-shadow: 0 32px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2); }
-        .login-logo { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
-        .login-content h1 { font-size: 3.5rem; font-weight: 900; margin: 0 0 16px; letter-spacing: -1.5px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .login-content p { font-size: 1.15rem; color: #cbd5e1; margin: 0; font-weight: 500; letter-spacing: 0.5px;}
-        .login-form-side { width: 50%; background: white; display: flex; flex-direction: column; justify-content: center; padding: 60px; position: relative; box-shadow: -24px 0 80px rgba(0,0,0,0.2); z-index: 2; }
-        .login-box { max-width: 420px; width: 100%; margin: 0 auto; }
-        .mobile-logo { display: none; width: 56px; height: 56px; margin-bottom: 24px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1)); }
-        .login-box-header { margin-bottom: 40px; }
-        .login-box-header h2 { font-size: 2.4rem; font-weight: 900; color: #020617; margin: 0 0 8px; letter-spacing: -0.5px; }
-        .login-box-header p { color: #64748b; font-size: 1.05rem; margin: 0; }
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
-        .modern-inp { width: 100%; padding: 18px 20px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 1.05rem; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); background: #f8fafc; color: #0f172a; font-weight: 600;}
-        .modern-inp::placeholder { color: #94a3b8; font-weight: 500; }
-        .modern-inp:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); outline: none; }
-        .err-msg { background: #fef2f2; color: #dc2626; padding: 14px 18px; border-radius: 14px; font-size: 0.9rem; font-weight: 700; margin-top: 24px; display: flex; align-items: center; gap: 10px; border: 1px solid #fecaca; }
-        .btn-modern { width: 100%; padding: 18px; background: linear-gradient(135deg, #0f172a, #020617); color: white; border: none; border-radius: 16px; font-size: 1.15rem; font-weight: 800; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 12px 30px rgba(2,6,23,0.2); position: relative; overflow: hidden; }
-        .btn-modern::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(255,255,255,0.1), transparent); opacity: 0; transition: opacity 0.2s;}
-        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(2,6,23,0.3); }
-        .btn-modern:hover::after { opacity: 1; }
-        .login-footer { margin-top: 48px; text-align: center; }
-        .login-footer a { color: #64748b; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: color 0.2s; }
-        .login-footer a:hover { color: #6366f1; }
-        .login-footer p { font-size: 0.8rem; color: #94a3b8; margin-top: 32px; font-weight: 600; }
+        .login-logo-wrapper { width: 140px; height: 140px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 36px; backdrop-filter: blur(24px); box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.2); transition: transform 0.3s; }
+        .login-logo-wrapper:hover { transform: translateY(-5px); }
+        .login-logo { width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
+        .login-content h1 { font-size: 4rem; font-weight: 900; margin: 0 0 16px; letter-spacing: -2px; background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .login-content p { font-size: 1.2rem; color: #cbd5e1; margin: 0; font-weight: 500; letter-spacing: 0.5px; opacity: 0.9;}
+        .login-form-side { width: 45%; background: white; display: flex; flex-direction: column; justify-content: center; padding: 60px; position: relative; z-index: 2; border-left: 1px solid #f1f5f9; }
+        .login-box { max-width: 400px; width: 100%; margin: 0 auto; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .mobile-logo { display: none; width: 64px; height: 64px; margin-bottom: 24px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.08)); margin-left: auto; margin-right: auto; }
+        .login-box-header { margin-bottom: 48px; }
+        .login-box-header h2 { font-size: 2.6rem; font-weight: 900; color: #0f172a; margin: 0 0 10px; letter-spacing: -0.5px; }
+        .login-box-header p { color: #64748b; font-size: 1.1rem; margin: 0; font-weight: 500; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 800; color: #334155; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;}
+        .modern-inp { width: 100%; padding: 18px 22px; border: 2px solid #e2e8f0; border-radius: 18px; font-size: 1.05rem; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); background: #f8fafc; color: #0f172a; font-weight: 600;}
+        .modern-inp::placeholder { color: #cbd5e1; font-weight: 500; }
+        .modern-inp:focus { border-color: #0ea5e9; background: white; box-shadow: 0 0 0 5px rgba(14,165,233,0.15); outline: none; }
+        .err-msg { background: #fef2f2; color: #dc2626; padding: 16px 20px; border-radius: 16px; font-size: 0.95rem; font-weight: 700; margin-top: 24px; display: flex; align-items: center; gap: 12px; border: 1px solid #fecaca; animation: fadeIn 0.3s; }
+        .btn-modern { width: 100%; padding: 20px; background: linear-gradient(135deg, #0f172a, #020617); color: white; border: none; border-radius: 18px; font-size: 1.15rem; font-weight: 800; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 12px 24px rgba(2,6,23,0.15); margin-top: 32px; letter-spacing: 0.5px; }
+        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(2,6,23,0.25); background: linear-gradient(135deg, #1e293b, #0f172a); }
+        .login-footer { margin-top: 56px; text-align: center; }
+        .login-footer a { color: #64748b; text-decoration: none; font-weight: 700; font-size: 1rem; transition: color 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .login-footer a:hover { color: #0ea5e9; }
+        .login-footer p { font-size: 0.85rem; color: #94a3b8; margin-top: 32px; font-weight: 600; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @media (max-width: 960px) {
-          .login-container { flex-direction: column; background: white; }
-          .login-brand { width: 100%; height: 280px; }
-          .login-logo-wrapper { display: none; }
+          .login-container { flex-direction: column; background: #f8fafc; }
+          .login-brand { width: 100%; height: 340px; border-radius: 0 0 32px 32px; flex-shrink: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+          .login-logo-wrapper { width: 80px; height: 80px; margin-bottom: 20px; border-radius: 20px; }
+          .login-logo { width: 50px; height: 50px; }
           .login-content h1 { font-size: 2.2rem; }
-          .login-content p { font-size: 0.95rem; }
-          .login-form-side { width: 100%; padding: 40px 24px; border-radius: 0; box-shadow: none; margin: 0; z-index: 1;}
-          .mobile-logo { display: block; }
+          .login-content p { font-size: 1rem; max-width: 280px; margin: 0 auto; }
+          .login-form-side { width: 100%; padding: 48px 24px; border-left: none; background: transparent; z-index: 5; margin-top: -40px; }
+          .login-box { background: white; padding: 40px 24px; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+          .mobile-logo { display: none; }
+          .login-box-header { text-align: center; margin-bottom: 40px; }
+          .login-box-header h2 { font-size: 2.2rem; }
         }
       `}</style>
     </div>
@@ -166,10 +175,10 @@ export default function AdminPage() {
 
   // ─── APP SHELL ───
   return (
-    <div style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
+    <div className="admin-layout" style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
 
       {/* SIDEBAR */}
-      <aside style={{width:280,background:'#020617',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid #1e293b'}}>
+      <aside className="admin-sidebar" style={{width:280,background:'#020617',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid #1e293b'}}>
         {/* Logo */}
         <div style={{padding:'32px 24px 24px',display:'flex',alignItems:'center',gap:14}}>
           <div style={{width:46,height:46,borderRadius:12,background:'linear-gradient(135deg,#0ea5e9,#3b82f6)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 4px 20px rgba(14,165,233,0.4)'}}>
@@ -203,9 +212,9 @@ export default function AdminPage() {
       </aside>
 
       {/* MAIN */}
-      <div style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f1f5f9'}}>
+      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f1f5f9'}}>
         {/* Topbar */}
-        <header style={{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(16px)',padding:'0 40px',height:80,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #e2e8f0',boxShadow:'0 4px 20px rgba(0,0,0,0.02)'}}>
+        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(16px)',padding:'0 40px',height:80,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #e2e8f0',boxShadow:'0 4px 20px rgba(0,0,0,0.02)'}}>
           <div>
             <h2 style={{margin:0,fontSize:'1.4rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Overview':'📋 รายการรับแจ้งทั้งหมด'}</h2>
             <p style={{margin:'4px 0 0',fontSize:'0.85rem',color:'#64748b',fontWeight:500}}>ระบบรับเรื่องร้องเรียน โรงพยาบาลหนองหาน</p>
@@ -219,7 +228,7 @@ export default function AdminPage() {
           </div>
         </header>
 
-        <div style={{flex:1,padding:'32px 40px'}}>
+        <div className="admin-content-pad" style={{flex:1,padding:'32px 40px'}}>
 
           {/* ══ DASHBOARD ══ */}
           {/* ══ DASHBOARD ══ */}
@@ -237,7 +246,7 @@ export default function AdminPage() {
             </div>
 
             {/* Stat cards */}
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:16,marginBottom:28}}>
+            <div className="grid-cols-mobile" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:16,marginBottom:28}}>
               {/* total */}
               <div style={{background:'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',borderRadius:20,padding:'24px',boxShadow:'0 10px 30px rgba(15,23,42,0.25)',position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
                 <div style={{position:'absolute',right:-20,bottom:-20,fontSize:'6rem',opacity:0.1,lineHeight:1}}>📋</div>
@@ -267,11 +276,11 @@ export default function AdminPage() {
             </div>
 
             {/* Charts */}
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
+            <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
               <ChartCard title="สัดส่วนสถานะการดำเนินการ" color="#6366f1" ref_={s1} h={280}/>
               <ChartCard title="แนวโน้มปริมาณการร้องเรียน (รายวัน)" color="#f43f5e" ref_={s4} h={280}/>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
+            <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
               <ChartCard title="สถิติแยกตามประเด็นหลัก" color="#0ea5e9" ref_={s2} h={260}/>
               <ChartCard title="🏆 หน่วยงานที่รับเรื่องมากที่สุด (Top 7)" color="#8b5cf6" ref_={s3} h={260}/>
             </div>
