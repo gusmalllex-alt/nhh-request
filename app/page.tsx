@@ -325,13 +325,6 @@ export default function Home() {
 
         {/* Footer */}
         <div style={{ textAlign: 'center', marginTop: 32, paddingTop: 24, borderTop: '1px solid #e2e8f0' }}>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
-            {[['📞', '042-391030', 'tel:042-391030'], ['📍', 'ต.หนองหาน อ.หนองหาน จ.อุดรธานี', '']].map(([icon, val, href]) => (
-              <a key={val} href={href || undefined} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, padding: '10px 16px', textDecoration: 'none', color: '#334155', fontSize: '0.82rem', fontWeight: 500 }}>
-                <span>{icon}</span><span>{val}</span>
-              </a>
-            ))}
-          </div>
           <p style={{ fontSize: '0.72rem', color: '#94a3b8', margin: 0 }}>
             © {new Date().getFullYear()} โรงพยาบาลหนองหาน · พัฒนาโดย กลุ่มงานสุขภาพดิจิทัล (GUsmALL)
           </p>
