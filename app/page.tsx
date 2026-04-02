@@ -5,7 +5,13 @@ import { useState, useRef } from 'react';
 const SCRIPT_URL =
   'https://script.google.com/macros/s/AKfycbwvB3QPrLHImxbVW4NXKXxd3bFDjQizm1HEDnRZX6D5fz402LiQZJWAL0iU-5-emdav/exec';
 
-const TYPE_OPTIONS = ['พฤติกรรมบริการ', 'ระบบบริการ', 'อาคาร/สถานที่', 'สิ่งแวดล้อม', 'อื่นๆ'];
+const TYPE_CARDS = [
+  { key: 'พฤติกรรมบริการ', emoji: '🧑‍⚕️', color: '#0891b2', bg: '#ecfeff', border: '#a5f3fc' },
+  { key: 'ระบบบริการ', emoji: '⚙️', color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' },
+  { key: 'อาคาร/สถานที่', emoji: '🏢', color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
+  { key: 'สิ่งแวดล้อม', emoji: '🌿', color: '#059669', bg: '#f0fdf4', border: '#bbf7d0' },
+  { key: 'อื่นๆ', emoji: '💬', color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' },
+];
 
 const COMPLAINT_TYPES = [
   { key: 'ข้อร้องเรียน (Complaint)', label: 'ข้อร้องเรียน', sub: 'Complaint', emoji: '⚠️', color: '#dc2626', bg: '#fff1f2', border: '#fecdd3', activeBg: '#fef2f2' },
@@ -171,12 +177,22 @@ export default function Home() {
               <StepDot n={1} active />
               <div style={{ flex: 1 }}>
                 <div style={stepLabel}>รายละเอียดเหตุการณ์</div>
-                <div style={{ marginBottom: 12 }}>
+                <div style={{ marginBottom: 14 }}>
                   <label style={lb}>ประเภทบริการที่เกี่ยวข้อง <Req /></label>
-                  <select value={form.type} onChange={e => set('type', e.target.value)} style={{ ...inp, ...(errors.type ? errBorder : {}) }}>
-                    <option value="">-- เลือกประเภทบริการ --</option>
-                    {TYPE_OPTIONS.map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(100px,1fr))', gap: 8 }}>
+                    {TYPE_CARDS.map(tc => (
+                      <button key={tc.key} type="button" onClick={() => { set('type', tc.key); }}
+                        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 8px', borderRadius: 12, border: `2px solid ${form.type === tc.key ? tc.color : '#e5e7eb'}`, background: form.type === tc.key ? tc.bg : 'white', cursor: 'pointer', transition: 'all 0.2s', fontFamily: "'Sarabun',sans-serif", position: 'relative' }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: form.type === tc.key ? tc.color : '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', transition: 'all 0.2s', boxShadow: form.type === tc.key ? `0 4px 10px ${tc.color}50` : 'none' }}>
+                          {tc.emoji}
+                        </div>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: form.type === tc.key ? tc.color : '#6b7280', textAlign: 'center', lineHeight: 1.3 }}>{tc.key}</span>
+                        {form.type === tc.key && <div style={{ position: 'absolute', top: 6, right: 6, width: 14, height: 14, background: tc.color, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                        </div>}
+                      </button>
+                    ))}
+                  </div>
                   {errors.type && <ErrMsg msg={errors.type} />}
                 </div>
                 <div style={{ marginBottom: 12 }}>
@@ -253,7 +269,7 @@ export default function Home() {
           </div>
           <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', margin: '0 0 10px' }}>ระบบรับเรื่องร้องเรียน เสนอแนะ และชื่นชม</p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
-            {[['📞 042-391030', 'tel:042-391030'], ['📧 nhh@moph.mail.go.th', '']].map(([label, href]) => (
+            {[['📞 042-261135-6', 'tel:042-261135-6'], ['📧 nhh@moph.mail.go.th', '']].map(([label, href]) => (
               <a key={label} href={href || undefined} style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>{label}</a>
             ))}
           </div>
