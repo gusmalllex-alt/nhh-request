@@ -218,22 +218,27 @@ export default function RequestPage() {
           border: 1px solid rgba(255,255,255,0.2);
         }
         .request-hero-title {
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          font-weight: 700;
+          font-size: clamp(2.5rem, 6vw, 4rem);
+          font-weight: 800;
           color: white;
-          margin: 0 0 8px;
-          line-height: 1.2;
+          margin: 0 0 12px;
+          line-height: 1.1;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .request-hero-subtitle {
-          font-size: 1.1rem;
-          color: rgba(255,255,255,0.85);
-          margin: 0 0 20px;
+          font-size: 1.25rem;
+          color: #e0f2fe;
+          margin: 0 0 24px;
+          font-weight: 500;
         }
         .request-hero-desc {
-          font-size: 1rem;
-          color: rgba(255,255,255,0.7);
-          line-height: 1.8;
+          font-size: 1.1rem;
+          color: rgba(255,255,255,0.85);
+          line-height: 1.7;
           margin: 0 0 40px;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
         }
         .request-hero-stats {
           display: flex;
@@ -334,44 +339,64 @@ export default function RequestPage() {
 
         /* Form Section */
         .request-form-section {
-          padding: 20px 20px 60px;
+          padding: 40px 20px 80px;
           background: #f8fafc;
         }
         .form-wrapper {
           background: white;
-          border-radius: 24px;
-          box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+          border-radius: 28px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
           overflow: hidden;
-          border: 1px solid #e2e8f0;
+          border: 1px solid rgba(226, 232, 240, 0.8);
+          position: relative;
         }
         .form-header {
           display: flex;
           align-items: center;
-          gap: 16px;
-          padding: 28px 36px;
-          background: linear-gradient(135deg, #1e6c93, #0d4a6b);
+          gap: 20px;
+          padding: 32px 40px;
+          background: linear-gradient(135deg, #1e6c93 0%, #174b6a 100%);
           color: white;
+          position: relative;
+          overflow: hidden;
+        }
+        .form-header::after {
+          content: '';
+          position: absolute;
+          right: -50px;
+          top: -100px;
+          width: 300px;
+          height: 300px;
+          background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+          border-radius: 50%;
         }
         .form-header-icon {
-          width: 52px;
-          height: 52px;
-          background: rgba(255,255,255,0.2);
-          border-radius: 14px;
+          width: 56px;
+          height: 56px;
+          background: rgba(255,255,255,0.15);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
+          z-index: 1;
         }
-        .form-header-icon svg { width: 28px; height: 28px; color: white; }
+        .form-header-icon svg { width: 30px; height: 30px; color: white; }
         .form-header h2 {
-          font-size: 1.4rem;
-          font-weight: 700;
-          margin: 0 0 4px;
+          font-size: 1.5rem;
+          font-weight: 800;
+          margin: 0 0 6px;
+          z-index: 1;
+          position: relative;
         }
         .form-header p {
-          font-size: 0.85rem;
-          color: rgba(255,255,255,0.75);
+          font-size: 0.95rem;
+          color: rgba(255,255,255,0.8);
           margin: 0;
+          z-index: 1;
+          position: relative;
         }
         .google-form-container {
           padding: 0;
