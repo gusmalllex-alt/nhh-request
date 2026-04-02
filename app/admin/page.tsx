@@ -201,37 +201,106 @@ export default function AdminPage() {
   // ─── LOGIN VIEW ───
   if (view === 'login') {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontFamily: "'Sarabun',sans-serif", padding: 20 }}>
-        <div style={{ width: '100%', maxWidth: 360, background: 'white', borderRadius: 20, padding: '36px 32px', boxShadow: '0 8px 40px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ width: 56, height: 56, background: '#f1f5f9', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 12c0 6.628 5.373 12 12 12s12-5.372 12-12c0-2.215-.601-4.288-1.643-6.065M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+      <div style={{ minHeight: '100vh', display: 'flex', fontFamily: "'Sarabun',sans-serif" }}>
+
+        {/* Left Panel — Branding */}
+        <div style={{ flex: 1, background: 'linear-gradient(160deg,#003d32 0%,#005C4B 50%,#38a382 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40, position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
+          {/* BG Pattern */}
+          <div style={{ position: 'absolute', inset: 0, opacity: 0.07, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25 0h10v60H25V0zm-25 25h60v10H0V25z' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E\")" }} />
+          <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle,rgba(56,163,130,0.4),transparent 70%)' }} />
+          <div style={{ position: 'absolute', bottom: -80, left: -80, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(0,92,75,0.5),transparent 70%)' }} />
+
+          <div style={{ position: 'relative', textAlign: 'center', maxWidth: 320 }}>
+            <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', backdropFilter: 'blur(8px)', border: '2px solid rgba(255,255,255,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+              <img src="https://img1.pic.in.th/images/nhh.png" alt="NHH" style={{ width: 72, height: 72, objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }} />
             </div>
-            <h1 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1e293b', margin: 0 }}>ระบบแอดมิน</h1>
-            <p style={{ color: '#64748b', fontSize: '0.82rem', margin: '6px 0 0' }}>ลงชื่อเข้าใช้ โรงพยาบาลหนองหาน</p>
-          </div>
-          <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: 14 }}>
-              <label style={lbStyle}>ชื่อผู้ใช้งาน</label>
-              <input value={username} onChange={e => setUsername(e.target.value)} style={inpStyle} placeholder="username" autoComplete="username" />
-            </div>
-            <div style={{ marginBottom: 20 }}>
-              <label style={lbStyle}>รหัสผ่าน</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={inpStyle} placeholder="••••••••" autoComplete="current-password" />
-            </div>
-            {loginErr && <p style={{ color: '#dc2626', fontSize: '0.82rem', marginBottom: 12, textAlign: 'center' }}>{loginErr}</p>}
-            <button type="submit" style={{ width: '100%', padding: '11px', background: '#1e293b', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', fontFamily: "'Sarabun',sans-serif" }}>
-              เข้าสู่ระบบ
-            </button>
-          </form>
-          <div style={{ textAlign: 'center', marginTop: 20 }}>
-            <a href="/nhh-request/" style={{ fontSize: '0.78rem', color: '#94a3b8', textDecoration: 'none' }}>← กลับไปหน้าแรก</a>
+            <h1 style={{ color: 'white', fontWeight: 900, fontSize: '1.6rem', margin: '0 0 10px', letterSpacing: '-0.5px' }}>โรงพยาบาลหนองหาน</h1>
+            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem', margin: '0 0 32px' }}>จังหวัดอุดรธานี</p>
+            <div style={{ width: 40, height: 3, background: 'linear-gradient(90deg,#fbbf24,#f59e0b)', borderRadius: 99, margin: '0 auto 32px' }} />
+
+            {[['🏥', 'ระบบรับเรื่องร้องเรียนและเสนอแนะ', 'สำหรับการจัดการ และติดตามผล'],
+              ['📊', 'Dashboard แบบ Real-time', 'สถิติและรายงานแบบ Visual'],
+              ['🔔', 'แจ้งเตือนอัตโนมัติ', 'ผ่าน LINE และอีเมล'],
+            ].map(([icon, title, desc]) => (
+              <div key={title} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 16, textAlign: 'left', background: 'rgba(255,255,255,0.08)', borderRadius: 14, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{icon}</span>
+                <div>
+                  <div style={{ color: 'white', fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.3 }}>{title}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', marginTop: 3 }}>{desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <style>{`* { box-sizing: border-box; } input:focus { outline:none; border-color:#005C4B !important; box-shadow:0 0 0 3px rgba(0,92,75,0.1); }`}</style>
+
+        {/* Right Panel — Login Form */}
+        <div style={{ width: '100%', maxWidth: 480, background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 48px', position: 'relative' }}>
+          <div style={{ width: '100%', maxWidth: 360 }}>
+            {/* Tag */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 99, padding: '5px 14px', marginBottom: 24 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 12c0 6.628 5.373 12 12 12s12-5.372 12-12c0-2.215-.601-4.288-1.643-6.065M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#059669', letterSpacing: 1 }}>ADMIN ACCESS</span>
+            </div>
+
+            <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#1e293b', margin: '0 0 4px', letterSpacing: '-0.5px' }}>เข้าสู่ระบบ</h2>
+            <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0 0 32px' }}>ระบบจัดการข้อร้องเรียน · โรงพยาบาลหนองหาน</p>
+
+            <form onSubmit={handleLogin}>
+              <div style={{ marginBottom: 16 }}>
+                <label style={lbStyle}>ชื่อผู้ใช้งาน</label>
+                <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                  </div>
+                  <input value={username} onChange={e => setUsername(e.target.value)} style={{ ...inpStyle, paddingLeft: 38 }} placeholder="กรอกชื่อผู้ใช้งาน" autoComplete="username" />
+                </div>
+              </div>
+              <div style={{ marginBottom: 24 }}>
+                <label style={lbStyle}>รหัสผ่าน</label>
+                <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                  </div>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ ...inpStyle, paddingLeft: 38 }} placeholder="••••••••" autoComplete="current-password" />
+                </div>
+              </div>
+
+              {loginErr && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                  <span style={{ color: '#dc2626', fontSize: '0.82rem', fontWeight: 600 }}>{loginErr}</span>
+                </div>
+              )}
+
+              <button type="submit" style={{ width: '100%', padding: '13px', background: 'linear-gradient(135deg,#005C4B,#38a382)', color: 'white', border: 'none', borderRadius: 14, fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", boxShadow: '0 8px 24px rgba(0,92,75,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H2.25" /></svg>
+                เข้าสู่ระบบ
+              </button>
+            </form>
+
+            <div style={{ textAlign: 'center', marginTop: 28, paddingTop: 20, borderTop: '1px solid #e2e8f0' }}>
+              <a href="/nhh-request/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: '#64748b', textDecoration: 'none', fontWeight: 600 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                กลับไปหน้าแจ้งเรื่อง
+              </a>
+            </div>
+          </div>
+
+          {/* Bottom branding */}
+          <div style={{ position: 'absolute', bottom: 20, left: 0, right: 0, textAlign: 'center' }}>
+            <p style={{ fontSize: '0.68rem', color: '#cbd5e1', margin: 0 }}>พัฒนาโดย กลุ่มงานสุขภาพดิจิทัล (GUsmALL) · โรงพยาบาลหนองหาน</p>
+          </div>
+        </div>
+
+        <style>{`
+          * { box-sizing: border-box; }
+          input:focus { outline:none !important; border-color:#38a382 !important; box-shadow:0 0 0 3px rgba(56,163,130,0.15) !important; }
+          @media(max-width:700px) { .left-panel { display:none !important; } }
+        `}</style>
       </div>
     );
   }
+
 
   // ─── ADMIN PANEL ───
   return (
