@@ -59,8 +59,8 @@ export default function AdminPage() {
           scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
       };
       mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
-      mk('s2',s2,'bar',Object.keys(isC),Object.values(isC),['#0ea5e9','#38bdf8','#7dd3fc','#bae6fd','#e0f2fe']);
-      const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]).slice(0,7);
+      mk('s2',s2,'doughnut',Object.keys(isC),Object.values(isC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
+      const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]);
       mk('s3',s3,'bar',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#8b5cf6'],'y');
       mk('s4',s4,'doughnut',Object.keys(tpC),Object.values(tpC),['#f59e0b','#8b5cf6','#0ea5e9','#10b981','#64748b','#ef4444']);
     };
@@ -403,8 +403,8 @@ export default function AdminPage() {
               <ChartCard title="สัดส่วนประเภทบริการ" color="#f59e0b" ref_={s4} h={280}/>
             </div>
             <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
-              <ChartCard title="สถิติแยกตามประเด็นหลัก" color="#0ea5e9" ref_={s2} h={260}/>
-              <ChartCard title="🏆 หน่วยงานที่รับเรื่องมากที่สุด (Top 7)" color="#8b5cf6" ref_={s3} h={260}/>
+              <ChartCard title="สัดส่วนประเด็นที่ต้องการแจ้ง" color="#6366f1" ref_={s2} h={260}/>
+              <ChartCard title="หน่วยงานที่รับเรื่อง (ทั้งหมด)" color="#8b5cf6" ref_={s3} h={260}/>
             </div>
           </>)}
 
