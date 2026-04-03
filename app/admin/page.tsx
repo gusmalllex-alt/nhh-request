@@ -504,6 +504,11 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Footer */}
+          <div style={{textAlign:'center', marginTop:40, paddingTop:24, borderTop:'1px dashed #e2e8f0', color:'#94a3b8', fontSize:'0.85rem', fontWeight:600, letterSpacing:0.5}}>
+            พัฒนาโดย นายศุภชัย สุนารักษ์ · นักวิชาการสถิติ กลุ่มงานสุขภาพดิจิทัล
+          </div>
         </div>
       </div>
 
