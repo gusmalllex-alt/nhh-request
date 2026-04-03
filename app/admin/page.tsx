@@ -61,7 +61,7 @@ export default function AdminPage() {
       mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
       mk('s2',s2,'doughnut',Object.keys(isC),Object.values(isC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
       const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]);
-      mk('s3',s3,'bar',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#8b5cf6'],'y');
+      mk('s3',s3,'doughnut',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#f43f5e','#0ea5e9','#84cc16','#fb923c','#a78bfa','#34d399','#fbbf24','#f87171','#38bdf8','#4ade80','#818cf8','#fb7185','#2dd4bf','#facc15']);
       mk('s4',s4,'doughnut',Object.keys(tpC),Object.values(tpC),['#f59e0b','#8b5cf6','#0ea5e9','#10b981','#64748b','#ef4444']);
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
