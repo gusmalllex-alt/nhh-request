@@ -44,29 +44,25 @@ export default function AdminPage() {
     const build=()=>{
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const C=(window as any).Chart;if(!C)return;
-      const stC:Record<string,number>={};const isC:Record<string,number>={};const dpC:Record<string,number>={};
-      const trMap = new Map<string,number>();
-      const sorted = [...dashD].sort((a,b)=>new Date(a[0]).getTime()-new Date(b[0]).getTime());
-      sorted.forEach(r=>{
-        const d=new Date(r[0]);
-        if(!isNaN(d.getTime())){
-          const k=`${d.getDate()}/${d.getMonth()+1}`;
-          trMap.set(k, (trMap.get(k)||0)+1);
-        }
-        const st=ns(r[8]);stC[st]=(stC[st]||0)+1;if(r[1])isC[r[1]]=(isC[r[1]||'']||0)+1;if(r[9])dpC[r[9]]=(dpC[r[9]]||0)+1;
+      const stC:Record<string,number>={};const isC:Record<string,number>={};const dpC:Record<string,number>={};const tpC:Record<string,number>={};
+      dashD.forEach(r=>{
+        const st=ns(r[8]);stC[st]=(stC[st]||0)+1;
+        if(r[1])isC[r[1]]=(isC[r[1]||'']||0)+1;
+        if(r[9])dpC[r[9]]=(dpC[r[9]]||0)+1;
+        if(r[2])tpC[r[2]]=(tpC[r[2]]||0)+1;
       });
       const mk=(id:string,ref:React.RefObject<HTMLCanvasElement|null>,tp:string,labels:string[],vals:number[],colors:string[],axis='x', tensions=0)=>{
         ci.current[id]?.destroy?.();
         if(!ref.current)return;
         ci.current[id]=new C(ref.current,{type:tp,data:{labels,datasets:[{data:vals,backgroundColor:colors,borderColor:tp==='line'?colors[0]:(tp==='doughnut'?'#fff':'transparent'),tension:tensions,borderWidth:tp==='doughnut'||tp==='line'?2:0,fill:tp==='line'?{target:'origin',above:colors[0]+'33'}:false,borderRadius:tp==='bar'?6:0}]},
-          options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Sarabun',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Sarabun'},titleFont:{family:'Sarabun'},cornerRadius:12,padding:12}},
-          scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Sarabun',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Sarabun',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
+          options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Noto Sans Thai',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Noto Sans Thai'},titleFont:{family:'Noto Sans Thai'},cornerRadius:12,padding:12}},
+          scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
       };
       mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
       mk('s2',s2,'bar',Object.keys(isC),Object.values(isC),['#0ea5e9','#38bdf8','#7dd3fc','#bae6fd','#e0f2fe']);
       const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]).slice(0,7);
       mk('s3',s3,'bar',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#8b5cf6'],'y');
-      mk('s4',s4,'line',Array.from(trMap.keys()),Array.from(trMap.values()),['#f43f5e'],'x',0.4);
+      mk('s4',s4,'doughnut',Object.keys(tpC),Object.values(tpC),['#f59e0b','#8b5cf6','#0ea5e9','#10b981','#64748b','#ef4444']);
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if(!(window as any).Chart){const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js';sc.onload=build;document.head.appendChild(sc);}else build();
@@ -404,7 +400,7 @@ export default function AdminPage() {
             {/* Charts */}
             <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
               <ChartCard title="สัดส่วนสถานะการดำเนินการ" color="#6366f1" ref_={s1} h={280}/>
-              <ChartCard title="แนวโน้มปริมาณการร้องเรียน (รายวัน)" color="#f43f5e" ref_={s4} h={280}/>
+              <ChartCard title="สัดส่วนประเภทบริการ" color="#f59e0b" ref_={s4} h={280}/>
             </div>
             <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
               <ChartCard title="สถิติแยกตามประเด็นหลัก" color="#0ea5e9" ref_={s2} h={260}/>
