@@ -52,8 +52,9 @@ export default function AdminPage() {
         if(r[2])tpC[r[2]]=(tpC[r[2]]||0)+1;
       });
       const mk=(id:string,ref:React.RefObject<HTMLCanvasElement|null>,tp:string,labels:string[],vals:number[],colors:string[],axis='x', tensions=0)=>{
-        ci.current[id]?.destroy?.();
+        if(ci.current[id]){try{ci.current[id].destroy();}catch(e){/*ignore*/}delete ci.current[id];}
         if(!ref.current)return;
+        const ctx2=ref.current.getContext('2d');if(ctx2)ctx2.clearRect(0,0,9999,9999);
         ci.current[id]=new C(ref.current,{type:tp,data:{labels,datasets:[{data:vals,backgroundColor:colors,borderColor:tp==='line'?colors[0]:(tp==='doughnut'?'#fff':'transparent'),tension:tensions,borderWidth:tp==='doughnut'||tp==='line'?2:0,fill:tp==='line'?{target:'origin',above:colors[0]+'33'}:false,borderRadius:tp==='bar'?6:0}]},
           options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Noto Sans Thai',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Noto Sans Thai'},titleFont:{family:'Noto Sans Thai'},cornerRadius:12,padding:12}},
           scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
