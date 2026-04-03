@@ -56,7 +56,8 @@ export default function AdminPage() {
         if(!ref.current)return;
         const ctx2=ref.current.getContext('2d');if(ctx2)ctx2.clearRect(0,0,9999,9999);
         ci.current[id]=new C(ref.current,{type:tp,data:{labels,datasets:[{data:vals,backgroundColor:colors,borderColor:tp==='line'?colors[0]:(tp==='doughnut'?'#fff':'transparent'),tension:tensions,borderWidth:tp==='doughnut'||tp==='line'?2:0,fill:tp==='line'?{target:'origin',above:colors[0]+'33'}:false,borderRadius:tp==='bar'?6:0}]},
-          options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Noto Sans Thai',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Noto Sans Thai'},titleFont:{family:'Noto Sans Thai'},cornerRadius:12,padding:12}},
+          plugins: (window as any).ChartDataLabels ? [(window as any).ChartDataLabels] : [],
+          options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{datalabels:{color:'#fff',font:{weight:'bold',family:'Noto Sans Thai'}},legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Noto Sans Thai',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Noto Sans Thai'},titleFont:{family:'Noto Sans Thai'},cornerRadius:12,padding:12}},
           scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
       };
       mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
@@ -66,7 +67,15 @@ export default function AdminPage() {
       mk('s4',s4,'doughnut',Object.keys(tpC),Object.values(tpC),['#f59e0b','#8b5cf6','#0ea5e9','#10b981','#64748b','#ef4444']);
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if(!(window as any).Chart){const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js';sc.onload=build;document.head.appendChild(sc);}else build();
+    if(!(window as any).Chart){
+      const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js';
+      sc.onload=()=>{
+        const sc2=document.createElement('script');sc2.src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0';
+        sc2.onload=build;
+        document.head.appendChild(sc2);
+      };
+      document.head.appendChild(sc);
+    }else build();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[nav,dashD.length,ds,de]);
 
@@ -346,7 +355,7 @@ export default function AdminPage() {
             {ferr&&<div style={{background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:16,padding:'10px 20px',color:'#dc2626',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(220,38,38,0.1)'}}>⚠ {ferr}</div>}
             {sav==='ok'&&<div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:16,padding:'10px 20px',color:'#16a34a',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(22,163,74,0.1)'}}>✅ บันทึกสำเร็จ</div>}
             <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:10,padding:'12px 24px',background:load?'#e2e8f0':'white',border:load?'none':'2px solid #e2e8f0',borderRadius:16,color:load?'#64748b':'#0f172a',fontSize:'0.95rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 8px 20px rgba(0,0,0,0.05)',transition:'all 0.2s'}}>
-              {load?'⏳ กำลังโหลด...':'🔄 เบิกข้อมูลล่าสุด'}
+              {load?'⏳ กำลังโหลด...':'🔄 Refresh ข้อมูล'}
             </button>
           </div>
         </header>
