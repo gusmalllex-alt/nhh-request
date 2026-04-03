@@ -62,7 +62,7 @@ export default function Home() {
   const selectedType = COMPLAINT_TYPES.find(c => c.key === selected);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f4f3', fontFamily: "'Sarabun',sans-serif", display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#f0f6f4 0%,#f4f8f7 100%)', fontFamily: "'Noto Sans Thai','Sarabun',sans-serif", display: 'flex', flexDirection: 'column' }}>
 
       {/* Success Modal Overlay */}
       {status === 'success' && (
@@ -83,16 +83,32 @@ export default function Home() {
         </div>
       )}
 
-      <div style={{ background: 'linear-gradient(155deg,#002d24 0%,#004d3d 40%,#005C4B 70%,#2d8a70 100%)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
-        <div className="hero-header" style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '40px 20px 80px', textAlign: 'center' }}>
-          <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 96, height: 96, margin: '0 auto 20px' }} />
-          <h1 style={{ fontSize: 'clamp(1.6rem,4vw,2.5rem)', fontWeight: 900, color: 'white', margin: '0 0 8px' }}>ร้องเรียนและเสนอแนะ</h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.95rem' }}>โรงพยาบาลหนองหาน จังหวัดอุดรธานี</p>
-          <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', borderRadius: 14, overflow: 'hidden', marginTop: 20 }}>
+      <div style={{ background: 'linear-gradient(150deg,#00382b 0%,#005C4B 50%,#00796b 100%)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+        {/* Grid pattern */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)', backgroundSize: '48px 48px' }} />
+        {/* Glow blobs */}
+        <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, background: 'radial-gradient(circle,rgba(0,200,150,0.25),transparent)', borderRadius: '50%', filter: 'blur(40px)' }} />
+        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 260, height: 260, background: 'radial-gradient(circle,rgba(0,150,120,0.2),transparent)', borderRadius: '50%', filter: 'blur(40px)' }} />
+        <div className="hero-header" style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '48px 20px 90px', textAlign: 'center' }}>
+          {/* Logo with ring */}
+          <div style={{ position: 'relative', width: 104, height: 104, margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'absolute', inset: -8, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', animation: 'rpRing 3s ease-in-out infinite' }} />
+            <div style={{ position: 'absolute', inset: -16, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'rpRing 3s ease-in-out infinite', animationDelay: '-1s' }} />
+            <div style={{ width: 104, height: 104, borderRadius: 28, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+              <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 72, height: 72, borderRadius: 16 }} />
+            </div>
+          </div>
+          {/* Badge */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', borderRadius: 100, padding: '5px 16px', marginBottom: 16 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#4bffcf', display: 'inline-block', boxShadow: '0 0 8px #4bffcf', animation: 'rpPulse 2s infinite' }} />
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a7ffe8', letterSpacing: '0.08em' }}>ศูนย์รับเรื่องร้องเรียนและเสนอแนะ</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(1.8rem,4.5vw,2.8rem)', fontWeight: 900, color: 'white', margin: '0 0 10px', letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(0,0,0,0.25)' }}>ร้องเรียนและเสนอแนะ</h1>
+          <p style={{ color: 'rgba(200,255,240,0.8)', fontSize: '1rem', margin: '0 0 28px', fontWeight: 400 }}>โรงพยาบาลหนองหาน &nbsp;·&nbsp; จังหวัดอุดรธานี</p>
+          <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
             {[['⏱', '< 24 ชม.'], ['🔒', 'ปลอดภัย'], ['👤', 'ไม่ระบุตัวตน']].map(([i, v], idx) => (
-              <div key={idx} style={{ padding: '10px 16px', borderRight: idx < 2 ? '1px solid rgba(255,255,255,0.1)' : 'none', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.9rem' }}>{i}</div><div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'white' }}>{v}</div>
+              <div key={idx} style={{ padding: '12px 20px', borderRight: idx < 2 ? '1px solid rgba(255,255,255,0.1)' : 'none', textAlign: 'center' }}>
+                <div style={{ fontSize: '1rem' }}>{i}</div><div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{v}</div>
               </div>
             ))}
           </div>
@@ -170,27 +186,87 @@ export default function Home() {
         </form>
       </div>
 
-      <footer style={{ background: '#002d24', padding: '40px 20px', color: 'white', textAlign: 'center', marginTop: 20 }}>
-        <img src="https://img1.pic.in.th/images/nhh.png" alt="Hospital Logo" style={{ width: 48, height: 48, opacity: 0.5, margin: '0 auto 16px', filter: 'grayscale(100%) brightness(200%)' }} />
-        <p style={{ fontSize: '0.8rem', fontWeight: 600, margin: '0 0 6px', opacity: 0.9 }}>ศูนย์รับเรื่องร้องเรียน โรงพยาบาลหนองหาน</p>
-        <p style={{ fontSize: '0.75rem', margin: '0 0 16px', opacity: 0.7 }}>📞 ติดต่อด่วน: 042-261135-6</p>
-        <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', margin: 0 }}>© {new Date().getFullYear()} โรงพยาบาลหนองหาน. All rights reserved.</p>
+      <footer style={{ background: 'linear-gradient(135deg,#00382b,#002d24)', padding: '48px 20px 32px', color: 'white', textAlign: 'center', marginTop: 24, borderTop: '1px solid rgba(255,255,255,0.06)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -60, left: '50%', transform: 'translateX(-50%)', width: 300, height: 200, background: 'radial-gradient(circle, rgba(0,200,150,0.1), transparent)', borderRadius: '50%', filter: 'blur(40px)', pointerEvents: 'none' }} />
+        <img src="https://img1.pic.in.th/images/nhh.png" alt="Hospital Logo" style={{ width: 52, height: 52, borderRadius: 14, opacity: 0.7, margin: '0 auto 16px', filter: 'grayscale(50%) brightness(180%)', display: 'block' }} />
+        <p style={{ fontSize: '0.85rem', fontWeight: 700, margin: '0 0 8px', opacity: 0.9, letterSpacing: '0.01em' }}>ศูนย์รับเรื่องร้องเรียน โรงพยาบาลหนองหาน</p>
+        <p style={{ fontSize: '0.78rem', margin: '0 0 20px', opacity: 0.6 }}>📞 ติดต่อด่วน: 042-261135-6</p>
+        <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.15)', margin: '0 auto 16px' }} />
+        <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.28)', margin: 0 }}>© {new Date().getFullYear()} โรงพยาบาลหนองหาน · All rights reserved.</p>
       </footer>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
+
+        /* Hero animations */
+        @keyframes rpRing { 0%,100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.07); opacity:0.5; } }
+        @keyframes rpPulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.4); } }
+
+        /* Labels */
         .modern-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
-        .modern-input { width: 100%; padding: 14px 16px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; font-family: 'Sarabun', sans-serif; color: #0f172a; transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-        .modern-input:focus { border-color: #005C4B; background: white; box-shadow: 0 0 0 4px rgba(0,92,75,0.1); outline: none; }
+
+        /* Inputs */
+        .modern-input {
+          width: 100%; padding: 14px 16px;
+          background: #f8fafc;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 0.95rem;
+          font-family: 'Noto Sans Thai','Sarabun', sans-serif;
+          color: #0f172a;
+          transition: all 0.25s ease;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .modern-input:focus {
+          border-color: #005C4B;
+          background: white;
+          box-shadow: 0 0 0 4px rgba(0,92,75,0.1), inset 0 2px 4px rgba(0,0,0,0);
+          outline: none;
+        }
+        .modern-input:hover:not(:focus) { border-color: #94a3b8; }
         .modern-input.error { border-color: #fca5a5; background: #fff5f5; }
-        .modern-button { width: 100%; padding: 18px; background: linear-gradient(135deg, #005C4B, #003d32); border: none; border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 800; cursor: pointer; font-family: 'Sarabun', sans-serif; box-shadow: 0 10px 25px rgba(0,92,75,0.3); transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px; }
-        .modern-button:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,92,75,0.4); }
+
+        /* Submit button */
+        .modern-button {
+          width: 100%; padding: 18px;
+          background: linear-gradient(135deg, #00796b, #005C4B, #003d32);
+          border: none; border-radius: 18px;
+          color: white; font-size: 1.1rem; font-weight: 800;
+          cursor: pointer;
+          font-family: 'Noto Sans Thai','Sarabun', sans-serif;
+          box-shadow: 0 12px 28px rgba(0,92,75,0.38);
+          transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+          margin-top: 10px;
+          letter-spacing: 0.01em;
+          position: relative; overflow: hidden;
+        }
+        .modern-button::before {
+          content: '';
+          position: absolute; inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+          border-radius: 18px;
+        }
+        .modern-button:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(0,92,75,0.45); }
+        .modern-button:active:not(:disabled) { transform: translateY(0); }
         .modern-button:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
-        .section-box { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.04); }
+
+        /* Section boxes */
+        .section-box {
+          background: white;
+          border-radius: 22px;
+          padding: 28px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+          border: 1px solid rgba(0,0,0,0.05);
+          transition: box-shadow 0.3s ease;
+        }
+        .section-box:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
         .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9; }
-        .section-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        @media (max-width: 640px) { 
-          .grid-cols-2 { grid-template-columns: 1fr !important; } 
+        .section-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; box-shadow: 0 4px 16px rgba(0,0,0,0.12); flex-shrink: 0; }
+
+        @media (max-width: 640px) {
+          .grid-cols-2 { grid-template-columns: 1fr !important; }
           .section-box { padding: 20px; }
         }
       `}</style>
