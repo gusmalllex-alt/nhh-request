@@ -90,20 +90,13 @@ export default function Home() {
         <div style={{ position: 'absolute', top: -80, right: -80, width: 320, height: 320, background: 'radial-gradient(circle,rgba(0,200,150,0.25),transparent)', borderRadius: '50%', filter: 'blur(40px)' }} />
         <div style={{ position: 'absolute', bottom: -60, left: -60, width: 260, height: 260, background: 'radial-gradient(circle,rgba(0,150,120,0.2),transparent)', borderRadius: '50%', filter: 'blur(40px)' }} />
         <div className="hero-header" style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto', padding: '48px 20px 90px', textAlign: 'center' }}>
-          {/* Logo with ring */}
-          <div style={{ position: 'relative', width: 104, height: 104, margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ position: 'absolute', inset: -8, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', animation: 'rpRing 3s ease-in-out infinite' }} />
-            <div style={{ position: 'absolute', inset: -16, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'rpRing 3s ease-in-out infinite', animationDelay: '-1s' }} />
-            <div style={{ width: 104, height: 104, borderRadius: 28, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
-              <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 72, height: 72, borderRadius: 16 }} />
-            </div>
-          </div>
+          {/* Logo - no box */}
+          <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 88, height: 88, margin: '0 auto 24px', display: 'block', filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))' }} />
           {/* Badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', borderRadius: 100, padding: '5px 16px', marginBottom: 16 }}>
             <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#4bffcf', display: 'inline-block', boxShadow: '0 0 8px #4bffcf', animation: 'rpPulse 2s infinite' }} />
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a7ffe8', letterSpacing: '0.08em' }}>ศูนย์รับเรื่องร้องเรียนและเสนอแนะ</span>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a7ffe8', letterSpacing: '0.08em' }}>ศูนย์รับเรื่องร้องเรียน</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(1.8rem,4.5vw,2.8rem)', fontWeight: 900, color: 'white', margin: '0 0 10px', letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(0,0,0,0.25)' }}>ร้องเรียนและเสนอแนะ</h1>
           <p style={{ color: 'rgba(200,255,240,0.8)', fontSize: '1rem', margin: '0 0 28px', fontWeight: 400 }}>โรงพยาบาลหนองหาน &nbsp;·&nbsp; จังหวัดอุดรธานี</p>
           <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
             {[['⏱', '< 24 ชม.'], ['🔒', 'ปลอดภัย'], ['👤', 'ไม่ระบุตัวตน']].map(([i, v], idx) => (
