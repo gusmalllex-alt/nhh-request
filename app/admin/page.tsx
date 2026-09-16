@@ -535,20 +535,25 @@ export default function AdminPage() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 XLSX=(window as any).XLSX;
               }
-              const header=['ลำดับ','ประเภท','ผลการดำเนินเรื่อง','ผู้รับบริการ','ช่องทาง','ผลดำเนินการ','สรุปเรื่อง/ความคิดเห็น'];
-              const rows=rptData.map((r,i)=>[
-                i+1,
-                r[2]||'-',
-                ns(r[8]),
-                r[4]||'ไม่ระบุ',
-                r[5]?'โทรศัพท์':r[6]?'Line':r[7]?'Email':'อื่นๆ',
-                r[9]||'-',
-                r[3]||r[1]||'-'
-              ]);
+              const header=['ลำดับ','วดป.','หน่วยงานที่เกิด','ผู้เกี่ยวข้อง','ประเด็น','ประเภท','รายละเอียด'];
+              const rows=rptData.map((r,i)=>{
+                const issueText=(r[1]||'').toLowerCase();
+                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
+                const d=new Date(r[0]);
+                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+                return [
+                  i+1,
+                  dt,
+                  r[9]||'-',
+                  r[4]||'-',
+                  issueType,
+                  r[2]||'-',
+                  r[3]||r[1]||'-'
+                ];
+              });
               const wsData=[header,...rows];
               const ws=XLSX.utils.aoa_to_sheet(wsData);
-              // Set column widths
-              ws['!cols']=[{wch:6},{wch:12},{wch:18},{wch:18},{wch:12},{wch:22},{wch:50}];
+              ws['!cols']=[{wch:6},{wch:12},{wch:15},{wch:15},{wch:15},{wch:15},{wch:60}];
               const wb=XLSX.utils.book_new();
               XLSX.utils.book_append_sheet(wb,ws,'รายงาน');
               const fname=`รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g,'_')}.xlsx`;
@@ -556,16 +561,22 @@ export default function AdminPage() {
             };
 
             const exportCSV=()=>{
-              const header='ลำดับ,ประเภท,ผลการดำเนินเรื่อง,ผู้รับบริการ,ช่องทาง,ผลดำเนินการ,สรุปเรื่อง/ความคิดเห็น\n';
-              const rows=rptData.map((r,i)=>[
-                i+1,
-                `"${(r[2]||'-').replace(/"/g,'""')}"`,
-                `"${ns(r[8]).replace(/"/g,'""')}"`,
-                `"${(r[4]||'ไม่ระบุ').replace(/"/g,'""')}"`,
-                `"${r[5]?'โทรศัพท์':r[6]?'Line':r[7]?'Email':'อื่นๆ'}"`,
-                `"${(r[9]||'-').replace(/"/g,'""')}"`,
-                `"${(r[3]||r[1]||'-').replace(/"/g,'""')}"`
-              ].join(',')).join('\n');
+              const header='ลำดับ,วดป.,หน่วยงานที่เกิด,ผู้เกี่ยวข้อง,ประเด็น,ประเภท,รายละเอียด\n';
+              const rows=rptData.map((r,i)=>{
+                const issueText=(r[1]||'').toLowerCase();
+                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
+                const d=new Date(r[0]);
+                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+                return [
+                  i+1,
+                  `"${dt.replace(/"/g,'""')}"`,
+                  `"${(r[9]||'-').replace(/"/g,'""')}"`,
+                  `"${(r[4]||'-').replace(/"/g,'""')}"`,
+                  `"${issueType}"`,
+                  `"${(r[2]||'-').replace(/"/g,'""')}"`,
+                  `"${(r[3]||r[1]||'-').replace(/"/g,'""')}"`
+                ].join(',');
+              }).join('\n');
               const bom='\uFEFF';
               const blob=new Blob([bom+header+rows],{type:'text/csv;charset=utf-8;'});
               const url=URL.createObjectURL(blob);
@@ -644,7 +655,7 @@ export default function AdminPage() {
                   <table style={{width:'100%',borderCollapse:'collapse',minWidth:1100}}>
                     <thead>
                       <tr>
-                        {['ลำดับ','ประเภท','ผลการดำเนินเรื่อง','ผู้รับบริการ','ช่องทาง','ผลดำเนินการ','สรุปเรื่อง / ความคิดเห็น'].map((h,i)=>(
+                        {['ลำดับ','วดป.','หน่วยงานที่เกิด','ผู้เกี่ยวข้อง','ประเด็น','ประเภท','รายละเอียด'].map((h,i)=>(
                           <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.78rem',fontWeight:900,color:'#1e40af',letterSpacing:0.3,whiteSpace:'nowrap',borderBottom:'2px solid #93c5fd',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#eff6ff'}}>{h}</th>
                         ))}
                       </tr>
@@ -652,53 +663,42 @@ export default function AdminPage() {
                     <tbody>
                       {rptData.length===0&&<tr><td colSpan={7} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>}
                       {rptData.map((row,i)=>{
-                        const st=ns(row[8]);
-                        const statusBg=st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':st==='รับเรื่อง'?'#dbeafe':st==='ส่งเรื่อง'?'#ccfbf1':st==='รอตอบกลับ'?'#fef3c7':'#f3e8ff';
-                        const statusColor=st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':st==='รับเรื่อง'?'#1e40af':st==='ส่งเรื่อง'?'#115e59':st==='รอตอบกลับ'?'#92400e':'#6b21a8';
-                        // Determine channel from data
-                        const channel=row[5]?'โทรศัพท์':row[6]?'Line':row[7]?'Email':'กล่องรับฟัง';
                         // Determine issue type label (ข้อร้องเรียน / ข้อชมเชย / ข้อเสนอแนะ)
                         const issueText=(row[1]||'').toLowerCase();
-                        const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย (Compliment)':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ (Suggestion)':'ข้อร้องเรียน (Complaint)';
-                        const issueBg=issueType.includes('ชมเชย')?'#d1fae5':issueType.includes('เสนอแนะ')?'#dbeafe':'#fee2e2';
-                        const issueCol=issueType.includes('ชมเชย')?'#065f46':issueType.includes('เสนอแนะ')?'#1e40af':'#991b1b';
+                        const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
+                        const issueBg=issueType.includes('ชมเชย')?'#fef08a':issueType.includes('เสนอแนะ')?'#dbeafe':'#fee2e2'; // Yellow for ชมเชย as in image
+                        const issueCol=issueType.includes('ชมเชย')?'#854d0e':issueType.includes('เสนอแนะ')?'#1e40af':'#991b1b';
+                        
+                        const d=new Date(row[0]);
+                        const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):row[0];
+                        
                         return(
                           <tr key={i} className="rpt-table-row" style={{borderBottom:'1px solid #e5e7eb',transition:'background 0.15s'}}>
                             {/* ลำดับ */}
                             <td style={{padding:'12px 14px',textAlign:'center',fontSize:'.82rem',fontWeight:800,color:'#64748b',width:55,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>{i+1}</td>
+                            {/* วดป. */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:100,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              {dt}
+                            </td>
+                            {/* หน่วยงานที่เกิด */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              {row[9]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}
+                            </td>
+                            {/* ผู้เกี่ยวข้อง */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              {row[4]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}
+                            </td>
+                            {/* ประเด็น */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#374151',width:110,borderRight:'1px solid #f1f5f9',verticalAlign:'top',background:issueBg}}>
+                              <span style={{color:issueCol,fontSize:'.78rem',fontWeight:800}}>{issueType}</span>
+                            </td>
                             {/* ประเภท */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:110,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:130,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
                               {row[2]||'-'}
                             </td>
-                            {/* ผลการดำเนินเรื่อง */}
-                            <td style={{padding:'12px 14px',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              <span style={{background:statusBg,color:statusColor,padding:'4px 12px',borderRadius:8,fontSize:'.76rem',fontWeight:800,display:'inline-block',whiteSpace:'nowrap'}}>{st}</span>
-                            </td>
-                            {/* ผู้รับบริการ */}
-                            <td style={{padding:'12px 14px',fontSize:'.84rem',fontWeight:700,color:'#1e293b',width:160,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              <div style={{display:'flex',alignItems:'center',gap:6}}>
-                                <span style={{fontSize:'.85rem'}}>👤</span>
-                                <span style={{fontWeight:700}}>{row[4]||'ไม่ระบุ'}</span>
-                              </div>
-                              {row[5]&&<div style={{fontSize:'.75rem',color:'#64748b',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
-                                <span style={{fontSize:'.8rem'}}>📞</span> {row[5]}
-                              </div>}
-                            </td>
-                            {/* ช่องทาง */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#475569',width:100,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              <span style={{background:channel==='โทรศัพท์'?'#dbeafe':channel==='Line'?'#d1fae5':channel==='Email'?'#fce7f3':'#f1f5f9',color:channel==='โทรศัพท์'?'#1e40af':channel==='Line'?'#065f46':channel==='Email'?'#9d174d':'#475569',padding:'4px 10px',borderRadius:8,fontSize:'.74rem',fontWeight:800}}>{channel}</span>
-                            </td>
-                            {/* ผลดำเนินการ (หน่วยงาน) */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:190,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              <div style={{fontWeight:700,color:'#1e293b',fontSize:'.82rem'}}>{row[9]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}</div>
-                              {row[10]&&<div style={{fontSize:'.72rem',color:'#94a3b8',marginTop:4,lineHeight:1.4,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[10]}</div>}
-                            </td>
-                            {/* สรุปเรื่อง / ความคิดเห็น */}
+                            {/* รายละเอียด */}
                             <td style={{padding:'12px 14px',fontSize:'.82rem',color:'#374151',lineHeight:1.6,verticalAlign:'top'}}>
-                              <div style={{marginBottom:6}}>
-                                <span style={{background:issueBg,color:issueCol,padding:'3px 10px',borderRadius:6,fontSize:'.72rem',fontWeight:800}}>{issueType}</span>
-                              </div>
-                              <div style={{fontWeight:600,color:'#374151',fontSize:'.82rem',lineHeight:1.7,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical' as const}}>{row[3]||row[1]||'-'}</div>
+                              <div style={{fontWeight:600,color:'#374151',fontSize:'.82rem',lineHeight:1.7}}>{row[3]||row[1]||'-'}</div>
                             </td>
                           </tr>
                         );
@@ -708,11 +708,6 @@ export default function AdminPage() {
                 </div>
                 <div style={{padding:'16px 24px',borderTop:'2px solid #e2e8f0',background:'#fafbfc',display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'.82rem',color:'#64748b',fontWeight:600}}>
                   <div>แสดงทั้งหมด {rptData.length} รายการ</div>
-                  <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
-                    {Object.entries(stCount).map(([st,cnt])=>(
-                      <span key={st} style={{background:st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':'#f1f5f9',color:st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':'#475569',padding:'4px 10px',borderRadius:8,fontSize:'.7rem',fontWeight:800}}>{st}: {cnt}</span>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
