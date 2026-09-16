@@ -15,7 +15,7 @@ const ir = (d:string,s:string,e:string) => {const dt=new Date(d);dt.setHours(0,0
 
 export default function AdminPage() {
   const [view,sv]=useState<'login'|'app'>('login');
-  const [nav,sn]=useState<'dash'|'list'>('dash');
+  const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
   const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
   const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
   const [ds,sds]=useState('');const [de,sde]=useState('');
@@ -23,6 +23,8 @@ export default function AdminPage() {
   const [rpp,srpp]=useState(10);const [pg,spg]=useState(1);
   const [editR,seR]=useState<Row|null>(null);const [est,ses]=useState('');const [edp,sed]=useState('');const [en,sen]=useState('');const [ef,sef]=useState<File|null>(null);
   const [sav,ssav]=useState('');const [detR,sdR]=useState<Row|null>(null);
+  // Report tab state
+  const [rptStart,setRptStart]=useState('');const [rptEnd,setRptEnd]=useState('');
   const s1=useRef<HTMLCanvasElement>(null);const s2=useRef<HTMLCanvasElement>(null);const s3=useRef<HTMLCanvasElement>(null);const s4=useRef<HTMLCanvasElement>(null);
   const ci=useRef<Record<string,{destroy?:()=>void}>>({});
 
@@ -323,7 +325,7 @@ export default function AdminPage() {
         {/* Nav */}
         <nav style={{flex:1,padding:'16px 20px'}}>
           <div style={{fontSize:'.75rem',fontWeight:800,color:'#475569',letterSpacing:2,padding:'0 16px',marginBottom:16}}>MAIN MENU</div>
-          {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน']] as ['dash'|'list',string,string][]).map(([id,ic,lb])=>(
+          {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน'],['report','📑','รายงาน']] as ['dash'|'list'|'report',string,string][]).map(([id,ic,lb])=>(
             <button key={id} onClick={()=>sn(id)} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(56,189,248,0.2)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(56,189,248,0.1) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #38bdf8':'none'}}>
               <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(56,189,248,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
               {lb}
@@ -348,7 +350,7 @@ export default function AdminPage() {
         {/* Topbar */}
         <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
           <div>
-            <h2 style={{margin:0,fontSize:'1.6rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Analytics':'📋 รายการเรื่องร้องเรียน'}</h2>
+            <h2 style={{margin:0,fontSize:'1.6rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Analytics':nav==='list'?'📋 รายการเรื่องร้องเรียน':'📑 รายงาน'}</h2>
             <p style={{margin:'6px 0 0',fontSize:'0.9rem',color:'#64748b',fontWeight:600}}>ระบบจัดการและรับฟังความคิดเห็น โรงพยาบาลหนองหาน</p>
           </div>
           <div style={{display:'flex',gap:16,alignItems:'center'}}>
@@ -505,6 +507,201 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* ══ REPORT ══ */}
+          {nav==='report'&&(()=>{
+            const rptData=data.filter(r=>ir(r[0],rptStart,rptEnd));
+            const stCount:Record<string,number>={};
+            const deptCount:Record<string,number>={};
+            const typeCount:Record<string,number>={};
+            rptData.forEach(r=>{
+              const st=ns(r[8]);stCount[st]=(stCount[st]||0)+1;
+              if(r[9])deptCount[r[9]]=(deptCount[r[9]]||0)+1;
+              if(r[2])typeCount[r[2]]=(typeCount[r[2]]||0)+1;
+            });
+            const closedCount=(stCount['ปิดเรื่องได้']||0);
+            const pendingCount=rptData.length-closedCount;
+            const rptDateLabel=rptStart&&rptEnd?`${new Date(rptStart).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})} - ${new Date(rptEnd).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:rptStart?`ตั้งแต่ ${new Date(rptStart).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:rptEnd?`ถึง ${new Date(rptEnd).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:'ทั้งหมด';
+
+            const exportExcel=async()=>{
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              let XLSX=(window as any).XLSX;
+              if(!XLSX){
+                await new Promise<void>((res)=>{
+                  const sc=document.createElement('script');
+                  sc.src='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+                  sc.onload=()=>res();
+                  document.head.appendChild(sc);
+                });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                XLSX=(window as any).XLSX;
+              }
+              const header=['ลำดับ','ประเภท','ผลการดำเนินเรื่อง','ผู้รับบริการ','ช่องทาง','ผลดำเนินการ','สรุปเรื่อง/ความคิดเห็น'];
+              const rows=rptData.map((r,i)=>[
+                i+1,
+                r[2]||'-',
+                ns(r[8]),
+                r[4]||'ไม่ระบุ',
+                r[5]?'โทรศัพท์':r[6]?'Line':r[7]?'Email':'อื่นๆ',
+                r[9]||'-',
+                r[3]||r[1]||'-'
+              ]);
+              const wsData=[header,...rows];
+              const ws=XLSX.utils.aoa_to_sheet(wsData);
+              // Set column widths
+              ws['!cols']=[{wch:6},{wch:12},{wch:18},{wch:18},{wch:12},{wch:22},{wch:50}];
+              const wb=XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb,ws,'รายงาน');
+              const fname=`รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g,'_')}.xlsx`;
+              XLSX.writeFile(wb,fname);
+            };
+
+            const exportCSV=()=>{
+              const header='ลำดับ,ประเภท,ผลการดำเนินเรื่อง,ผู้รับบริการ,ช่องทาง,ผลดำเนินการ,สรุปเรื่อง/ความคิดเห็น\n';
+              const rows=rptData.map((r,i)=>[
+                i+1,
+                `"${(r[2]||'-').replace(/"/g,'""')}"`,
+                `"${ns(r[8]).replace(/"/g,'""')}"`,
+                `"${(r[4]||'ไม่ระบุ').replace(/"/g,'""')}"`,
+                `"${r[5]?'โทรศัพท์':r[6]?'Line':r[7]?'Email':'อื่นๆ'}"`,
+                `"${(r[9]||'-').replace(/"/g,'""')}"`,
+                `"${(r[3]||r[1]||'-').replace(/"/g,'""')}"`
+              ].join(',')).join('\n');
+              const bom='\uFEFF';
+              const blob=new Blob([bom+header+rows],{type:'text/csv;charset=utf-8;'});
+              const url=URL.createObjectURL(blob);
+              const a=document.createElement('a');a.href=url;a.download=`รายงาน_${rptDateLabel.replace(/\s/g,'_')}.csv`;a.click();URL.revokeObjectURL(url);
+            };
+
+            return(
+            <div style={{animation:'fadeIn 0.3s'}}>
+              {/* Filter & Export bar */}
+              <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',padding:'20px 28px',marginBottom:24,boxShadow:'0 4px 15px rgba(0,0,0,0.02)'}}>
+                <div style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:10,fontSize:'.9rem',fontWeight:800,color:'#0f172a'}}>
+                    <span style={{fontSize:'1.2rem'}}>📅</span> เลือกช่วงเวลา:
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>จาก</label>
+                    <input type="date" value={rptStart} onChange={e=>setRptStart(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#3b82f6'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>ถึง</label>
+                    <input type="date" value={rptEnd} onChange={e=>setRptEnd(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#3b82f6'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
+                  </div>
+                  <button onClick={()=>{setRptStart('');setRptEnd('');}} style={{...ob,background:!rptStart&&!rptEnd?'#f8fafc':'#fef2f2',color:!rptStart&&!rptEnd?'#94a3b8':'#ef4444',borderColor:!rptStart&&!rptEnd?'#e2e8f0':'#fca5a5'}}>ล้างตัวกรอง</button>
+                  <div style={{marginLeft:'auto',display:'flex',gap:10}}>
+                    <button onClick={exportExcel} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'linear-gradient(135deg, #059669 0%, #047857 100%)',color:'white',border:'none',borderRadius:14,fontSize:'.88rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:'0 6px 20px rgba(5,150,105,0.3)',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 28px rgba(5,150,105,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 6px 20px rgba(5,150,105,0.3)'}}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
+                      ส่งออก Excel
+                    </button>
+                    <button onClick={exportCSV} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'white',color:'#475569',border:'1.5px solid #e2e8f0',borderRadius:14,fontSize:'.88rem',fontWeight:700,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#3b82f6';e.currentTarget.style.color='#2563eb'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#e2e8f0';e.currentTarget.style.color='#475569'}}>
+                      📄 ส่งออก CSV
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary cards */}
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:16,marginBottom:24}}>
+                <div style={{background:'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(15,23,42,0.2)',position:'relative',overflow:'hidden'}}>
+                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.08,lineHeight:1}}>📋</div>
+                  <div style={{fontSize:'.72rem',color:'#94a3b8',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>ทั้งหมด</div>
+                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{rptData.length}</div>
+                  <div style={{fontSize:'.72rem',color:'#64748b',fontWeight:600,marginTop:6}}>{rptDateLabel}</div>
+                </div>
+                <div style={{background:'linear-gradient(135deg, #059669 0%, #047857 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(5,150,105,0.25)',position:'relative',overflow:'hidden'}}>
+                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.1,lineHeight:1}}>✅</div>
+                  <div style={{fontSize:'.72rem',color:'#a7f3d0',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>ปิดเรื่องได้</div>
+                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{closedCount}</div>
+                  <div style={{fontSize:'.72rem',color:'rgba(255,255,255,0.6)',fontWeight:600,marginTop:6}}>{rptData.length?Math.round(closedCount/rptData.length*100):0}% ของทั้งหมด</div>
+                </div>
+                <div style={{background:'linear-gradient(135deg, #d97706 0%, #b45309 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(217,119,6,0.25)',position:'relative',overflow:'hidden'}}>
+                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.1,lineHeight:1}}>⏳</div>
+                  <div style={{fontSize:'.72rem',color:'#fde68a',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>อยู่ระหว่างดำเนินการ</div>
+                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{pendingCount}</div>
+                  <div style={{fontSize:'.72rem',color:'rgba(255,255,255,0.6)',fontWeight:600,marginTop:6}}>{rptData.length?Math.round(pendingCount/rptData.length*100):0}% ของทั้งหมด</div>
+                </div>
+                <div style={{background:'white',borderRadius:20,padding:'22px 24px',border:'1px solid #f1f5f9',boxShadow:'0 4px 15px rgba(0,0,0,0.02)',position:'relative',overflow:'hidden'}}>
+                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.06,lineHeight:1}}>🏥</div>
+                  <div style={{fontSize:'.72rem',color:'#64748b',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>หน่วยงานที่เกี่ยวข้อง</div>
+                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'#0f172a',lineHeight:1,marginTop:8}}>{Object.keys(deptCount).length}</div>
+                  <div style={{fontSize:'.72rem',color:'#94a3b8',fontWeight:600,marginTop:6}}>หน่วยงาน</div>
+                </div>
+              </div>
+
+              {/* Report Table - spreadsheet style */}
+              <div style={{background:'white',borderRadius:20,border:'1px solid #e2e8f0',overflow:'hidden',boxShadow:'0 4px 24px rgba(0,0,0,0.04)'}}>
+                <div style={{padding:'18px 24px',borderBottom:'2px solid #e2e8f0',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafbfc'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:10}}>
+                    <span style={{fontSize:'1.1rem'}}>📊</span>
+                    <span style={{fontSize:'.95rem',fontWeight:900,color:'#0f172a'}}>ตารางรายงานเรื่องร้องเรียน / ข้อเสนอแนะ</span>
+                  </div>
+                  <div style={{background:'#f0fdf4',color:'#16a34a',padding:'6px 14px',borderRadius:10,fontSize:'.78rem',fontWeight:800,border:'1px solid #bbf7d0'}}>
+                    พบ {rptData.length} รายการ
+                  </div>
+                </div>
+                <div style={{overflowX:'auto'}}>
+                  <table style={{width:'100%',borderCollapse:'collapse',minWidth:1000}}>
+                    <thead>
+                      <tr style={{background:'#f1f5f9'}}>
+                        {['ลำดับ','ประเภท','ผลการดำเนินเรื่อง','ผู้รับบริการ','ช่องทาง','ผลดำเนินการ','สรุปเรื่อง / ความคิดเห็น'].map((h,i)=>(
+                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.75rem',fontWeight:900,color:'#374151',textTransform:'uppercase',letterSpacing:0.5,whiteSpace:'nowrap',borderBottom:'2px solid #cbd5e1',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#f1f5f9',position:'sticky',top:0}}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rptData.length===0&&<tr><td colSpan={7} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>}
+                      {rptData.map((row,i)=>{
+                        const st=ns(row[8]);
+                        const statusBg=st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':st==='รับเรื่อง'?'#dbeafe':st==='ส่งเรื่อง'?'#ccfbf1':st==='รอตอบกลับ'?'#fef3c7':'#f3e8ff';
+                        const statusColor=st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':st==='รับเรื่อง'?'#1e40af':st==='ส่งเรื่อง'?'#115e59':st==='รอตอบกลับ'?'#92400e':'#6b21a8';
+                        const channel=row[5]?'โทรศัพท์':row[6]?'Line':row[7]?'Email':'อื่นๆ';
+                        return(
+                          <tr key={i} className="rpt-table-row" style={{borderBottom:'1px solid #e5e7eb',transition:'background 0.15s'}}>
+                            <td style={{padding:'12px 16px',textAlign:'center',fontSize:'.82rem',fontWeight:800,color:'#64748b',width:60,borderRight:'1px solid #f1f5f9'}}>{i+1}</td>
+                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:100,borderRight:'1px solid #f1f5f9'}}>
+                              <span style={{background:'#f1f5f9',padding:'3px 10px',borderRadius:8,fontSize:'.72rem',fontWeight:800,color:'#475569'}}>{row[2]||'-'}</span>
+                            </td>
+                            <td style={{padding:'12px 16px',width:160,borderRight:'1px solid #f1f5f9'}}>
+                              <span style={{background:statusBg,color:statusColor,padding:'5px 14px',borderRadius:10,fontSize:'.78rem',fontWeight:800,display:'inline-block',whiteSpace:'nowrap'}}>{st}</span>
+                            </td>
+                            <td style={{padding:'12px 16px',fontSize:'.84rem',fontWeight:700,color:'#1e293b',width:160,borderRight:'1px solid #f1f5f9'}}>
+                              <div style={{display:'flex',alignItems:'center',gap:6}}>
+                                <span style={{fontSize:'.9rem'}}>👤</span>
+                                {row[4]||'ไม่ระบุ'}
+                              </div>
+                              {row[5]&&<div style={{fontSize:'.72rem',color:'#64748b',marginTop:4}}>📞 {row[5]}</div>}
+                            </td>
+                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:600,color:'#475569',width:100,borderRight:'1px solid #f1f5f9'}}>
+                              <span style={{background:channel==='โทรศัพท์'?'#dbeafe':channel==='Line'?'#d1fae5':channel==='Email'?'#fce7f3':'#f1f5f9',color:channel==='โทรศัพท์'?'#1e40af':channel==='Line'?'#065f46':channel==='Email'?'#9d174d':'#475569',padding:'3px 10px',borderRadius:8,fontSize:'.72rem',fontWeight:800}}>{channel}</span>
+                            </td>
+                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:180,borderRight:'1px solid #f1f5f9'}}>
+                              {row[9]||<span style={{color:'#cbd5e1'}}>-</span>}
+                              {row[10]&&<div style={{fontSize:'.72rem',color:'#94a3b8',marginTop:4,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:160}}>{row[10]}</div>}
+                            </td>
+                            <td style={{padding:'12px 16px',fontSize:'.82rem',color:'#374151',lineHeight:1.6,maxWidth:400}}>
+                              <div style={{fontWeight:700,marginBottom:4,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[1]||'-'}</div>
+                              {row[3]&&<div style={{fontSize:'.75rem',color:'#94a3b8',overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[3]}</div>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{padding:'16px 24px',borderTop:'2px solid #e2e8f0',background:'#fafbfc',display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'.82rem',color:'#64748b',fontWeight:600}}>
+                  <div>แสดงทั้งหมด {rptData.length} รายการ</div>
+                  <div style={{display:'flex',gap:6}}>
+                    {Object.entries(stCount).map(([st,cnt])=>(
+                      <span key={st} style={{background:st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':'#f1f5f9',color:st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':'#475569',padding:'4px 10px',borderRadius:8,fontSize:'.7rem',fontWeight:800}}>{st}: {cnt}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            );
+          })()}
+
           {/* Footer */}
           <div style={{textAlign:'center', marginTop:40, paddingTop:24, borderTop:'1px dashed #e2e8f0', color:'#94a3b8', fontSize:'0.85rem', fontWeight:600, letterSpacing:0.5}}>
             พัฒนาโดย นายศุภชัย สุนารักษ์ · นักวิชาการสถิติ กลุ่มงานสุขภาพดิจิทัล
@@ -586,6 +783,7 @@ export default function AdminPage() {
         .admin-table-row { border-bottom: 1px solid #f1f5f9; background: white; transition: background 0.18s, box-shadow 0.18s; }
         .admin-table-row:hover { background: #f0f7ff !important; box-shadow: inset 4px 0 0 #3b82f6; }
         .admin-table-row:last-child { border-bottom: none; }
+        .rpt-table-row:hover { background: #f0f7ff !important; box-shadow: inset 4px 0 0 #3b82f6; }
 
         /* ── Chart card ── */
         .chart-card {
