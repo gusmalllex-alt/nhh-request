@@ -583,6 +583,81 @@ export default function AdminPage() {
               const a=document.createElement('a');a.href=url;a.download=`รายงาน_${rptDateLabel.replace(/\s/g,'_')}.csv`;a.click();URL.revokeObjectURL(url);
             };
 
+            const exportPDF=()=>{
+              const iframe=document.createElement('iframe');
+              iframe.style.display='none';
+              document.body.appendChild(iframe);
+              const doc=iframe.contentWindow?.document;
+              if(!doc) return;
+              
+              const rowsHtml = rptData.map((r,i)=>{
+                const issueText=(r[1]||'').toLowerCase();
+                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
+                const d=new Date(r[0]);
+                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+                return `
+                  <tr>
+                    <td class="center">${i+1}</td>
+                    <td>${dt}</td>
+                    <td>${r[9]||'-'}</td>
+                    <td>${r[4]||'-'}</td>
+                    <td>${issueType}</td>
+                    <td>${r[2]||'-'}</td>
+                    <td>${r[3]||r[1]||'-'}</td>
+                  </tr>
+                `;
+              }).join('');
+
+              const html=`
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <title>รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g,'_')}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+                    <style>
+                      @page { size: A4 landscape; margin: 12mm; }
+                      body { font-family: 'Sarabun', sans-serif; font-size: 13px; color: #000; line-height: 1.4; margin: 0; padding: 0; }
+                      h2 { text-align: center; margin: 0 0 16px 0; font-size: 20px; font-weight: 700; }
+                      table { width: 100%; border-collapse: collapse; }
+                      th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; vertical-align: top; word-wrap: break-word; }
+                      th { background-color: #f1f5f9; font-weight: 700; text-align: center; font-size: 14px; }
+                      .center { text-align: center; }
+                    </style>
+                  </head>
+                  <body>
+                    <h2>รายงานเรื่องร้องเรียน / ข้อเสนอแนะ (${rptDateLabel})</h2>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width: 5%">ลำดับ</th>
+                          <th style="width: 10%">วดป.</th>
+                          <th style="width: 13%">หน่วยงานที่เกิด</th>
+                          <th style="width: 13%">ผู้เกี่ยวข้อง</th>
+                          <th style="width: 12%">ประเด็น</th>
+                          <th style="width: 12%">ประเภท</th>
+                          <th style="width: 35%">รายละเอียด</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${rowsHtml}
+                        ${rptData.length===0?'<tr><td colspan="7" class="center" style="padding: 30px;">ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>':''}
+                      </tbody>
+                    </table>
+                  </body>
+                </html>
+              `;
+              
+              doc.open();
+              doc.write(html);
+              doc.close();
+              
+              setTimeout(()=>{
+                iframe.contentWindow?.focus();
+                iframe.contentWindow?.print();
+                setTimeout(()=>document.body.removeChild(iframe), 2000);
+              }, 600);
+            };
+
             return(
             <div style={{animation:'fadeIn 0.3s'}}>
               {/* Filter & Export bar */}
@@ -600,7 +675,12 @@ export default function AdminPage() {
                     <input type="date" value={rptEnd} onChange={e=>setRptEnd(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#3b82f6'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
                   </div>
                   <button onClick={()=>{setRptStart('');setRptEnd('');}} style={{...ob,background:!rptStart&&!rptEnd?'#f8fafc':'#fef2f2',color:!rptStart&&!rptEnd?'#94a3b8':'#ef4444',borderColor:!rptStart&&!rptEnd?'#e2e8f0':'#fca5a5'}}>ล้างตัวกรอง</button>
-                  <div style={{marginLeft:'auto',display:'flex',gap:10}}>
+                  
+                  <div style={{marginLeft:'auto',display:'flex',gap:10,flexWrap:'wrap'}}>
+                    <button onClick={exportPDF} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',color:'white',border:'none',borderRadius:14,fontSize:'.88rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:'0 6px 20px rgba(239,68,68,0.3)',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 28px rgba(239,68,68,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 6px 20px rgba(239,68,68,0.3)'}}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                      ส่งออก PDF
+                    </button>
                     <button onClick={exportExcel} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'linear-gradient(135deg, #059669 0%, #047857 100%)',color:'white',border:'none',borderRadius:14,fontSize:'.88rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:'0 6px 20px rgba(5,150,105,0.3)',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 28px rgba(5,150,105,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 6px 20px rgba(5,150,105,0.3)'}}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
                       ส่งออก Excel
