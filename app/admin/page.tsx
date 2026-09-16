@@ -641,11 +641,11 @@ export default function AdminPage() {
                   </div>
                 </div>
                 <div style={{overflowX:'auto'}}>
-                  <table style={{width:'100%',borderCollapse:'collapse',minWidth:1000}}>
+                  <table style={{width:'100%',borderCollapse:'collapse',minWidth:1100}}>
                     <thead>
-                      <tr style={{background:'#f1f5f9'}}>
+                      <tr>
                         {['ลำดับ','ประเภท','ผลการดำเนินเรื่อง','ผู้รับบริการ','ช่องทาง','ผลดำเนินการ','สรุปเรื่อง / ความคิดเห็น'].map((h,i)=>(
-                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.75rem',fontWeight:900,color:'#374151',textTransform:'uppercase',letterSpacing:0.5,whiteSpace:'nowrap',borderBottom:'2px solid #cbd5e1',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#f1f5f9',position:'sticky',top:0}}>{h}</th>
+                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.78rem',fontWeight:900,color:'#1e40af',letterSpacing:0.3,whiteSpace:'nowrap',borderBottom:'2px solid #93c5fd',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#eff6ff'}}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -655,33 +655,50 @@ export default function AdminPage() {
                         const st=ns(row[8]);
                         const statusBg=st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':st==='รับเรื่อง'?'#dbeafe':st==='ส่งเรื่อง'?'#ccfbf1':st==='รอตอบกลับ'?'#fef3c7':'#f3e8ff';
                         const statusColor=st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':st==='รับเรื่อง'?'#1e40af':st==='ส่งเรื่อง'?'#115e59':st==='รอตอบกลับ'?'#92400e':'#6b21a8';
-                        const channel=row[5]?'โทรศัพท์':row[6]?'Line':row[7]?'Email':'อื่นๆ';
+                        // Determine channel from data
+                        const channel=row[5]?'โทรศัพท์':row[6]?'Line':row[7]?'Email':'กล่องรับฟัง';
+                        // Determine issue type label (ข้อร้องเรียน / ข้อชมเชย / ข้อเสนอแนะ)
+                        const issueText=(row[1]||'').toLowerCase();
+                        const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย (Compliment)':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ (Suggestion)':'ข้อร้องเรียน (Complaint)';
+                        const issueBg=issueType.includes('ชมเชย')?'#d1fae5':issueType.includes('เสนอแนะ')?'#dbeafe':'#fee2e2';
+                        const issueCol=issueType.includes('ชมเชย')?'#065f46':issueType.includes('เสนอแนะ')?'#1e40af':'#991b1b';
                         return(
                           <tr key={i} className="rpt-table-row" style={{borderBottom:'1px solid #e5e7eb',transition:'background 0.15s'}}>
-                            <td style={{padding:'12px 16px',textAlign:'center',fontSize:'.82rem',fontWeight:800,color:'#64748b',width:60,borderRight:'1px solid #f1f5f9'}}>{i+1}</td>
-                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:100,borderRight:'1px solid #f1f5f9'}}>
-                              <span style={{background:'#f1f5f9',padding:'3px 10px',borderRadius:8,fontSize:'.72rem',fontWeight:800,color:'#475569'}}>{row[2]||'-'}</span>
+                            {/* ลำดับ */}
+                            <td style={{padding:'12px 14px',textAlign:'center',fontSize:'.82rem',fontWeight:800,color:'#64748b',width:55,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>{i+1}</td>
+                            {/* ประเภท */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:110,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              {row[2]||'-'}
                             </td>
-                            <td style={{padding:'12px 16px',width:160,borderRight:'1px solid #f1f5f9'}}>
-                              <span style={{background:statusBg,color:statusColor,padding:'5px 14px',borderRadius:10,fontSize:'.78rem',fontWeight:800,display:'inline-block',whiteSpace:'nowrap'}}>{st}</span>
+                            {/* ผลการดำเนินเรื่อง */}
+                            <td style={{padding:'12px 14px',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              <span style={{background:statusBg,color:statusColor,padding:'4px 12px',borderRadius:8,fontSize:'.76rem',fontWeight:800,display:'inline-block',whiteSpace:'nowrap'}}>{st}</span>
                             </td>
-                            <td style={{padding:'12px 16px',fontSize:'.84rem',fontWeight:700,color:'#1e293b',width:160,borderRight:'1px solid #f1f5f9'}}>
+                            {/* ผู้รับบริการ */}
+                            <td style={{padding:'12px 14px',fontSize:'.84rem',fontWeight:700,color:'#1e293b',width:160,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
                               <div style={{display:'flex',alignItems:'center',gap:6}}>
-                                <span style={{fontSize:'.9rem'}}>👤</span>
-                                {row[4]||'ไม่ระบุ'}
+                                <span style={{fontSize:'.85rem'}}>👤</span>
+                                <span style={{fontWeight:700}}>{row[4]||'ไม่ระบุ'}</span>
                               </div>
-                              {row[5]&&<div style={{fontSize:'.72rem',color:'#64748b',marginTop:4}}>📞 {row[5]}</div>}
+                              {row[5]&&<div style={{fontSize:'.75rem',color:'#64748b',marginTop:4,display:'flex',alignItems:'center',gap:4}}>
+                                <span style={{fontSize:'.8rem'}}>📞</span> {row[5]}
+                              </div>}
                             </td>
-                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:600,color:'#475569',width:100,borderRight:'1px solid #f1f5f9'}}>
-                              <span style={{background:channel==='โทรศัพท์'?'#dbeafe':channel==='Line'?'#d1fae5':channel==='Email'?'#fce7f3':'#f1f5f9',color:channel==='โทรศัพท์'?'#1e40af':channel==='Line'?'#065f46':channel==='Email'?'#9d174d':'#475569',padding:'3px 10px',borderRadius:8,fontSize:'.72rem',fontWeight:800}}>{channel}</span>
+                            {/* ช่องทาง */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#475569',width:100,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              <span style={{background:channel==='โทรศัพท์'?'#dbeafe':channel==='Line'?'#d1fae5':channel==='Email'?'#fce7f3':'#f1f5f9',color:channel==='โทรศัพท์'?'#1e40af':channel==='Line'?'#065f46':channel==='Email'?'#9d174d':'#475569',padding:'4px 10px',borderRadius:8,fontSize:'.74rem',fontWeight:800}}>{channel}</span>
                             </td>
-                            <td style={{padding:'12px 16px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:180,borderRight:'1px solid #f1f5f9'}}>
-                              {row[9]||<span style={{color:'#cbd5e1'}}>-</span>}
-                              {row[10]&&<div style={{fontSize:'.72rem',color:'#94a3b8',marginTop:4,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:160}}>{row[10]}</div>}
+                            {/* ผลดำเนินการ (หน่วยงาน) */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:190,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
+                              <div style={{fontWeight:700,color:'#1e293b',fontSize:'.82rem'}}>{row[9]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}</div>
+                              {row[10]&&<div style={{fontSize:'.72rem',color:'#94a3b8',marginTop:4,lineHeight:1.4,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[10]}</div>}
                             </td>
-                            <td style={{padding:'12px 16px',fontSize:'.82rem',color:'#374151',lineHeight:1.6,maxWidth:400}}>
-                              <div style={{fontWeight:700,marginBottom:4,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[1]||'-'}</div>
-                              {row[3]&&<div style={{fontSize:'.75rem',color:'#94a3b8',overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical' as const}}>{row[3]}</div>}
+                            {/* สรุปเรื่อง / ความคิดเห็น */}
+                            <td style={{padding:'12px 14px',fontSize:'.82rem',color:'#374151',lineHeight:1.6,verticalAlign:'top'}}>
+                              <div style={{marginBottom:6}}>
+                                <span style={{background:issueBg,color:issueCol,padding:'3px 10px',borderRadius:6,fontSize:'.72rem',fontWeight:800}}>{issueType}</span>
+                              </div>
+                              <div style={{fontWeight:600,color:'#374151',fontSize:'.82rem',lineHeight:1.7,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical' as const}}>{row[3]||row[1]||'-'}</div>
                             </td>
                           </tr>
                         );
@@ -691,7 +708,7 @@ export default function AdminPage() {
                 </div>
                 <div style={{padding:'16px 24px',borderTop:'2px solid #e2e8f0',background:'#fafbfc',display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'.82rem',color:'#64748b',fontWeight:600}}>
                   <div>แสดงทั้งหมด {rptData.length} รายการ</div>
-                  <div style={{display:'flex',gap:6}}>
+                  <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                     {Object.entries(stCount).map(([st,cnt])=>(
                       <span key={st} style={{background:st==='ปิดเรื่องได้'?'#d1fae5':st==='ปิดเรื่องไม่ได้'?'#fee2e2':st==='รอดำเนินการ'?'#fef9c3':'#f1f5f9',color:st==='ปิดเรื่องได้'?'#065f46':st==='ปิดเรื่องไม่ได้'?'#991b1b':st==='รอดำเนินการ'?'#854d0e':'#475569',padding:'4px 10px',borderRadius:8,fontSize:'.7rem',fontWeight:800}}>{st}: {cnt}</span>
                     ))}
