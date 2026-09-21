@@ -15,6 +15,7 @@ const ir = (d:string,s:string,e:string) => {const dt=new Date(d);dt.setHours(0,0
 
 export default function AdminPage() {
   const [view,sv]=useState<'login'|'app'>('login');
+  const [sidebarOpen,setSidebarOpen]=useState(false);
   const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
   const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
   const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
@@ -311,7 +312,7 @@ export default function AdminPage() {
     <div className="admin-layout" style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
 
       {/* SIDEBAR */}
-      <aside className="admin-sidebar" style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)'}}>
+      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)'}}>
         {/* Logo */}
         <div style={{padding:'40px 28px 28px',display:'flex',alignItems:'center',gap:16}}>
           <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#38bdf8,#2563eb)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(37,99,235,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
@@ -346,9 +347,21 @@ export default function AdminPage() {
 
       {/* MAIN */}
       <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f8fafc'}}>
-        <style>{`.sidebar-btn:hover { background: rgba(255,255,255,0.05) !important; transform: translateX(6px); }`}</style>
+        <style>{`
+          .sidebar-btn:hover { background: rgba(255,255,255,0.05) !important; transform: translateX(6px); }
+          @media (max-width: 900px) {
+            .admin-menu-btn { display: flex !important; }
+            .admin-topbar { padding: 14px 16px !important; flex-wrap: wrap; }
+            .admin-content-pad { padding: 16px !important; }
+            .grid-mobile-single { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
         {/* Topbar */}
-        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
+        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 24px 0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
+          {/* Mobile sidebar toggle — only visible below 900px via CSS */}
+          <button onClick={()=>setSidebarOpen(o=>!o)} style={{display:'none',alignItems:'center',justifyContent:'center',width:40,height:40,borderRadius:12,border:'1.5px solid #e2e8f0',background:'white',cursor:'pointer',marginRight:12,flexShrink:0}} className="admin-menu-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
           <div>
             <h2 style={{margin:0,fontSize:'1.6rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Analytics':nav==='list'?'📋 รายการเรื่องร้องเรียน':'📑 รายงาน'}</h2>
             <p style={{margin:'6px 0 0',fontSize:'0.9rem',color:'#64748b',fontWeight:600}}>ระบบจัดการและรับฟังความคิดเห็น โรงพยาบาลหนองหาน</p>

@@ -98,9 +98,9 @@ export default function Home() {
             <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a7ffe8', letterSpacing: '0.08em' }}>ศูนย์รับเรื่องร้องเรียน</span>
           </div>
           <p style={{ color: 'rgba(200,255,240,0.8)', fontSize: '1rem', margin: '0 0 28px', fontWeight: 400 }}>โรงพยาบาลหนองหาน &nbsp;·&nbsp; จังหวัดอุดรธานี</p>
-          <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
+          <div className="stat-badges" style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
             {[['⏱', '< 24 ชม.'], ['🔒', 'ปลอดภัย'], ['👤', 'ไม่ระบุตัวตน']].map(([i, v], idx) => (
-              <div key={idx} style={{ padding: '12px 20px', borderRight: idx < 2 ? '1px solid rgba(255,255,255,0.1)' : 'none', textAlign: 'center' }}>
+              <div key={idx} className="stat-badge-item" style={{ padding: '12px 20px', borderRight: idx < 2 ? '1px solid rgba(255,255,255,0.1)' : 'none', textAlign: 'center' }}>
                 <div style={{ fontSize: '1rem' }}>{i}</div><div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{v}</div>
               </div>
             ))}
@@ -261,6 +261,9 @@ export default function Home() {
         @media (max-width: 640px) {
           .grid-cols-2 { grid-template-columns: 1fr !important; }
           .section-box { padding: 20px; }
+          /* Stat badges: allow wrapping and tighter padding on tiny screens */
+          .stat-badges { flex-wrap: wrap !important; justify-content: center !important; }
+          .stat-badge-item { padding: 10px 14px !important; }
         }
       `}</style>
     </div>

@@ -84,12 +84,12 @@ export default function Hero() {
             
             <div className="absolute inset-0 bg-gradient-to-r from-[#116e41]/60 via-[#116e41]/20 to-transparent z-10"></div>
 
-            <div className="absolute inset-0 z-20 container mx-auto px-10 flex flex-col justify-center">
+            <div className="absolute inset-0 z-20 container mx-auto px-5 md:px-10 flex flex-col justify-center">
               <div className="max-w-xl">
-                <h1 className="text-3xl md:text-5xl lg:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-lg">
+                <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3 leading-tight drop-shadow-lg">
                   การรับรองคุณภาพมาตรฐานระดับสากล
                 </h1>
-                <p className="text-base md:text-xl text-white/90 font-light drop-shadow-md">
+                <p className="text-sm sm:text-base md:text-xl text-white/90 font-light drop-shadow-md">
                   ยกระดับบริการทางการแพทย์ <br/>เพื่อการดูแลที่ครอบคลุมและปลอดภัยที่สุด
                 </p>
               </div>
@@ -104,12 +104,12 @@ export default function Hero() {
               <button className="w-4 h-1.5 bg-white/40 hover:bg-white/70 rounded-full transition-all"></button>
             </div>
             
-            {/* Arrows */}
-            <button className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-30 backdrop-blur-sm opacity-0 group-hover:opacity-100">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            {/* Arrows — always visible on mobile, hover-only on desktop */}
+            <button className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-black/20 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-30 backdrop-blur-sm md:opacity-0 md:group-hover:opacity-100 opacity-70">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
-            <button className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-30 backdrop-blur-sm opacity-0 group-hover:opacity-100">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <button className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 bg-black/20 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-30 backdrop-blur-sm md:opacity-0 md:group-hover:opacity-100 opacity-70">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
 
           </div>

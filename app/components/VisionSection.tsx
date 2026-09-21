@@ -1,15 +1,15 @@
 export default function VisionSection() {
   return (
-    <section className="relative w-full bg-white py-20 lg:py-28 overflow-hidden">
+    <section className="relative w-full bg-white py-12 md:py-20 lg:py-28 overflow-hidden">
       {/* Decorative corporate pattern background */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-[#f8fafc] transform -skew-x-12 translate-x-16"></div>
       
       <div className="container mx-auto px-4 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
         
         <div className="w-full md:w-5/12">
-          <div className="relative">
-            {/* Minimalist Graphic Element */}
-            <div className="absolute -left-6 -top-6 w-24 h-24 bg-green-50 rounded-full z-0"></div>
+          <div className="relative overflow-hidden pl-2">
+            {/* Decorative circle — clipped so it can't cause horizontal scroll */}
+            <div className="absolute -left-4 -top-4 w-20 h-20 md:-left-6 md:-top-6 md:w-24 md:h-24 bg-green-50 rounded-full z-0"></div>
             <div className="relative z-10 pl-6 border-l-4 border-green-600">
               <span className="text-sm font-bold tracking-widest text-green-600 uppercase mb-2 block">Our Vision</span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-[#0d5934] tracking-tight leading-tight mb-4">

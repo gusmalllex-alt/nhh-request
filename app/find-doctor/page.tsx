@@ -1,4 +1,6 @@
 import DoctorCard from "../components/DoctorCard";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export const dynamic = "force-static";
 
@@ -43,7 +45,9 @@ export default function FindDoctor() {
   ];
 
   return (
-    <div className="bg-[#f8fafc] w-full min-h-screen font-sans">
+    <div className="bg-[#f8fafc] w-full min-h-screen font-sans flex flex-col">
+      <Header />
+      <main className="flex-1">
       {/* Hero Banner Section */}
       <div className="relative bg-[#0d5934] overflow-hidden pt-12 pb-24 md:pt-16 md:pb-32">
         {/* Background Decorative Pattern / Gradient Overlay */}
@@ -175,6 +179,8 @@ export default function FindDoctor() {
         </div>
 
       </div>
+      </main>
+      <Footer />
     </div>
   );
 }
