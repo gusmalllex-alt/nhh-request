@@ -225,7 +225,28 @@ body.sidebar-body-lock { overflow: hidden; }
   box-shadow: 0 1px 3px rgba(239, 68, 68, 0.4);
 }
 
+/* ── Admin Mobile & Responsive Cards ── */
+.admin-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (min-width: 900px) {
+  .admin-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+@media (max-width: 640px) {
+  .admin-complaint-card {
+    padding: 14px 12px !important;
+    border-radius: 16px !important;
+  }
+}
+
 /* 🌟 Utilities */
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
 

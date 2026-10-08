@@ -18,6 +18,7 @@ export default function AdminPage() {
   const [sidebarOpen,setSidebarOpen]=useState(false);
   const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
   const [statusFilter,setStatusFilter]=useState<'all'|'pending'|'done'>('all');
+  const [viewMode,setViewMode]=useState<'card'|'table'>('card');
   const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
   const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
   const [ds,sds]=useState('');const [de,sde]=useState('');
@@ -521,62 +522,231 @@ export default function AdminPage() {
                   </div>
                 ))}
                 <button onClick={()=>{sq('');sms('');sme('');spg(1);}} style={{...ob,border:'none',background:'#f1f5f9',color:'#475569'}}>ล้างทั้งหมด</button>
-                <div style={{marginLeft:'auto',background:'#f0fdf4',color:'#16a34a',padding:'6px 12px',borderRadius:10,fontSize:'.75rem',fontWeight:800}}>พบ {listD.length} รายการ</div>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginLeft:'auto',flexWrap:'wrap'}}>
+                  <div style={{background:'#f0fdf4',color:'#16a34a',padding:'6px 12px',borderRadius:10,fontSize:'.75rem',fontWeight:800}}>พบ {listD.length} รายการ</div>
+                  <div style={{display:'flex',background:'#f1f5f9',padding:3,borderRadius:10,border:'1px solid #e2e8f0'}}>
+                    <button
+                      type="button"
+                      onClick={()=>setViewMode('card')}
+                      style={{
+                        border:'none',
+                        background:viewMode==='card'?'white':'transparent',
+                        color:viewMode==='card'?'#0f172a':'#64748b',
+                        fontWeight:viewMode==='card'?800:600,
+                        fontSize:'0.75rem',
+                        padding:'4px 10px',
+                        borderRadius:8,
+                        cursor:'pointer',
+                        boxShadow:viewMode==='card'?'0 1px 3px rgba(0,0,0,0.1)':'none',
+                        display:'flex',
+                        alignItems:'center',
+                        gap:4,
+                        fontFamily:"'Sarabun',sans-serif"
+                      }}
+                      title="มุมมองการ์ด (เหมาะกับมือถือ)"
+                    >
+                      <span>📱</span> การ์ด
+                    </button>
+                    <button
+                      type="button"
+                      onClick={()=>setViewMode('table')}
+                      style={{
+                        border:'none',
+                        background:viewMode==='table'?'white':'transparent',
+                        color:viewMode==='table'?'#0f172a':'#64748b',
+                        fontWeight:viewMode==='table'?800:600,
+                        fontSize:'0.75rem',
+                        padding:'4px 10px',
+                        borderRadius:8,
+                        cursor:'pointer',
+                        boxShadow:viewMode==='table'?'0 1px 3px rgba(0,0,0,0.1)':'none',
+                        display:'flex',
+                        alignItems:'center',
+                        gap:4,
+                        fontFamily:"'Sarabun',sans-serif"
+                      }}
+                      title="มุมมองตาราง"
+                    >
+                      <span>📑</span> ตาราง
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Table */}
+              {/* Data Content: Card View vs Table View */}
               <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',overflow:'hidden',boxShadow:'0 4px 24px rgba(0,0,0,0.03)'}}>
-                <div style={{overflowX:'auto'}}>
-                  <table style={{width:'100%',borderCollapse:'collapse',minWidth:800}}>
-                    <thead>
-                      <tr style={{background:'#f8fafc',borderBottom:'1px solid #e2e8f0'}}>
-                        {['ลำดับ','วันที่รับเรื่อง','เรื่องร้องเรียน / หมวดหมู่','ข้อมูลผู้แจ้งรับบริการ','สถานะดำเนินการ','จัดการ'].map((h,i)=>(
-                          <th key={h} style={{padding:'16px 20px',textAlign:i>=4?'center':'left',fontSize:'.75rem',fontWeight:800,color:'#475569',textTransform:'uppercase',letterSpacing:0.5,whiteSpace:'nowrap'}}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {load&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>⏳ กำลังโหลดข้อมูล...</td></tr>}
-                      {!load&&pd.length===0&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลที่ค้นหา</td></tr>}
-                      {pd.map((row,i)=>{
-                        const st=ns(row[8]);const[bg,tc,bc]=sb(st);
-                        const d=new Date(row[0]);const isV=!isNaN(d.getTime());
-                        const dt=isV?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):row[0];
-                        const tm=isV?d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'';
-                        return(
-                          <tr key={i} className="admin-table-row">
-                            <td style={{padding:'16px 20px',fontSize:'.8rem',color:'#64748b',fontWeight:800,width:80}}>{(pg-1)*rpp+i+1}</td>
-                            <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:140}}>
-                              <div style={{fontWeight:800,fontSize:'.85rem',color:'#0f172a'}}>{dt}</div>
-                              <div style={{fontSize:'.75rem',color:'#94a3b8',marginTop:4}}>⏰ {tm} น.</div>
-                            </td>
-                            <td style={{padding:'16px 20px',maxWidth:320}}>
-                              <div style={{fontWeight:800,fontSize:'.9rem',color:'#0f172a',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:6}}>{row[1]}</div>
-                              <div style={{fontSize:'.75rem',color:'#64748b',display:'flex',gap:6,alignItems:'center'}}>
-                                <span style={{background:'#f1f5f9',padding:'2px 8px',borderRadius:6,fontWeight:700,fontSize:'.65rem',color:'#475569'}}>{row[2]}</span>
-                                <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:180}}>{row[3]||'-'}</span>
-                              </div>
-                            </td>
-                            <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:180}}>
-                              <div style={{fontSize:'.85rem',fontWeight:700,color:'#1e293b',display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>👤</span> {row[4]||(row[5]?'ไม่ระบุชื่อ':'-')}</div>
-                              {row[5]&&<div style={{fontSize:'.75rem',color:'#64748b',marginTop:4,display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>📞</span> {row[5]}</div>}
-                            </td>
-                            <td style={{padding:'16px 20px',textAlign:'center',width:150}}>
-                              <span style={{background:bg,color:tc,border:`1px solid ${bc}`,padding:'6px 12px',borderRadius:12,fontSize:'.75rem',fontWeight:800,whiteSpace:'nowrap',display:'inline-block'}}>{st}</span>
-                            </td>
-                            <td style={{padding:'16px 20px',textAlign:'center',width:100}}>
-                              <div style={{display:'flex',gap:6,justifyContent:'center'}}>
-                                {([['👁','#2563eb','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#ef4444','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
-                                  <button key={t} title={t} onClick={fn} style={{width:34,height:34,borderRadius:10,border:'none',background:'#f1f5f9',cursor:'pointer',fontSize:'.95rem',color:c,display:'flex',alignItems:'center',justifyContent:'center',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.background='white';e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'}} onMouseLeave={e=>{e.currentTarget.style.background='#f1f5f9';e.currentTarget.style.boxShadow='none'}}>{em}</button>
-                                ))}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                {viewMode === 'card' ? (
+                  /* ─── SMARTPHONE CARD VIEW ─── */
+                  <div className="admin-cards-grid" style={{padding:'14px',display:'flex',flexDirection:'column',gap:12}}>
+                    {load && <div style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>⏳ กำลังโหลดข้อมูล...</div>}
+                    {!load && pd.length === 0 && <div style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลที่ค้นหา</div>}
+                    {!load && pd.map((row, i) => {
+                      const st = ns(row[8]);
+                      const [bg, tc, bc] = sb(st);
+                      const d = new Date(row[0]);
+                      const isV = !isNaN(d.getTime());
+                      const dt = isV ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : row[0];
+                      const tm = isV ? d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '';
+
+                      return (
+                        <div
+                          key={i}
+                          className="admin-complaint-card"
+                          style={{
+                            background: '#ffffff',
+                            borderRadius: 18,
+                            border: '1.5px solid #f1f5f9',
+                            padding: '16px 14px',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 12,
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          {/* Card Top: Number, Date, Status */}
+                          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
+                            <div style={{display:'flex',alignItems:'center',gap:8}}>
+                              <span style={{background:'#f1f5f9',color:'#475569',fontWeight:800,fontSize:'0.75rem',padding:'3px 8px',borderRadius:8}}>
+                                #{(pg - 1) * rpp + i + 1}
+                              </span>
+                              <span style={{fontSize:'0.8rem',color:'#64748b',fontWeight:600}}>
+                                📅 {dt} {tm && `• ⏰ ${tm} น.`}
+                              </span>
+                            </div>
+                            <span style={{background:bg,color:tc,border:`1px solid ${bc}`,padding:'4px 10px',borderRadius:12,fontSize:'0.72rem',fontWeight:800,whiteSpace:'nowrap'}}>
+                              {st}
+                            </span>
+                          </div>
+
+                          {/* Subject & Description */}
+                          <div>
+                            <h4 style={{margin:'0 0 6px',fontSize:'0.96rem',fontWeight:800,color:'#0f172a',lineHeight:1.45}}>
+                              {row[1] || 'ไม่ระบุหัวข้อ'}
+                            </h4>
+                            {row[3] && (
+                              <p style={{margin:'0 0 8px',fontSize:'0.84rem',color:'#64748b',lineHeight:1.5,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
+                                {row[3]}
+                              </p>
+                            )}
+                            <div style={{display:'flex',flexWrap:'wrap',gap:6,alignItems:'center'}}>
+                              {row[2] && (
+                                <span style={{background:'#eff6ff',color:'#2563eb',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
+                                  🏷️ {row[2]}
+                                </span>
+                              )}
+                              {row[9] && (
+                                <span style={{background:'#f0fdf4',color:'#16a34a',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
+                                  🏥 {row[9]}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Complainant snippet */}
+                          <div style={{background:'#f8fafc',borderRadius:12,padding:'8px 12px',display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:'0.82rem',color:'#334155'}}>
+                            <div style={{display:'flex',alignItems:'center',gap:6,fontWeight:700,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                              <span>👤</span>
+                              <span style={{overflow:'hidden',textOverflow:'ellipsis'}}>{row[4] || (row[5] ? 'ไม่ระบุชื่อ' : '-')}</span>
+                            </div>
+                            {row[5] ? (
+                              <a href={`tel:${row[5]}`} style={{color:'#0284c7',fontWeight:700,textDecoration:'none',display:'flex',alignItems:'center',gap:4,flexShrink:0}}>
+                                <span>📞</span> {row[5]}
+                              </a>
+                            ) : (
+                              <span style={{color:'#94a3b8',fontSize:'0.75rem'}}>ไม่มีเบอร์</span>
+                            )}
+                          </div>
+
+                          {/* Actions: 3 clean touch buttons */}
+                          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 44px',gap:8,paddingTop:8,borderTop:'1px solid #f1f5f9'}}>
+                            <button
+                              type="button"
+                              onClick={() => sdR(row)}
+                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #bfdbfe',background:'#eff6ff',color:'#1d4ed8',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
+                            >
+                              <span>👁</span> ดูข้อมูล
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                seR(row);
+                                ses(ns(row[8]));
+                                sed(row[9] || '');
+                                sen(row[10] || '');
+                                sef(null);
+                              }}
+                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #fde68a',background:'#fffbeb',color:'#b45309',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
+                            >
+                              <span>✏️</span> จัดการ
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => del(row[0])}
+                              title="ลบ"
+                              style={{padding:'9px 0',borderRadius:12,border:'1px solid #fecaca',background:'#fef2f2',color:'#dc2626',fontSize:'0.9rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Sarabun',sans-serif"}}
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* ─── FULL TABLE VIEW ─── */
+                  <div style={{overflowX:'auto'}}>
+                    <table style={{width:'100%',borderCollapse:'collapse',minWidth:800}}>
+                      <thead>
+                        <tr style={{background:'#f8fafc',borderBottom:'1px solid #e2e8f0'}}>
+                          {['ลำดับ','วันที่รับเรื่อง','เรื่องร้องเรียน / หมวดหมู่','ข้อมูลผู้แจ้งรับบริการ','สถานะดำเนินการ','จัดการ'].map((h,i)=>(
+                            <th key={h} style={{padding:'16px 20px',textAlign:i>=4?'center':'left',fontSize:'.75rem',fontWeight:800,color:'#475569',textTransform:'uppercase',letterSpacing:0.5,whiteSpace:'nowrap'}}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {load&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>⏳ กำลังโหลดข้อมูล...</td></tr>}
+                        {!load&&pd.length===0&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลที่ค้นหา</td></tr>}
+                        {pd.map((row,i)=>{
+                          const st=ns(row[8]);const[bg,tc,bc]=sb(st);
+                          const d=new Date(row[0]);const isV=!isNaN(d.getTime());
+                          const dt=isV?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):row[0];
+                          const tm=isV?d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'';
+                          return(
+                            <tr key={i} className="admin-table-row">
+                              <td style={{padding:'16px 20px',fontSize:'.8rem',color:'#64748b',fontWeight:800,width:80}}>{(pg-1)*rpp+i+1}</td>
+                              <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:140}}>
+                                <div style={{fontWeight:800,fontSize:'.85rem',color:'#0f172a'}}>{dt}</div>
+                                <div style={{fontSize:'.75rem',color:'#94a3b8',marginTop:4}}>⏰ {tm} น.</div>
+                              </td>
+                              <td style={{padding:'16px 20px',maxWidth:320}}>
+                                <div style={{fontWeight:800,fontSize:'.9rem',color:'#0f172a',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:6}}>{row[1]}</div>
+                                <div style={{fontSize:'.75rem',color:'#64748b',display:'flex',gap:6,alignItems:'center'}}>
+                                  <span style={{background:'#f1f5f9',padding:'2px 8px',borderRadius:6,fontWeight:700,fontSize:'.65rem',color:'#475569'}}>{row[2]}</span>
+                                  <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:180}}>{row[3]||'-'}</span>
+                                </div>
+                              </td>
+                              <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:180}}>
+                                <div style={{fontSize:'.85rem',fontWeight:700,color:'#1e293b',display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>👤</span> {row[4]||(row[5]?'ไม่ระบุชื่อ':'-')}</div>
+                                {row[5]&&<div style={{fontSize:'.75rem',color:'#64748b',marginTop:4,display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>📞</span> {row[5]}</div>}
+                              </td>
+                              <td style={{padding:'16px 20px',textAlign:'center',width:150}}>
+                                <span style={{background:bg,color:tc,border:`1px solid ${bc}`,padding:'6px 12px',borderRadius:12,fontSize:'.75rem',fontWeight:800,whiteSpace:'nowrap',display:'inline-block'}}>{st}</span>
+                              </td>
+                              <td style={{padding:'16px 20px',textAlign:'center',width:100}}>
+                                <div style={{display:'flex',gap:6,justifyContent:'center'}}>
+                                  {([['👁','#2563eb','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#ef4444','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
+                                    <button key={t} title={t} onClick={fn} style={{width:34,height:34,borderRadius:10,border:'none',background:'#f1f5f9',cursor:'pointer',fontSize:'.95rem',color:c,display:'flex',alignItems:'center',justifyContent:'center',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.background='white';e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'}} onMouseLeave={e=>{e.currentTarget.style.background='#f1f5f9';e.currentTarget.style.boxShadow='none'}}>{em}</button>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
                 {/* Pagination */}
                 <div style={{padding:'16px 24px',borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,background:'white'}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,fontSize:'.8rem',color:'#64748b',fontWeight:600}}>
