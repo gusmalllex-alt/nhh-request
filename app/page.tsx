@@ -260,10 +260,18 @@ export default function Home() {
 
         @media (max-width: 640px) {
           .grid-cols-2 { grid-template-columns: 1fr !important; }
-          .section-box { padding: 20px; }
+          .section-box { padding: 18px 16px; border-radius: 18px; }
           /* Stat badges: allow wrapping and tighter padding on tiny screens */
-          .stat-badges { flex-wrap: wrap !important; justify-content: center !important; }
+          .stat-badges { flex-wrap: wrap !important; justify-content: center !important; border-radius: 12px !important; }
           .stat-badge-item { padding: 10px 14px !important; }
+          .modern-button { padding: 16px; font-size: 1rem; border-radius: 14px; }
+          .section-header { gap: 10px; }
+          .section-icon { width: 40px; height: 40px; border-radius: 12px; font-size: 1.1rem; }
+        }
+        @media (max-width: 380px) {
+          .stat-badges { flex-direction: column !important; }
+          .stat-badge-item { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
+          .stat-badge-item:last-child { border-bottom: none !important; }
         }
       `}</style>
     </div>

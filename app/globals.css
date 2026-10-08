@@ -29,31 +29,42 @@ body {
 @media (max-width: 900px) {
   /* ── Admin App Shell ── */
   .admin-layout { flex-direction: column !important; }
-  /* Sidebar is hidden by default on mobile; toggled via .sidebar-open */
+
+  /* Sidebar: mobile overlay (fixed fullscreen drawer) */
   .admin-sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: static !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 100 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     border-right: none !important;
-    border-bottom: 1px solid #1e293b !important;
-    display: none !important;
+    box-shadow: none !important;
   }
-  .admin-sidebar.sidebar-open { display: flex !important; }
+  .admin-sidebar.sidebar-open {
+    transform: translateX(0) !important;
+    display: flex !important;
+    box-shadow: 10px 0 40px rgba(0,0,0,0.3) !important;
+  }
   .admin-main { margin-left: 0 !important; }
   .admin-topbar {
-    flex-direction: column;
-    align-items: flex-start !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
     height: auto !important;
     padding: 14px 16px !important;
     gap: 10px;
   }
-  .admin-topbar > div:last-child { width: 100%; justify-content: space-between; }
+  .admin-topbar > div:first-child h2 { font-size: 1.1rem !important; }
+  .admin-topbar > div:first-child p { font-size: 0.78rem !important; }
+  .admin-topbar > div:last-child { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
   .admin-content-pad { padding: 16px !important; }
   .admin-table-row td { padding: 10px 8px !important; }
 
-  /* ── Admin Login Page ──
-     The admin page uses .login-container, .login-brand, .login-form-side
-     (globals.css previously had wrong names .login-split/.login-left/.login-right) */
+  /* ── Admin Login Page ── */
   .login-container { flex-direction: column !important; background: #f0f4f8; }
   .login-brand {
     width: 100% !important;
@@ -82,6 +93,17 @@ body {
   .main-container-pad { padding: 0 12px !important; }
   .form-section-pad { padding: 20px 16px !important; }
 }
+
+/* Mobile sidebar overlay backdrop */
+.admin-sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+  backdrop-filter: blur(4px);
+}
+.admin-sidebar-backdrop.active { display: block; }
 
 /* Prevent body scroll when mobile sidebar is open */
 body.sidebar-body-lock { overflow: hidden; }

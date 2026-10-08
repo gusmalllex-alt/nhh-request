@@ -307,12 +307,23 @@ export default function AdminPage() {
     </div>
   );
 
+  const toggleSidebar = () => {
+    const next = !sidebarOpen;
+    setSidebarOpen(next);
+    if (next) document.body.classList.add('sidebar-body-lock');
+    else document.body.classList.remove('sidebar-body-lock');
+  };
+  const closeSidebar = () => { setSidebarOpen(false); document.body.classList.remove('sidebar-body-lock'); };
+
   // ─── APP SHELL ───
   return (
     <div className="admin-layout" style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
 
+      {/* Mobile Sidebar Backdrop */}
+      {sidebarOpen && <div className="admin-sidebar-backdrop active" onClick={closeSidebar} />}
+
       {/* SIDEBAR */}
-      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:40,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)'}}>
+      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:100,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)',overflowY:'auto'}}>
         {/* Logo */}
         <div style={{padding:'40px 28px 28px',display:'flex',alignItems:'center',gap:16}}>
           <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#38bdf8,#2563eb)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(37,99,235,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
@@ -327,7 +338,7 @@ export default function AdminPage() {
         <nav style={{flex:1,padding:'16px 20px'}}>
           <div style={{fontSize:'.75rem',fontWeight:800,color:'#475569',letterSpacing:2,padding:'0 16px',marginBottom:16}}>MAIN MENU</div>
           {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน'],['report','📑','รายงาน']] as ['dash'|'list'|'report',string,string][]).map(([id,ic,lb])=>(
-            <button key={id} onClick={()=>sn(id)} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(56,189,248,0.2)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(56,189,248,0.1) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #38bdf8':'none'}}>
+            <button key={id} onClick={()=>{sn(id);closeSidebar();}} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(56,189,248,0.2)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(56,189,248,0.1) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #38bdf8':'none'}}>
               <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(56,189,248,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
               {lb}
             </button>
@@ -354,12 +365,18 @@ export default function AdminPage() {
             .admin-topbar { padding: 14px 16px !important; flex-wrap: wrap; }
             .admin-content-pad { padding: 16px !important; }
             .grid-mobile-single { grid-template-columns: 1fr !important; }
+            .grid-cols-mobile { grid-template-columns: repeat(2, 1fr) !important; }
+            .rpt-export-bar { flex-direction: column !important; align-items: stretch !important; }
+            .rpt-export-bar > div:last-child { margin-left: 0 !important; width: 100% !important; }
+          }
+          @media (max-width: 480px) {
+            .grid-cols-mobile { grid-template-columns: 1fr !important; }
           }
         `}</style>
         {/* Topbar */}
         <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 24px 0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
           {/* Mobile sidebar toggle — only visible below 900px via CSS */}
-          <button onClick={()=>setSidebarOpen(o=>!o)} style={{display:'none',alignItems:'center',justifyContent:'center',width:40,height:40,borderRadius:12,border:'1.5px solid #e2e8f0',background:'white',cursor:'pointer',marginRight:12,flexShrink:0}} className="admin-menu-btn">
+          <button onClick={toggleSidebar} style={{display:'none',alignItems:'center',justifyContent:'center',width:40,height:40,borderRadius:12,border:'1.5px solid #e2e8f0',background:'white',cursor:'pointer',marginRight:12,flexShrink:0}} className="admin-menu-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
           </button>
           <div>
@@ -369,8 +386,8 @@ export default function AdminPage() {
           <div style={{display:'flex',gap:16,alignItems:'center'}}>
             {ferr&&<div style={{background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:16,padding:'10px 20px',color:'#dc2626',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(220,38,38,0.1)'}}>⚠ {ferr}</div>}
             {sav==='ok'&&<div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:16,padding:'10px 20px',color:'#16a34a',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(22,163,74,0.1)'}}>✅ บันทึกสำเร็จ</div>}
-            <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:10,padding:'12px 24px',background:load?'#e2e8f0':'white',border:load?'none':'2px solid #e2e8f0',borderRadius:16,color:load?'#64748b':'#0f172a',fontSize:'0.95rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 8px 20px rgba(0,0,0,0.05)',transition:'all 0.2s'}}>
-              {load?'⏳ กำลังโหลด...':'🔄 Refresh ข้อมูล'}
+            <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 16px',background:load?'#e2e8f0':'white',border:load?'none':'2px solid #e2e8f0',borderRadius:14,color:load?'#64748b':'#0f172a',fontSize:'0.85rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 8px 20px rgba(0,0,0,0.05)',transition:'all 0.2s',whiteSpace:'nowrap'}}>
+              {load?'⏳ โหลด...':'🔄 Refresh'}
             </button>
           </div>
         </header>
@@ -675,7 +692,7 @@ export default function AdminPage() {
             <div style={{animation:'fadeIn 0.3s'}}>
               {/* Filter & Export bar */}
               <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',padding:'20px 28px',marginBottom:24,boxShadow:'0 4px 15px rgba(0,0,0,0.02)'}}>
-                <div style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
+                <div className="rpt-export-bar" style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
                   <div style={{display:'flex',alignItems:'center',gap:10,fontSize:'.9rem',fontWeight:800,color:'#0f172a'}}>
                     <span style={{fontSize:'1.2rem'}}>📅</span> เลือกช่วงเวลา:
                   </div>
@@ -929,8 +946,8 @@ function ChartCard({title,color,ref_,h}:{title:string,color:string,ref_:React.Re
 }
 const ob:React.CSSProperties={padding:'7px 14px',border:'1px solid #e5e7eb',borderRadius:8,background:'white',cursor:'pointer',fontSize:'.8rem',fontWeight:600,color:'#475569',fontFamily:"'Sarabun',sans-serif"};
 const pb=(d:boolean):React.CSSProperties=>({width:30,height:30,borderRadius:7,border:'1px solid #e5e7eb',background:d?'#f9fafb':'white',cursor:d?'not-allowed':'pointer',fontSize:'.82rem',opacity:d?.4:1,color:'#374151',display:'flex',alignItems:'center',justifyContent:'center'});
-const ov:React.CSSProperties={position:'fixed',inset:0,background:'rgba(0,0,0,.6)',backdropFilter:'blur(4px)',zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:20};
-const mb:React.CSSProperties={background:'white',borderRadius:20,width:'100%',maxWidth:460,boxShadow:'0 32px 80px rgba(0,0,0,.3)',overflow:'hidden'};
+const ov:React.CSSProperties={position:'fixed',inset:0,background:'rgba(0,0,0,.6)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center',padding:16};
+const mb:React.CSSProperties={background:'white',borderRadius:20,width:'100%',maxWidth:460,maxHeight:'90vh',overflowY:'auto',boxShadow:'0 32px 80px rgba(0,0,0,.3)',overflow:'hidden'};
 const mh:React.CSSProperties={padding:'15px 22px',borderBottom:'1px solid #f1f5f9',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafafa'};
 const xb:React.CSSProperties={background:'none',border:'none',cursor:'pointer',fontSize:'1rem',color:'#9ca3af',width:28,height:28,borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center'};
 const ml:React.CSSProperties={display:'block',fontSize:'.76rem',fontWeight:700,color:'#374151',marginBottom:5};
