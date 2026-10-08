@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const GAS = 'https://script.google.com/macros/s/AKfycbzA-89t5g8RFrlqejtUTXvJ166OE2qz2JOLzxuzmJ3doRXpnV31mmD81Lfu1ftMtb6Y/exec';
+const ADMIN_URL = 'https://gusmalllex-alt.github.io/nhh-request/admin/';
 const CRED = { u: 'nonghan', p: 'nonghan11018' };
 
 const STATUSES = ['รอดำเนินการ','รับเรื่อง','ส่งเรื่อง','รอตอบกลับ','ปิดเรื่องได้','ปิดเรื่องไม่ได้','ทบทวนผู้บริหารรับทราบ'];
@@ -19,6 +20,8 @@ export default function AdminPage() {
   const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
   const [statusFilter,setStatusFilter]=useState<'all'|'pending'|'done'>('all');
   const [viewMode,setViewMode]=useState<'card'|'table'>('card');
+  const [notifyLine,setNotifyLine]=useState(true);
+  const [lineStatus,setLineStatus]=useState<'idle'|'sending'|'ok'|'err'>('idle');
   const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
   const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
   const [ds,sds]=useState('');const [de,sde]=useState('');
@@ -97,8 +100,62 @@ export default function AdminPage() {
   },[nav,dashD.length,ds,de]);
 
   function login(e:React.FormEvent){e.preventDefault();if(u===CRED.u&&p===CRED.p){sv('app');sle('');}else sle('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');}
-  async function save(){if(!editR)return;ssav('saving');const pl:Record<string,unknown>={action:'update',timestampISO:editR[0],status:est,department:edp,notes:en};if(ef){const b64=await new Promise<string>((rs,rj)=>{const fr=new FileReader();fr.onload=()=>rs((fr.result as string).split(',')[1]);fr.onerror=rj;fr.readAsDataURL(ef!);});pl.fileInfo={filename:ef.name,mimeType:ef.type,base64:b64};}
-  try{await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});sd(prev=>prev.map(r=>r[0]===editR[0]?[...r.slice(0,8),est,edp,en,r[11]]:r));seR(null);ssav('ok');setTimeout(()=>{ssav('');fetchD();},1500);}catch{ssav('err');}}
+  async function sendLineAlert(r:Row){
+    setLineStatus('sending');
+    const pl:Record<string,unknown>={
+      action:'sendLineNotify',
+      timestampISO:r[0],
+      title:r[1],
+      category:r[2],
+      details:r[3],
+      name:r[4]||'ไม่ระบุชื่อ',
+      phone:r[5]||'-',
+      status:ns(r[8]),
+      department:r[9]||'-',
+      notes:r[10]||'-',
+      adminUrl:ADMIN_URL
+    };
+    try{
+      await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});
+      setLineStatus('ok');
+      setTimeout(()=>setLineStatus('idle'),2500);
+    }catch{
+      setLineStatus('err');
+      setTimeout(()=>setLineStatus('idle'),3000);
+    }
+  }
+
+  async function save(){
+    if(!editR)return;
+    ssav('saving');
+    const pl:Record<string,unknown>={
+      action:'update',
+      timestampISO:editR[0],
+      title:editR[1],
+      category:editR[2],
+      name:editR[4]||'ไม่ระบุชื่อ',
+      phone:editR[5]||'-',
+      status:est,
+      department:edp,
+      notes:en,
+      notifyLine:notifyLine,
+      adminUrl:ADMIN_URL
+    };
+    if(ef){
+      const b64=await new Promise<string>((rs,rj)=>{const fr=new FileReader();fr.onload=()=>rs((fr.result as string).split(',')[1]);fr.onerror=rj;fr.readAsDataURL(ef!);});
+      pl.fileInfo={filename:ef.name,mimeType:ef.type,base64:b64};
+    }
+    try{
+      await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});
+      sd(prev=>prev.map(r=>r[0]===editR[0]?[...r.slice(0,8),est,edp,en,r[11]]:r));
+      seR(null);
+      ssav('ok');
+      setTimeout(()=>{ssav('');fetchD();},1500);
+    }catch{
+      ssav('err');
+    }
+  }
+
   async function del(ts:string){if(!confirm('ลบรายการนี้?'))return;try{await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',timestampISO:ts})});sd(p=>p.filter(r=>r[0]!==ts));}catch{alert('ลบไม่สำเร็จ');}}
 
   const stC:Record<string,number>={};dashD.forEach(r=>{const s=ns(r[8]);stC[s]=(stC[s]||0)+1;});
@@ -1074,6 +1131,12 @@ export default function AdminPage() {
                 </label>
                 <input id="ef" type="file" accept="image/*,.pdf" onChange={e=>sef(e.target.files?.[0]||null)} style={{display:'none'}}/>
               </div>
+              <div>
+                <label style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',fontSize:'0.85rem',color:'#0f172a',fontWeight:700,padding:'8px 12px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:10}}>
+                  <input type="checkbox" checked={notifyLine} onChange={e=>setNotifyLine(e.target.checked)} style={{width:16,height:16,accentColor:'#16a34a',cursor:'pointer'}} />
+                  <span>📢 ส่งแจ้งเตือนอัปเดตไปยัง LINE</span>
+                </label>
+              </div>
             </div>
             <div style={{padding:'12px 22px',borderTop:'1px solid #f1f5f9',display:'flex',gap:8,justifyContent:'flex-end'}}>
               <button onClick={()=>seR(null)} style={ob}>ยกเลิก</button>
@@ -1111,7 +1174,30 @@ export default function AdminPage() {
                 </div>
               </>);})()}
             </div>
-            <div style={{padding:'12px 22px',borderTop:'1px solid #f1f5f9',textAlign:'right'}}><button onClick={()=>sdR(null)} style={ob}>ปิด</button></div>
+            <div style={{padding:'12px 22px',borderTop:'1px solid #f1f5f9',display:'flex',justifyContent:'space-between',alignItems:'center',gap:10}}>
+              <button
+                type="button"
+                onClick={()=>sendLineAlert(detR)}
+                disabled={lineStatus==='sending'}
+                style={{
+                  ...ob,
+                  background: lineStatus==='ok' ? '#16a34a' : lineStatus==='err' ? '#dc2626' : '#06c755',
+                  color:'white',
+                  border:'none',
+                  display:'flex',
+                  alignItems:'center',
+                  gap:6,
+                  fontWeight:700,
+                  cursor: lineStatus==='sending' ? 'not-allowed' : 'pointer',
+                  boxShadow:'0 2px 8px rgba(6,199,85,0.25)',
+                  transition:'all 0.2s'
+                }}
+              >
+                <span>{lineStatus==='sending' ? '⏳' : lineStatus==='ok' ? '✅' : lineStatus==='err' ? '⚠' : '📢'}</span>
+                <span>{lineStatus==='sending' ? 'กำลังส่งแจ้งเตือน...' : lineStatus==='ok' ? 'ส่งเข้า LINE สำเร็จ!' : lineStatus==='err' ? 'ส่งไม่สำเร็จ' : 'แจ้งเตือน LINE'}</span>
+              </button>
+              <button onClick={()=>sdR(null)} style={ob}>ปิด</button>
+            </div>
           </div>
         </div>
       )}
