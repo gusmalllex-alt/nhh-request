@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzA-89t5g8RFrlqejtUTXvJ166OE2qz2JOLzxuzmJ3doRXpnV31mmD81Lfu1ftMtb6Y/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1WC39jTrxVQT2KxnnvOpjghgASzKZiZmOK_BmZwUfedxsmUQQy0ZqgRw8qlAnSBRr8w/exec';
 
 const TYPE_CARDS = [
   { key: 'พฤติกรรมบริการ', emoji: '🧑‍⚕️', color: '#0891b2', bg: '#ecfeff', border: '#a5f3fc' },
