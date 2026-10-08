@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [view,sv]=useState<'login'|'app'>('login');
   const [sidebarOpen,setSidebarOpen]=useState(false);
   const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
+  const [statusFilter,setStatusFilter]=useState<'all'|'pending'|'done'>('all');
   const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
   const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
   const [ds,sds]=useState('');const [de,sde]=useState('');
@@ -29,8 +30,20 @@ export default function AdminPage() {
   const s1=useRef<HTMLCanvasElement>(null);const s2=useRef<HTMLCanvasElement>(null);const s3=useRef<HTMLCanvasElement>(null);const s4=useRef<HTMLCanvasElement>(null);
   const ci=useRef<Record<string,{destroy?:()=>void}>>({});
 
+  const pendingCount=data.filter(r=>ns(r[8])!=='ปิดเรื่องได้').length;
+  const doneCount=data.filter(r=>ns(r[8])==='ปิดเรื่องได้').length;
+
   const dashD=data.filter(r=>ir(r[0],ds,de));
-  const listD=data.filter(r=>{if(!ir(r[0],ms,me))return false;if(q&&!r.join(' ').toLowerCase().includes(q.toLowerCase()))return false;return true;});
+  const listD=data.filter(r=>{
+    if(!ir(r[0],ms,me))return false;
+    if(q&&!r.join(' ').toLowerCase().includes(q.toLowerCase()))return false;
+    if(statusFilter==='pending'){
+      if(ns(r[8])==='ปิดเรื่องได้')return false;
+    }else if(statusFilter==='done'){
+      if(ns(r[8])!=='ปิดเรื่องได้')return false;
+    }
+    return true;
+  });
   const tp=Math.ceil(listD.length/rpp);
   const pd=listD.slice((pg-1)*rpp,pg*rpp);
 
@@ -453,6 +466,48 @@ export default function AdminPage() {
           {/* ══ LIST ══ */}
           {nav==='list'&&(
             <div style={{animation:'fadeIn 0.3s'}}>
+              {/* Quick Status Filter Tabs */}
+              <div style={{display:'flex',gap:10,marginBottom:16,overflowX:'auto',paddingBottom:4}}>
+                {[
+                  {id:'all',lb:'ทั้งหมด',cnt:data.length,ic:'📋'},
+                  {id:'pending',lb:'รอดำเนินการ',cnt:pendingCount,ic:'⏳'},
+                  {id:'done',lb:'จัดการแล้ว',cnt:doneCount,ic:'✅'},
+                ].map(tab=>(
+                  <button
+                    key={tab.id}
+                    onClick={()=>{setStatusFilter(tab.id as 'all'|'pending'|'done');spg(1);}}
+                    style={{
+                      padding:'9px 18px',
+                      borderRadius:14,
+                      border:'1.5px solid',
+                      borderColor:statusFilter===tab.id?'#2563eb':'#e2e8f0',
+                      background:statusFilter===tab.id?'#eff6ff':'white',
+                      color:statusFilter===tab.id?'#1d4ed8':'#64748b',
+                      fontWeight:statusFilter===tab.id?800:600,
+                      fontSize:'0.85rem',
+                      cursor:'pointer',
+                      display:'flex',
+                      alignItems:'center',
+                      gap:8,
+                      transition:'all 0.2s',
+                      whiteSpace:'nowrap',
+                      boxShadow:statusFilter===tab.id?'0 4px 12px rgba(37,99,235,0.12)':'0 2px 6px rgba(0,0,0,0.02)'
+                    }}
+                  >
+                    <span>{tab.ic}</span>
+                    <span>{tab.lb}</span>
+                    <span style={{
+                      background:statusFilter===tab.id?'#2563eb':tab.id==='pending'&&tab.cnt>0?'#fee2e2':'#f1f5f9',
+                      color:statusFilter===tab.id?'white':tab.id==='pending'&&tab.cnt>0?'#dc2626':'#475569',
+                      padding:'2px 8px',
+                      borderRadius:100,
+                      fontSize:'0.75rem',
+                      fontWeight:800
+                    }}>{tab.cnt}</span>
+                  </button>
+                ))}
+              </div>
+
               {/* Filter bar */}
               <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',padding:'16px 24px',marginBottom:20,display:'flex',gap:12,flexWrap:'wrap',alignItems:'center',boxShadow:'0 4px 15px rgba(0,0,0,0.02)'}}>
                 <div style={{position:'relative',flex:1,minWidth:220}}>
@@ -890,6 +945,100 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+
+      {/* ══════════════════════════════════════
+          LINE-STYLE FLOATING BOTTOM DOCK (MOBILE)
+      ══════════════════════════════════════ */}
+      <nav className="admin-bottom-dock" aria-label="Mobile Navigation">
+        {/* 1. Dashboard (หน้าหลัก) */}
+        <button
+          type="button"
+          onClick={() => { sn('dash'); closeSidebar(); }}
+          className={`dock-item ${nav === 'dash' ? 'dock-item--active' : ''}`}
+        >
+          <div className="dock-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={nav === 'dash' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={nav === 'dash' ? '1.2' : '2'} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5z" />
+            </svg>
+          </div>
+          <span className="dock-label">หน้าหลัก</span>
+        </button>
+
+        {/* 2. เรื่องทั้งหมด (All) */}
+        <button
+          type="button"
+          onClick={() => { sn('list'); setStatusFilter('all'); spg(1); closeSidebar(); }}
+          className={`dock-item ${nav === 'list' && statusFilter === 'all' ? 'dock-item--active' : ''}`}
+        >
+          <div className="dock-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={nav === 'list' && statusFilter === 'all' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            {data.length > 0 && (
+              <span className="dock-badge--pill">
+                {data.length > 999 ? '999+' : data.length}
+              </span>
+            )}
+          </div>
+          <span className="dock-label">ทั้งหมด</span>
+        </button>
+
+        {/* 3. รอดำเนินการ (Pending) */}
+        <button
+          type="button"
+          onClick={() => { sn('list'); setStatusFilter('pending'); spg(1); closeSidebar(); }}
+          className={`dock-item ${nav === 'list' && statusFilter === 'pending' ? 'dock-item--active' : ''}`}
+        >
+          <div className="dock-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={nav === 'list' && statusFilter === 'pending' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            {pendingCount > 0 && (
+              <span className="dock-badge--pill dock-badge--alert">
+                {pendingCount > 999 ? '999+' : pendingCount}
+              </span>
+            )}
+          </div>
+          <span className="dock-label">รอดำเนินการ</span>
+        </button>
+
+        {/* 4. จัดการแล้ว (Done) */}
+        <button
+          type="button"
+          onClick={() => { sn('list'); setStatusFilter('done'); spg(1); closeSidebar(); }}
+          className={`dock-item ${nav === 'list' && statusFilter === 'done' ? 'dock-item--active' : ''}`}
+        >
+          <div className="dock-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            {doneCount > 0 && (
+              <span className="dock-badge--dot" />
+            )}
+          </div>
+          <span className="dock-label">จัดการแล้ว</span>
+        </button>
+
+        {/* 5. รายงาน (Report) */}
+        <button
+          type="button"
+          onClick={() => { sn('report'); closeSidebar(); }}
+          className={`dock-item ${nav === 'report' ? 'dock-item--active' : ''}`}
+        >
+          <div className="dock-icon-wrapper">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={nav === 'report' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="3" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+              <circle cx="17" cy="14" r="1.5" fill="currentColor" />
+            </svg>
+            <span className="dock-badge--dot" />
+          </div>
+          <span className="dock-label">รายงาน</span>
+        </button>
+      </nav>
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
         *{box-sizing:border-box; font-family:'Noto Sans Thai','Sarabun',sans-serif;}

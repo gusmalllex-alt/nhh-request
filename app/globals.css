@@ -108,6 +108,124 @@ body {
 /* Prevent body scroll when mobile sidebar is open */
 body.sidebar-body-lock { overflow: hidden; }
 
+/* ── LINE-Style Floating Bottom Dock (Mobile) ── */
+.admin-bottom-dock {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .admin-bottom-dock {
+    display: flex;
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 440px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 36px;
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.14), 0 2px 10px rgba(15, 23, 42, 0.05);
+    z-index: 95;
+    padding: 6px 4px;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .admin-main {
+    padding-bottom: 96px !important;
+  }
+}
+
+.dock-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 2px;
+  border-radius: 20px;
+  color: #64748b;
+  font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dock-item:active {
+  transform: scale(0.92);
+}
+
+.dock-icon-wrapper {
+  position: relative;
+  width: 44px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.dock-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+/* Active State (matches LINE dark pill behind active icon) */
+.dock-item--active .dock-icon-wrapper {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+.dock-item--active .dock-label {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* Badges */
+.dock-badge--pill {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 2.5px 5.5px;
+  border-radius: 999px;
+  border: 1.5px solid white;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
+
+.dock-badge--alert {
+  background: #e11d48;
+}
+
+.dock-badge--dot {
+  position: absolute;
+  top: 1px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.4);
+}
+
 /* 🌟 Utilities */
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
