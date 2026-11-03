@@ -6,6 +6,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1WC39jTrxVQT2Kxnnv
 const TYPE_CARDS = [
   { key: 'พฤติกรรมบริการ', emoji: '🧑‍⚕️', color: '#0891b2', bg: '#ecfeff', border: '#a5f3fc' },
   { key: 'ระบบบริการ', emoji: '⚙️', color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' },
+  { key: 'สิทธิผู้ป่วย', emoji: '⚖️', color: '#e11d48', bg: '#fff1f2', border: '#fecdd3' },
   { key: 'อาคาร/สถานที่', emoji: '🏢', color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
   { key: 'สิ่งแวดล้อม', emoji: '🌿', color: '#059669', bg: '#f0fdf4', border: '#bbf7d0' },
   { key: 'อื่นๆ', emoji: '💬', color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' },
