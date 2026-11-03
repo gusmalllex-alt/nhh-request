@@ -219,18 +219,18 @@ export default function AdminPage() {
           width: 55%; position: relative;
           display: flex; align-items: center; justify-content: center;
           overflow: hidden;
-          background: linear-gradient(145deg, #020617 0%, #0c1a3a 40%, #0a2f5e 70%, #0e4a8a 100%);
+          background: linear-gradient(150deg, #00241c 0%, #00382b 35%, #004d40 70%, #005C4B 100%);
         }
         /* Animated mesh blobs */
         .login-brand::before {
           content: ''; position: absolute; top: -15%; left: -10%; width: 65%; height: 65%;
-          background: radial-gradient(circle, rgba(56,189,248,0.35) 0%, transparent 65%);
+          background: radial-gradient(circle, rgba(52,211,153,0.3) 0%, transparent 65%);
           border-radius: 50%; filter: blur(70px);
           animation: lgBlob 9s ease-in-out infinite alternate;
         }
         .login-brand::after {
           content: ''; position: absolute; bottom: -20%; right: -10%; width: 75%; height: 75%;
-          background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 65%);
+          background: radial-gradient(circle, rgba(0,121,107,0.35) 0%, transparent 65%);
           border-radius: 50%; filter: blur(80px);
           animation: lgBlob 12s ease-in-out infinite alternate-reverse;
         }
@@ -265,10 +265,10 @@ export default function AdminPage() {
         .login-content h1 {
           font-size: clamp(2.8rem,4vw,4.2rem); font-weight: 900; margin: 0 0 16px;
           letter-spacing: -2px;
-          background: linear-gradient(135deg, #ffffff 0%, #93c5fd 60%, #38bdf8 100%);
+          background: linear-gradient(135deg, #ffffff 0%, #a7ffe8 60%, #4bffcf 100%);
           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .login-content p { font-size: 1.1rem; color: rgba(186,230,255,0.8); margin: 0; font-weight: 400; line-height: 1.6; max-width: 340px; margin: 0 auto;}
+        .login-content p { font-size: 1.1rem; color: rgba(200,255,240,0.85); margin: 0; font-weight: 400; line-height: 1.6; max-width: 340px; margin: 0 auto;}
 
         /* Stats strip */
         .login-stats {
@@ -283,11 +283,11 @@ export default function AdminPage() {
         }
         .login-stat:last-child { border-right: none; }
         .login-stat-num { display: block; font-size: 1.1rem; font-weight: 800; color: white; }
-        .login-stat-lbl { display: block; font-size: 0.68rem; color: rgba(186,230,255,0.65); margin-top: 2px; font-weight: 500; }
+        .login-stat-lbl { display: block; font-size: 0.68rem; color: rgba(200,255,240,0.7); margin-top: 2px; font-weight: 500; }
 
         /* ── Right Form Panel ── */
         .login-form-side {
-          width: 45%; background: #f8faff;
+          width: 45%; background: #f7faf8;
           display: flex; flex-direction: column; justify-content: center;
           padding: 64px 56px; position: relative; z-index: 2;
           border-left: 1px solid #e8edf5;
@@ -320,8 +320,8 @@ export default function AdminPage() {
         }
         .modern-inp::placeholder { color: #cbd5e1; font-weight: 400; }
         .modern-inp:focus {
-          border-color: #3b82f6; background: white;
-          box-shadow: 0 0 0 4px rgba(59,130,246,0.12), 0 2px 8px rgba(0,0,0,0.04);
+          border-color: #005C4B; background: white;
+          box-shadow: 0 0 0 4px rgba(0,92,75,0.12), 0 2px 8px rgba(0,0,0,0.04);
           outline: none;
         }
         .modern-inp:hover:not(:focus) { border-color: #94a3b8; }
@@ -337,11 +337,11 @@ export default function AdminPage() {
 
         .btn-modern {
           width: 100%; padding: 18px;
-          background: linear-gradient(135deg, #1d4ed8, #1e40af, #1e3a8a);
+          background: linear-gradient(135deg, #00796b, #005C4B, #00382b);
           color: white; border: none; border-radius: 16px;
           font-size: 1.05rem; font-weight: 800; cursor: pointer;
           font-family: 'Noto Sans Thai','Sarabun',sans-serif;
-          box-shadow: 0 10px 28px rgba(29,78,216,0.35);
+          box-shadow: 0 10px 28px rgba(0,92,75,0.35);
           transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
           margin-top: 28px; letter-spacing: 0.02em; position: relative; overflow: hidden;
         }
@@ -350,7 +350,7 @@ export default function AdminPage() {
           background: linear-gradient(135deg,rgba(255,255,255,0.12),transparent);
           border-radius: 16px;
         }
-        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(29,78,216,0.45); }
+        .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,92,75,0.45); }
         .btn-modern:active { transform: translateY(0); }
 
         .login-footer { margin-top: 48px; text-align: center; }
@@ -358,7 +358,7 @@ export default function AdminPage() {
           color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.9rem;
           transition: color 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
         }
-        .login-footer a:hover { color: #3b82f6; }
+        .login-footer a:hover { color: #005C4B; }
         .login-footer p { font-size: 0.78rem; color: #94a3b8; margin-top: 28px; }
 
         @media (max-width: 960px) {
@@ -394,10 +394,10 @@ export default function AdminPage() {
       {sidebarOpen && <div className="admin-sidebar-backdrop active" onClick={closeSidebar} />}
 
       {/* SIDEBAR */}
-      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #0f172a 0%, #020617 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:100,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)',overflowY:'auto'}}>
+      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #00241c 0%, #001712 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:100,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)',overflowY:'auto'}}>
         {/* Logo */}
         <div style={{padding:'40px 28px 28px',display:'flex',alignItems:'center',gap:16}}>
-          <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#38bdf8,#2563eb)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(37,99,235,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
+          <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#10b981,#005C4B)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(0,92,75,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
             <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{width:32,height:32,objectFit:'contain',filter:'brightness(200%)'}}/>
           </div>
           <div>
@@ -409,8 +409,8 @@ export default function AdminPage() {
         <nav style={{flex:1,padding:'16px 20px'}}>
           <div style={{fontSize:'.75rem',fontWeight:800,color:'#475569',letterSpacing:2,padding:'0 16px',marginBottom:16}}>MAIN MENU</div>
           {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน'],['report','📑','รายงาน']] as ['dash'|'list'|'report',string,string][]).map(([id,ic,lb])=>(
-            <button key={id} onClick={()=>{sn(id);closeSidebar();}} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(56,189,248,0.2)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(56,189,248,0.1) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #38bdf8':'none'}}>
-              <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(56,189,248,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
+            <button key={id} onClick={()=>{sn(id);closeSidebar();}} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(52,211,153,0.3)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(52,211,153,0.14) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #34d399':'none'}}>
+              <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(52,211,153,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
               {lb}
             </button>
           ))}
@@ -428,7 +428,7 @@ export default function AdminPage() {
       </aside>
 
       {/* MAIN */}
-      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f8fafc'}}>
+      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f7faf8'}}>
         <style>{`
           .sidebar-btn:hover { background: rgba(255,255,255,0.05) !important; transform: translateX(6px); }
           @media (max-width: 900px) {
@@ -539,8 +539,8 @@ export default function AdminPage() {
                       borderRadius:14,
                       border:'1.5px solid',
                       borderColor:statusFilter===tab.id?'#2563eb':'#e2e8f0',
-                      background:statusFilter===tab.id?'#eff6ff':'white',
-                      color:statusFilter===tab.id?'#1d4ed8':'#64748b',
+                      background:statusFilter===tab.id?'#ecfdf5':'white',
+                      color:statusFilter===tab.id?'#005C4B':'#64748b',
                       fontWeight:statusFilter===tab.id?800:600,
                       fontSize:'0.85rem',
                       cursor:'pointer',
@@ -688,7 +688,7 @@ export default function AdminPage() {
                             )}
                             <div style={{display:'flex',flexWrap:'wrap',gap:6,alignItems:'center'}}>
                               {row[2] && (
-                                <span style={{background:'#eff6ff',color:'#2563eb',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
+                                <span style={{background:'#f0fdf4',color:'#005C4B',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
                                   🏷️ {row[2]}
                                 </span>
                               )}
@@ -720,7 +720,7 @@ export default function AdminPage() {
                             <button
                               type="button"
                               onClick={() => sdR(row)}
-                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #bfdbfe',background:'#eff6ff',color:'#1d4ed8',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
+                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #a7f3d0',background:'#f0fdf4',color:'#065f46',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
                             >
                               <span>👁</span> ดูข้อมูล
                             </button>
@@ -792,7 +792,7 @@ export default function AdminPage() {
                               </td>
                               <td style={{padding:'16px 20px',textAlign:'center',width:100}}>
                                 <div style={{display:'flex',gap:6,justifyContent:'center'}}>
-                                  {([['👁','#2563eb','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#ef4444','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
+                                  {([['👁','#005C4B','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#ef4444','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
                                     <button key={t} title={t} onClick={fn} style={{width:34,height:34,borderRadius:10,border:'none',background:'#f1f5f9',cursor:'pointer',fontSize:'.95rem',color:c,display:'flex',alignItems:'center',justifyContent:'center',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.background='white';e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'}} onMouseLeave={e=>{e.currentTarget.style.background='#f1f5f9';e.currentTarget.style.boxShadow='none'}}>{em}</button>
                                   ))}
                                 </div>
@@ -980,11 +980,11 @@ export default function AdminPage() {
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
                     <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>จาก</label>
-                    <input type="date" value={rptStart} onChange={e=>setRptStart(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#3b82f6'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
+                    <input type="date" value={rptStart} onChange={e=>setRptStart(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#005C4B'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:8}}>
                     <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>ถึง</label>
-                    <input type="date" value={rptEnd} onChange={e=>setRptEnd(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#3b82f6'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
+                    <input type="date" value={rptEnd} onChange={e=>setRptEnd(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#005C4B'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
                   </div>
                   <button onClick={()=>{setRptStart('');setRptEnd('');}} style={{...ob,background:!rptStart&&!rptEnd?'#f8fafc':'#fef2f2',color:!rptStart&&!rptEnd?'#94a3b8':'#ef4444',borderColor:!rptStart&&!rptEnd?'#e2e8f0':'#fca5a5'}}>ล้างตัวกรอง</button>
                   
@@ -997,7 +997,7 @@ export default function AdminPage() {
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
                       ส่งออก Excel
                     </button>
-                    <button onClick={exportCSV} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'white',color:'#475569',border:'1.5px solid #e2e8f0',borderRadius:14,fontSize:'.88rem',fontWeight:700,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#3b82f6';e.currentTarget.style.color='#2563eb'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#e2e8f0';e.currentTarget.style.color='#475569'}}>
+                    <button onClick={exportCSV} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'white',color:'#475569',border:'1.5px solid #e2e8f0',borderRadius:14,fontSize:'.88rem',fontWeight:700,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#005C4B';e.currentTarget.style.color='#005C4B'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#e2e8f0';e.currentTarget.style.color='#475569'}}>
                       📄 ส่งออก CSV
                     </button>
                   </div>
@@ -1048,7 +1048,7 @@ export default function AdminPage() {
                     <thead>
                       <tr>
                         {['ลำดับ','วดป.','หน่วยงานที่เกิด','ผู้เกี่ยวข้อง','ประเด็น','ประเภท','รายละเอียด'].map((h,i)=>(
-                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.78rem',fontWeight:900,color:'#1e40af',letterSpacing:0.3,whiteSpace:'nowrap',borderBottom:'2px solid #93c5fd',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#eff6ff'}}>{h}</th>
+                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.78rem',fontWeight:900,color:'#065f46',letterSpacing:0.3,whiteSpace:'nowrap',borderBottom:'2px solid #a7f3d0',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#f0fdf4'}}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -1308,9 +1308,9 @@ export default function AdminPage() {
 
         /* ── Table ── */
         .admin-table-row { border-bottom: 1px solid #f1f5f9; background: white; transition: background 0.18s, box-shadow 0.18s; }
-        .admin-table-row:hover { background: #f0f7ff !important; box-shadow: inset 4px 0 0 #3b82f6; }
+        .admin-table-row:hover { background: #f0fdf4 !important; box-shadow: inset 4px 0 0 #005C4B; }
         .admin-table-row:last-child { border-bottom: none; }
-        .rpt-table-row:hover { background: #f0f7ff !important; box-shadow: inset 4px 0 0 #3b82f6; }
+        .rpt-table-row:hover { background: #f0fdf4 !important; box-shadow: inset 4px 0 0 #005C4B; }
 
         /* ── Chart card ── */
         .chart-card {

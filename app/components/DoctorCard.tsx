@@ -62,7 +62,7 @@ export default function DoctorCard({ name, department, imageSrc, availability, h
           <Link href="#" className="flex justify-center items-center py-2.5 px-4 rounded-xl border border-[#0d5934] text-[#0d5934] text-sm font-semibold hover:bg-gray-50 transition-colors">
             ดูประวัติแพทย์
           </Link>
-          <Link href="#" className="flex justify-center items-center py-2.5 px-4 rounded-xl bg-[#0d5934] text-white text-sm font-semibold hover:bg-[#1a4484] transition-colors shadow-md hover:shadow-lg">
+          <Link href="#" className="flex justify-center items-center py-2.5 px-4 rounded-xl bg-[#0d5934] text-white text-sm font-semibold hover:bg-[#004d40] transition-colors shadow-md hover:shadow-lg">
             ทำนัดหมาย
           </Link>
         </div>

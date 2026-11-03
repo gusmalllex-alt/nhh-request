@@ -109,7 +109,7 @@ export default function FindDoctor() {
 
             {/* Search Button */}
             <div className="md:col-span-3 flex items-end">
-              <button className="w-full bg-[#0d5934] hover:bg-[#1a4484] text-white font-semibold py-3.5 px-6 rounded-xl transition-colors shadow-md hover:shadow-lg flex justify-center items-center gap-2 group">
+              <button className="w-full bg-[#0d5934] hover:bg-[#004d40] text-white font-semibold py-3.5 px-6 rounded-xl transition-colors shadow-md hover:shadow-lg flex justify-center items-center gap-2 group">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 ค้นหาแพทย์
               </button>
