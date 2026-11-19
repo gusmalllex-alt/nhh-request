@@ -85,7 +85,7 @@ function doPost(e) {
                   `-----------------------------\n` +
                   `📌 เรื่อง: ${payload.title || '-'}\n` +
                   `📂 ประเภท: ${payload.category || '-'}\n` +
-                  `📝 รายละเอียด: ${payload.details || '-'}\n` +
+                  `📝 รายละเอียด: ${formatDetailForLine(payload.details)}\n` +
                   `👤 ผู้แจ้ง: ${payload.name || '-'}\n` +
                   `📞 โทร: ${payload.phone || '-'}\n` +
                   `📊 สถานะ: ${payload.status || '-'}\n` +
@@ -143,12 +143,12 @@ function submitForm(formData) {
     ];
     sheet.appendRow(newRow);
 
-    // ปรับรูปแบบข้อความ LINE: แสดงรายละเอียดทั้งหมด + ตัดข้อความยาวเดิมออก + ลิงก์ตรงไป Admin
+    // ปรับรูปแบบข้อความ LINE: แสดงรายละเอียดแบบปลอดภัยไม่เกินโควต้า 5000 ตัวอักษรของ LINE API
     const msg = `📣 มีเรื่องร้องเรียนใหม่!\n` +
                 `-----------------------------\n` +
                 `📌 เรื่อง: ${formData.papade || '-'}\n` +
                 `📂 ประเภท: ${formData.type || '-'}\n` +
-                `📝 รายละเอียด: ${formData.detail || '-'}\n` +
+                `📝 รายละเอียด: ${formatDetailForLine(formData.detail)}\n` +
                 `👤 ผู้แจ้ง: ${formData.name || '-'}\n` +
                 `📞 โทร: ${formData.tel || '-'}\n` +
                 `🆔 Line: ${formData.line || '-'}\n` +
@@ -263,14 +263,35 @@ function deleteComplaintRow(data) {
 // ──────────────────────────────────────────────────────────────────────────
 
 /**
- * 📢 ส่งข้อความเข้า LINE กลุ่ม/ผู้รับ
+ * ✂️ ตัดทอนข้อความรายละเอียดให้พอดีกับ LINE และแนบข้อความเตือนหากยาวเกินไป
+ */
+function formatDetailForLine(detail, maxLen) {
+  if (!detail) return '-';
+  const limit = maxLen || 1800;
+  const text = String(detail).trim();
+  if (text.length <= limit) return text;
+  return text.substring(0, limit) + '\n... (ข้อความยาว มีต่ออีก ' + (text.length - limit) + ' ตัวอักษร โปรดอ่านฉบับเต็มในระบบ Admin)';
+}
+
+/**
+ * 📢 ส่งข้อความเข้า LINE กลุ่ม/ผู้รับ (รองรับข้อความยาว & ตรวจสอบโควต้า 5,000 ตัวอักษร)
  */
 function sendLineNotify(message) {
-  if (!CONFIG.LINE.TOKEN || !CONFIG.LINE.GROUP_ID) return false;
+  if (!CONFIG.LINE.TOKEN || !CONFIG.LINE.GROUP_ID || !message) return false;
+  
+  // LINE กำหนดให้ text ของแต่ละ message ยาวได้ไม่เกิน 5,000 ตัวอักษร
+  // แบ่งข้อความเป็นก้อนไม่เกิน 4,800 ตัวอักษร (ส่งได้สูงสุด 5 message ต่อ 1 push)
+  const messages = [];
+  let remaining = String(message);
+  while (remaining.length > 0 && messages.length < 5) {
+    messages.push({ type: 'text', text: remaining.substring(0, 4800) });
+    remaining = remaining.substring(4800);
+  }
+
   const url = 'https://api.line.me/v2/bot/message/push';
   const payload = {
     to: CONFIG.LINE.GROUP_ID,
-    messages: [{ type: 'text', text: message }]
+    messages: messages
   };
   const options = {
     method: 'post',
@@ -282,7 +303,14 @@ function sendLineNotify(message) {
     muteHttpExceptions: true
   };
   try {
-    UrlFetchApp.fetch(url, options); 
+    const res = UrlFetchApp.fetch(url, options); 
+    const code = res.getResponseCode();
+    const body = res.getContentText();
+    if (code !== 200) {
+      Logger.log('🔴 Line Push Failed (HTTP ' + code + '): ' + body);
+      return false;
+    }
+    Logger.log('🟢 Line Push Succeeded (HTTP ' + code + ')');
     return true;
   } catch (e) {
     Logger.log('🔴 Line Push Error: ' + e.toString());
@@ -316,7 +344,7 @@ function handleStatusChangeNotification(sheet, rowIndex, newStatus) {
                     `-----------------------------\n` +
                     `📌 เรื่อง: ${complaintIssue}\n` +
                     `📂 ประเภท: ${complaintType || '-'}\n` +
-                    `📝 รายละเอียด: ${complaintDetail || '-'}\n` +
+                    `📝 รายละเอียด: ${formatDetailForLine(complaintDetail)}\n` +
                     `👤 ผู้แจ้ง: ${userName}\n` +
                     `📊 สถานะใหม่: ${newStatus}\n` +
                     `-----------------------------\n` +
