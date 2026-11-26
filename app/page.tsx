@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGEiGmKl1ZhYz0eu0woFMcWc22QGU8107_D3r_Y3JpJsC4_pJiOQ9brdUclTQtE6MFmQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2V4fyxcVpKUhKaWnJAKmvGsvt_f6z0BCTLJnnwRvAiPqzjKiIfGE738z6BouTCG4K0g/exec';
 
 const TYPE_CARDS = [
   { key: 'พฤติกรรมบริการ', emoji: '🧑‍⚕️', color: '#00796b', bg: '#f0fdfa', border: '#99f6e4' },
