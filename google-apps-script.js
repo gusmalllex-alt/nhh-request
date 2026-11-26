@@ -26,16 +26,35 @@ const CONFIG = {
  */
 function setupSystem() {
   SpreadsheetApp.openById(CONFIG.SHEET_ID);
+  
+  let folder = null;
   try {
-    const folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
-    const dummyFile = folder.createFile('dummy.txt', 'This is a test file for authorization.', MimeType.PLAIN_TEXT);
-    dummyFile.setTrashed(true);
+    if (CONFIG.DRIVE_FOLDER_ID) {
+      folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+    }
   } catch (e) {
-    Logger.log("⚠️ Drive check note: " + e.message);
+    Logger.log("⚠️ หมายเหตุโฟลเดอร์ ID: " + e.message);
   }
+
+  if (!folder) {
+    const folderName = "เอกสารระบบข้อร้องเรียน รพ.หนองหาน ปี69";
+    const folders = DriveApp.getFoldersByName(folderName);
+    if (folders.hasNext()) {
+      folder = folders.next();
+    } else {
+      folder = DriveApp.createFolder(folderName);
+    }
+  }
+
+  const dummy = folder.createFile('test-auth.txt', 'ระบบเชื่อมต่อ Google Drive สำเร็จ', MimeType.PLAIN_TEXT);
+  try {
+    dummy.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (e) {}
+  dummy.setTrashed(true);
+
   MailApp.getRemainingDailyQuota();
   UrlFetchApp.fetch("https://www.google.com");
-  Logger.log("✅ ระบบได้รับสิทธิ์การเข้าถึงแบบเต็มรูปแบบ (อ่าน/เขียน) เรียบร้อยแล้ว");
+  Logger.log("✅ ระบบได้รับสิทธิ์การเข้าถึงแบบเต็มรูปแบบ (อ่าน/เขียน Drive, Sheet, Mail) เรียบร้อยแล้ว");
 }
 
 /**
@@ -249,11 +268,52 @@ function updateComplaintData(payload) {
  * 📁 อัปโหลดไฟล์เข้า Google Drive
  */
 function uploadFileToDrive(fileInfo) {
-  const folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+  let folder = null;
+
+  // 1. ลองค้นหาโฟลเดอร์จาก CONFIG.DRIVE_FOLDER_ID ก่อน
+  if (CONFIG.DRIVE_FOLDER_ID) {
+    try {
+      folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+    } catch (e) {
+      Logger.log('⚠️ ไม่สามารถเข้าถึงโฟลเดอร์จาก ID ที่ระบุ: ' + e.message);
+    }
+  }
+
+  // 2. ถ้าเข้าถึงด้วย ID ไม่ได้ ให้ค้นหาจากชื่อโฟลเดอร์ใน Drive ของผู้ใช้
+  if (!folder) {
+    const folderName = "เอกสารระบบข้อร้องเรียน รพ.หนองหาน ปี69";
+    try {
+      const folders = DriveApp.getFoldersByName(folderName);
+      if (folders.hasNext()) {
+        folder = folders.next();
+      } else {
+        folder = DriveApp.createFolder(folderName);
+      }
+    } catch (e) {
+      Logger.log('⚠️ ค้นหาโฟลเดอร์ตามชื่อล้มเหลว: ' + e.message);
+    }
+  }
+
+  // 3. ถ้ายังไม่ได้ ให้ใช้ Root Folder ของ Drive
+  if (!folder) {
+    try {
+      folder = DriveApp.getRootFolder();
+    } catch (e) {
+      throw new Error('ไม่สามารถเข้าถึง Google Drive ได้: ' + e.message);
+    }
+  }
+
+  // สร้างไฟล์จาก Base64
   const blob = Utilities.newBlob(Utilities.base64Decode(fileInfo.base64), fileInfo.mimeType, fileInfo.filename);
   const file = folder.createFile(blob);
-  // เปิดสิทธิ์ให้ทุกคนที่มีลิงก์ดูได้ เพื่อให้กดดูในหน้ารายละเอียดได้
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+  // ตั้งค่าสิทธิ์ให้ผู้มีลิงก์สามารถดูได้
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (e) {
+    Logger.log('⚠️ ไม่สามารถตั้งค่าสิทธิ์ไฟล์เป็นสาธารณะได้ (อาจติดนโยบายองค์กร): ' + e.message);
+  }
+
   return file.getUrl();
 }
 

@@ -5,173 +5,177 @@ const GAS = 'https://script.google.com/macros/s/AKfycbzGEiGmKl1ZhYz0eu0woFMcWc22
 const ADMIN_URL = 'https://gusmalllex-alt.github.io/nhh-request/admin/';
 const CRED = { u: 'nonghan', p: 'nonghan11018' };
 
-const STATUSES = ['รอดำเนินการ','รับเรื่อง','ส่งเรื่อง','รอตอบกลับ','ปิดเรื่องได้','ปิดเรื่องไม่ได้','ทบทวนผู้บริหารรับทราบ'];
-const DEPTS = ['','งานธุรการ','งาน CKD','งาน LAB','องค์กรแพทย์','งานกายภาพบำบัด','งานการพยาบาล','งานการพยาบาลป่วยผ่าตัดฯ','งานการพยาบาลผู้คลอด','งานการพยาบาลผู้ป่วยนอก','งานการพยาบาลผู้ป่วยหนัก','งานการพยาบาลผู้ป่วยอุบัติเหตุฯ','งานการพยาบาลผู้ป่วยใน (ชาย)','งานการพยาบาลผู้ป่วยใน (พิเศษ)','งานการพยาบาลผู้ป่วยใน (หญิง)','งานการพยาบาลผู้ป่วยใน (เด็ก)','งานการเงินและบัญชี','งานคลินิกพิเศษ','งานคุณภาพ QIC','งานซ่อมบำรุง','งานทรัพยากรบุคคล','งานทันตกรรม','งานบริหารทั่วไป','งานปฐมภูมิ','งานประกันสุขภาพ','งานประชาสัมพันธ์','งานพยาบาลควบคุมการติดเชื้อฯ','งานพัสดุ','งานยานพาหนะ','งานรักษาความปลอดภัย','งานรังสีวิทยา','งานสุขภาพจิต','งานสุขาภิบาล','งานสูติ-นรีเวช','งานเทคโนโลยีสารสนเทศฯ','งานเภสัชกรรมผู้ป่วยนอก','งานเภสัชกรรมผู้ป่วยใน','งานเวชระเบียนฯ','งานแผนงานและประเมินผล','งานแพทย์แผนไทย','งานโภชนศาสตร์','งานโสตทัศนศึกษา'];
+const STATUSES = ['รอดำเนินการ', 'รับเรื่อง', 'ส่งเรื่อง', 'รอตอบกลับ', 'ปิดเรื่องได้', 'ปิดเรื่องไม่ได้', 'ทบทวนผู้บริหารรับทราบ'];
+const DEPTS = ['', 'งานธุรการ', 'งาน CKD', 'งาน LAB', 'องค์กรแพทย์', 'งานกายภาพบำบัด', 'งานการพยาบาล', 'งานการพยาบาลป่วยผ่าตัดฯ', 'งานการพยาบาลผู้คลอด', 'งานการพยาบาลผู้ป่วยนอก', 'งานการพยาบาลผู้ป่วยหนัก', 'งานการพยาบาลผู้ป่วยอุบัติเหตุฯ', 'งานการพยาบาลผู้ป่วยใน (ชาย)', 'งานการพยาบาลผู้ป่วยใน (พิเศษ)', 'งานการพยาบาลผู้ป่วยใน (หญิง)', 'งานการพยาบาลผู้ป่วยใน (เด็ก)', 'งานการเงินและบัญชี', 'งานคลินิกพิเศษ', 'งานคุณภาพ QIC', 'งานซ่อมบำรุง', 'งานทรัพยากรบุคคล', 'งานทันตกรรม', 'งานบริหารทั่วไป', 'งานปฐมภูมิ', 'งานประกันสุขภาพ', 'งานประชาสัมพันธ์', 'งานพยาบาลควบคุมการติดเชื้อฯ', 'งานพัสดุ', 'งานยานพาหนะ', 'งานรักษาความปลอดภัย', 'งานรังสีวิทยา', 'งานสุขภาพจิต', 'งานสุขาภิบาล', 'งานสูติ-นรีเวช', 'งานเทคโนโลยีสารสนเทศฯ', 'งานเภสัชกรรมผู้ป่วยนอก', 'งานเภสัชกรรมผู้ป่วยใน', 'งานเวชระเบียนฯ', 'งานแผนงานและประเมินผล', 'งานแพทย์แผนไทย', 'งานโภชนศาสตร์', 'งานโสตทัศนศึกษา'];
 
 type Row = string[];
-const ns = (s:string) => ['ทบทวนแล้ว','ผู้บริหารรับทราบ'].includes(s)?'ทบทวนผู้บริหารรับทราบ':(s||'รอดำเนินการ');
-const SC:Record<string,[string,string,string]> = {'รอดำเนินการ':['#fffbeb','#d97706','#fde68a'],'รับเรื่อง':['#eff6ff','#2563eb','#bfdbfe'],'ส่งเรื่อง':['#f0fdfa','#0d9488','#ccfbf1'],'รอตอบกลับ':['#fefce8','#ca8a04','#fef08a'],'ปิดเรื่องได้':['#f0fdf4','#16a34a','#bbf7d0'],'ปิดเรื่องไม่ได้':['#fef2f2','#dc2626','#fecaca'],'ทบทวนผู้บริหารรับทราบ':['#faf5ff','#9333ea','#e9d5ff']};
-const sb = (s:string) => SC[s]??['#f8fafc','#475569','#e2e8f0'];
-const ir = (d:string,s:string,e:string) => {const dt=new Date(d);dt.setHours(0,0,0,0);if(s){const x=new Date(s);x.setHours(0,0,0,0);if(dt<x)return false;}if(e){const x=new Date(e);x.setHours(0,0,0,0);if(dt>x)return false;}return true;};
+const ns = (s: string) => ['ทบทวนแล้ว', 'ผู้บริหารรับทราบ'].includes(s) ? 'ทบทวนผู้บริหารรับทราบ' : (s || 'รอดำเนินการ');
+const SC: Record<string, [string, string, string]> = { 'รอดำเนินการ': ['#fffbeb', '#d97706', '#fde68a'], 'รับเรื่อง': ['#eff6ff', '#2563eb', '#bfdbfe'], 'ส่งเรื่อง': ['#f0fdfa', '#0d9488', '#ccfbf1'], 'รอตอบกลับ': ['#fefce8', '#ca8a04', '#fef08a'], 'ปิดเรื่องได้': ['#f0fdf4', '#16a34a', '#bbf7d0'], 'ปิดเรื่องไม่ได้': ['#fef2f2', '#dc2626', '#fecaca'], 'ทบทวนผู้บริหารรับทราบ': ['#faf5ff', '#9333ea', '#e9d5ff'] };
+const sb = (s: string) => SC[s] ?? ['#f8fafc', '#475569', '#e2e8f0'];
+const ir = (d: string, s: string, e: string) => { const dt = new Date(d); dt.setHours(0, 0, 0, 0); if (s) { const x = new Date(s); x.setHours(0, 0, 0, 0); if (dt < x) return false; } if (e) { const x = new Date(e); x.setHours(0, 0, 0, 0); if (dt > x) return false; } return true; };
 
 export default function AdminPage() {
-  const [view,sv]=useState<'login'|'app'>('login');
-  const [sidebarOpen,setSidebarOpen]=useState(false);
-  const [nav,sn]=useState<'dash'|'list'|'report'>('dash');
-  const [statusFilter,setStatusFilter]=useState<'all'|'pending'|'done'>('all');
-  const [viewMode,setViewMode]=useState<'card'|'table'>('card');
-  const [notifyLine,setNotifyLine]=useState(true);
-  const [lineStatus,setLineStatus]=useState<'idle'|'sending'|'ok'|'err'>('idle');
-  const [u,su]=useState('');const [p,sp]=useState('');const [le,sle]=useState('');
-  const [data,sd]=useState<Row[]>([]);const [load,sl]=useState(false);const [ferr,sfe]=useState('');
-  const [ds,sds]=useState('');const [de,sde]=useState('');
-  const [q,sq]=useState('');const [ms,sms]=useState('');const [me,sme]=useState('');
-  const [rpp,srpp]=useState(10);const [pg,spg]=useState(1);
-  const [editR,seR]=useState<Row|null>(null);const [est,ses]=useState('');const [edp,sed]=useState('');const [en,sen]=useState('');const [ef,sef]=useState<File|null>(null);
-  const [sav,ssav]=useState('');const [detR,sdR]=useState<Row|null>(null);
+  const [view, sv] = useState<'login' | 'app'>('login');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [nav, sn] = useState<'dash' | 'list' | 'report'>('dash');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'done'>('all');
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
+  const [notifyLine, setNotifyLine] = useState(true);
+  const [lineStatus, setLineStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle');
+  const [u, su] = useState(''); const [p, sp] = useState(''); const [le, sle] = useState('');
+  const [data, sd] = useState<Row[]>([]); const [load, sl] = useState(false); const [ferr, sfe] = useState('');
+  const [ds, sds] = useState(''); const [de, sde] = useState('');
+  const [q, sq] = useState(''); const [ms, sms] = useState(''); const [me, sme] = useState('');
+  const [rpp, srpp] = useState(10); const [pg, spg] = useState(1);
+  const [editR, seR] = useState<Row | null>(null); const [est, ses] = useState(''); const [edp, sed] = useState(''); const [en, sen] = useState(''); const [ef, sef] = useState<File | null>(null);
+  const [sav, ssav] = useState(''); const [detR, sdR] = useState<Row | null>(null);
   // Report tab state
-  const [rptStart,setRptStart]=useState('');const [rptEnd,setRptEnd]=useState('');
-  const s1=useRef<HTMLCanvasElement>(null);const s2=useRef<HTMLCanvasElement>(null);const s3=useRef<HTMLCanvasElement>(null);const s4=useRef<HTMLCanvasElement>(null);
-  const ci=useRef<Record<string,{destroy?:()=>void}>>({});
+  const [rptStart, setRptStart] = useState(''); const [rptEnd, setRptEnd] = useState('');
+  const s1 = useRef<HTMLCanvasElement>(null); const s2 = useRef<HTMLCanvasElement>(null); const s3 = useRef<HTMLCanvasElement>(null); const s4 = useRef<HTMLCanvasElement>(null);
+  const ci = useRef<Record<string, { destroy?: () => void }>>({});
 
-  const pendingCount=data.filter(r=>ns(r[8])!=='ปิดเรื่องได้').length;
-  const doneCount=data.filter(r=>ns(r[8])==='ปิดเรื่องได้').length;
+  const pendingCount = data.filter(r => ns(r[8]) !== 'ปิดเรื่องได้').length;
+  const doneCount = data.filter(r => ns(r[8]) === 'ปิดเรื่องได้').length;
 
-  const dashD=data.filter(r=>ir(r[0],ds,de));
-  const listD=data.filter(r=>{
-    if(!ir(r[0],ms,me))return false;
-    if(q&&!r.join(' ').toLowerCase().includes(q.toLowerCase()))return false;
-    if(statusFilter==='pending'){
-      if(ns(r[8])==='ปิดเรื่องได้')return false;
-    }else if(statusFilter==='done'){
-      if(ns(r[8])!=='ปิดเรื่องได้')return false;
+  const dashD = data.filter(r => ir(r[0], ds, de));
+  const listD = data.filter(r => {
+    if (!ir(r[0], ms, me)) return false;
+    if (q && !r.join(' ').toLowerCase().includes(q.toLowerCase())) return false;
+    if (statusFilter === 'pending') {
+      if (ns(r[8]) === 'ปิดเรื่องได้') return false;
+    } else if (statusFilter === 'done') {
+      if (ns(r[8]) !== 'ปิดเรื่องได้') return false;
     }
     return true;
   });
-  const tp=Math.ceil(listD.length/rpp);
-  const pd=listD.slice((pg-1)*rpp,pg*rpp);
+  const tp = Math.ceil(listD.length / rpp);
+  const pd = listD.slice((pg - 1) * rpp, pg * rpp);
 
-  const fetchD=useCallback(async()=>{
-    sl(true);sfe('');
-    try{const r=await fetch(`${GAS}?action=getData`,{redirect:'follow'});if(!r.ok)throw new Error();const j=await r.json();const rows:Row[]=Array.isArray(j)?j:[];if(rows.length)rows.shift();rows.sort((a,b)=>new Date(b[0]).getTime()-new Date(a[0]).getTime());sd(rows.map(r=>{r[0]=r[0]?.toString()||'';return r;}));}
-    catch{sfe('โหลดข้อมูลไม่สำเร็จ — กรุณาตรวจสอบ Apps Script');}finally{sl(false);}
-  },[]);
+  const fetchD = useCallback(async () => {
+    sl(true); sfe('');
+    try { const r = await fetch(`${GAS}?action=getData`, { redirect: 'follow' }); if (!r.ok) throw new Error(); const j = await r.json(); const rows: Row[] = Array.isArray(j) ? j : []; if (rows.length) rows.shift(); rows.sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()); sd(rows.map(r => { r[0] = r[0]?.toString() || ''; return r; })); }
+    catch { sfe('โหลดข้อมูลไม่สำเร็จ — กรุณาตรวจสอบ Apps Script'); } finally { sl(false); }
+  }, []);
 
-  useEffect(()=>{if(view==='app')fetchD();},[view,fetchD]);
+  useEffect(() => { if (view === 'app') fetchD(); }, [view, fetchD]);
 
-  useEffect(()=>{
-    if(nav!=='dash'||!dashD.length)return;
-    const build=()=>{
+  useEffect(() => {
+    if (nav !== 'dash' || !dashD.length) return;
+    const build = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const C=(window as any).Chart;if(!C)return;
-      const stC:Record<string,number>={};const isC:Record<string,number>={};const dpC:Record<string,number>={};const tpC:Record<string,number>={};
-      dashD.forEach(r=>{
-        const st=ns(r[8]);stC[st]=(stC[st]||0)+1;
-        if(r[1])isC[r[1]]=(isC[r[1]||'']||0)+1;
-        if(r[9])dpC[r[9]]=(dpC[r[9]]||0)+1;
-        if(r[2])tpC[r[2]]=(tpC[r[2]]||0)+1;
+      const C = (window as any).Chart; if (!C) return;
+      const stC: Record<string, number> = {}; const isC: Record<string, number> = {}; const dpC: Record<string, number> = {}; const tpC: Record<string, number> = {};
+      dashD.forEach(r => {
+        const st = ns(r[8]); stC[st] = (stC[st] || 0) + 1;
+        if (r[1]) isC[r[1]] = (isC[r[1] || ''] || 0) + 1;
+        if (r[9]) dpC[r[9]] = (dpC[r[9]] || 0) + 1;
+        if (r[2]) tpC[r[2]] = (tpC[r[2]] || 0) + 1;
       });
-      const mk=(id:string,ref:React.RefObject<HTMLCanvasElement|null>,tp:string,labels:string[],vals:number[],colors:string[],axis='x', tensions=0)=>{
-        if(ci.current[id]){try{(ci.current[id] as any).destroy?.();}catch(e){/*ignore*/}delete ci.current[id];}
-        if(!ref.current)return;
-        const ctx2=ref.current.getContext('2d');if(ctx2)ctx2.clearRect(0,0,9999,9999);
-        ci.current[id]=new C(ref.current,{type:tp,data:{labels,datasets:[{data:vals,backgroundColor:colors,borderColor:tp==='line'?colors[0]:(tp==='doughnut'?'#fff':'transparent'),tension:tensions,borderWidth:tp==='doughnut'||tp==='line'?2:0,fill:tp==='line'?{target:'origin',above:colors[0]+'33'}:false,borderRadius:tp==='bar'?6:0}]},
+      const mk = (id: string, ref: React.RefObject<HTMLCanvasElement | null>, tp: string, labels: string[], vals: number[], colors: string[], axis = 'x', tensions = 0) => {
+        if (ci.current[id]) { try { (ci.current[id] as any).destroy?.(); } catch (e) {/*ignore*/ } delete ci.current[id]; }
+        if (!ref.current) return;
+        const ctx2 = ref.current.getContext('2d'); if (ctx2) ctx2.clearRect(0, 0, 9999, 9999);
+        ci.current[id] = new C(ref.current, {
+          type: tp, data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderColor: tp === 'line' ? colors[0] : (tp === 'doughnut' ? '#fff' : 'transparent'), tension: tensions, borderWidth: tp === 'doughnut' || tp === 'line' ? 2 : 0, fill: tp === 'line' ? { target: 'origin', above: colors[0] + '33' } : false, borderRadius: tp === 'bar' ? 6 : 0 }] },
           plugins: (window as any).ChartDataLabels ? [(window as any).ChartDataLabels] : [],
-          options:{responsive:true,maintainAspectRatio:false,indexAxis:axis,plugins:{datalabels:{color:'#fff',font:{weight:'bold',family:'Noto Sans Thai'}},legend:{display:tp==='doughnut',position:'bottom',labels:{font:{family:'Noto Sans Thai',size:11},boxWidth:12,padding:10}},tooltip:{backgroundColor:'#0f172a',titleColor:'white',bodyColor:'white',bodyFont:{family:'Noto Sans Thai'},titleFont:{family:'Noto Sans Thai'},cornerRadius:12,padding:12}},
-          scales:tp!=='doughnut'?{y:{beginAtZero:true,grid:{color:'#f1f5f9',drawBorder:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b',stepSize:1},border:{display:false}},x:{grid:{display:false},ticks:{font:{family:'Noto Sans Thai',size:11},color:'#64748b'},border:{display:false}}}:undefined}});
+          options: {
+            responsive: true, maintainAspectRatio: false, indexAxis: axis, plugins: { datalabels: { color: '#fff', font: { weight: 'bold', family: 'Noto Sans Thai' } }, legend: { display: tp === 'doughnut', position: 'bottom', labels: { font: { family: 'Noto Sans Thai', size: 11 }, boxWidth: 12, padding: 10 } }, tooltip: { backgroundColor: '#0f172a', titleColor: 'white', bodyColor: 'white', bodyFont: { family: 'Noto Sans Thai' }, titleFont: { family: 'Noto Sans Thai' }, cornerRadius: 12, padding: 12 } },
+            scales: tp !== 'doughnut' ? { y: { beginAtZero: true, grid: { color: '#f1f5f9', drawBorder: false }, ticks: { font: { family: 'Noto Sans Thai', size: 11 }, color: '#64748b', stepSize: 1 }, border: { display: false } }, x: { grid: { display: false }, ticks: { font: { family: 'Noto Sans Thai', size: 11 }, color: '#64748b' }, border: { display: false } } } : undefined
+          }
+        });
       };
-      mk('s1',s1,'doughnut',Object.keys(stC),Object.values(stC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
-      mk('s2',s2,'doughnut',Object.keys(isC),Object.values(isC),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#64748b']);
-      const top=Object.entries(dpC).sort((a,b)=>b[1]-a[1]);
-      mk('s3',s3,'doughnut',top.map(d=>d[0].replace(/^งาน/,'')),top.map(d=>d[1]),['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#f43f5e','#0ea5e9','#84cc16','#fb923c','#a78bfa','#34d399','#fbbf24','#f87171','#38bdf8','#4ade80','#818cf8','#fb7185','#2dd4bf','#facc15']);
-      mk('s4',s4,'doughnut',Object.keys(tpC),Object.values(tpC),['#f59e0b','#8b5cf6','#0ea5e9','#10b981','#64748b','#ef4444']);
+      mk('s1', s1, 'doughnut', Object.keys(stC), Object.values(stC), ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#64748b']);
+      mk('s2', s2, 'doughnut', Object.keys(isC), Object.values(isC), ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#64748b']);
+      const top = Object.entries(dpC).sort((a, b) => b[1] - a[1]);
+      mk('s3', s3, 'doughnut', top.map(d => d[0].replace(/^งาน/, '')), top.map(d => d[1]), ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#f43f5e', '#0ea5e9', '#84cc16', '#fb923c', '#a78bfa', '#34d399', '#fbbf24', '#f87171', '#38bdf8', '#4ade80', '#818cf8', '#fb7185', '#2dd4bf', '#facc15']);
+      mk('s4', s4, 'doughnut', Object.keys(tpC), Object.values(tpC), ['#f59e0b', '#8b5cf6', '#0ea5e9', '#10b981', '#64748b', '#ef4444']);
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if(!(window as any).Chart){
-      const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js';
-      sc.onload=()=>{
-        const sc2=document.createElement('script');sc2.src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0';
-        sc2.onload=build;
+    if (!(window as any).Chart) {
+      const sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+      sc.onload = () => {
+        const sc2 = document.createElement('script'); sc2.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0';
+        sc2.onload = build;
         document.head.appendChild(sc2);
       };
       document.head.appendChild(sc);
-    }else build();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[nav,dashD.length,ds,de]);
+    } else build();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nav, dashD.length, ds, de]);
 
-  function login(e:React.FormEvent){e.preventDefault();if(u===CRED.u&&p===CRED.p){sv('app');sle('');}else sle('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');}
-  async function sendLineAlert(r:Row){
+  function login(e: React.FormEvent) { e.preventDefault(); if (u === CRED.u && p === CRED.p) { sv('app'); sle(''); } else sle('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'); }
+  async function sendLineAlert(r: Row) {
     setLineStatus('sending');
-    const pl:Record<string,unknown>={
-      action:'sendLineNotify',
-      timestampISO:r[0],
-      title:r[1],
-      category:r[2],
-      details:r[3],
-      name:r[4]||'ไม่ระบุชื่อ',
-      phone:r[5]||'-',
-      status:ns(r[8]),
-      department:r[9]||'-',
-      notes:r[10]||'-',
-      adminUrl:ADMIN_URL
+    const pl: Record<string, unknown> = {
+      action: 'sendLineNotify',
+      timestampISO: r[0],
+      title: r[1],
+      category: r[2],
+      details: r[3],
+      name: r[4] || 'ไม่ระบุชื่อ',
+      phone: r[5] || '-',
+      status: ns(r[8]),
+      department: r[9] || '-',
+      notes: r[10] || '-',
+      adminUrl: ADMIN_URL
     };
-    try{
-      await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});
+    try {
+      await fetch(GAS, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pl) });
       setLineStatus('ok');
-      setTimeout(()=>setLineStatus('idle'),2500);
-    }catch{
+      setTimeout(() => setLineStatus('idle'), 2500);
+    } catch {
       setLineStatus('err');
-      setTimeout(()=>setLineStatus('idle'),3000);
+      setTimeout(() => setLineStatus('idle'), 3000);
     }
   }
 
-  async function save(){
-    if(!editR)return;
+  async function save() {
+    if (!editR) return;
     ssav('saving');
-    const pl:Record<string,unknown>={
-      action:'update',
-      timestampISO:editR[0],
-      title:editR[1],
-      category:editR[2],
-      name:editR[4]||'ไม่ระบุชื่อ',
-      phone:editR[5]||'-',
-      status:est,
-      department:edp,
-      notes:en,
-      notifyLine:notifyLine,
-      adminUrl:ADMIN_URL
+    const pl: Record<string, unknown> = {
+      action: 'update',
+      timestampISO: editR[0],
+      title: editR[1],
+      category: editR[2],
+      name: editR[4] || 'ไม่ระบุชื่อ',
+      phone: editR[5] || '-',
+      status: est,
+      department: edp,
+      notes: en,
+      notifyLine: notifyLine,
+      adminUrl: ADMIN_URL
     };
-    if(ef){
-      const b64=await new Promise<string>((rs,rj)=>{const fr=new FileReader();fr.onload=()=>rs((fr.result as string).split(',')[1]);fr.onerror=rj;fr.readAsDataURL(ef!);});
-      pl.fileInfo={filename:ef.name,mimeType:ef.type,base64:b64};
+    if (ef) {
+      const b64 = await new Promise<string>((rs, rj) => { const fr = new FileReader(); fr.onload = () => rs((fr.result as string).split(',')[1]); fr.onerror = rj; fr.readAsDataURL(ef!); });
+      pl.fileInfo = { filename: ef.name, mimeType: ef.type, base64: b64 };
     }
-    try{
-      await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});
-      sd(prev=>prev.map(r=>r[0]===editR[0]?[...r.slice(0,8),est,edp,en,r[11]]:r));
+    try {
+      await fetch(GAS, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pl) });
+      sd(prev => prev.map(r => r[0] === editR[0] ? [...r.slice(0, 8), est, edp, en, r[11]] : r));
       seR(null);
       ssav('ok');
-      setTimeout(()=>{ssav('');fetchD();},1500);
-    }catch{
+      setTimeout(() => { ssav(''); fetchD(); }, 1500);
+    } catch {
       ssav('err');
     }
   }
 
-  async function del(ts:string){if(!confirm('ลบรายการนี้?'))return;try{await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',timestampISO:ts})});sd(p=>p.filter(r=>r[0]!==ts));}catch{alert('ลบไม่สำเร็จ');}}
+  async function del(ts: string) { if (!confirm('ลบรายการนี้?')) return; try { await fetch(GAS, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'delete', timestampISO: ts }) }); sd(p => p.filter(r => r[0] !== ts)); } catch { alert('ลบไม่สำเร็จ'); } }
 
-  const stC:Record<string,number>={};dashD.forEach(r=>{const s=ns(r[8]);stC[s]=(stC[s]||0)+1;});
-  const deptSet=new Set(dashD.map(r=>r[9]).filter(Boolean));
+  const stC: Record<string, number> = {}; dashD.forEach(r => { const s = ns(r[8]); stC[s] = (stC[s] || 0) + 1; });
+  const deptSet = new Set(dashD.map(r => r[9]).filter(Boolean));
 
   // ─── LOGIN ───
-  if(view==='login') return (
+  if (view === 'login') return (
     <div className="login-container">
       <div className="login-brand">
-        <div className="login-bg-img"/>
+        <div className="login-bg-img" />
         <div className="login-content">
           <div className="login-logo-wrapper">
-            <img src="https://img1.pic.in.th/images/nhh.png" alt="Logo" className="login-logo"/>
+            <img src="https://img1.pic.in.th/images/nhh.png" alt="Logo" className="login-logo" />
           </div>
           <h1>Admin Portal</h1>
-          <p>ระบบจัดการข้อร้องเรียนและข้อเสนอแนะ<br/>โรงพยาบาลหนองหาน จังหวัดอุดรธานี</p>
+          <p>ระบบจัดการข้อร้องเรียนและข้อเสนอแนะ<br />โรงพยาบาลหนองหาน จังหวัดอุดรธานี</p>
           <div className="login-stats">
             <div className="login-stat"><span className="login-stat-num">24 ชม.</span><span className="login-stat-lbl">ตอบสนองภายใน</span></div>
             <div className="login-stat"><span className="login-stat-num">100%</span><span className="login-stat-lbl">ปลอดภัย</span></div>
@@ -182,25 +186,25 @@ export default function AdminPage() {
       <div className="login-form-side">
         <div className="login-box">
           <div className="login-box-header">
-            <img src="https://img1.pic.in.th/images/nhh.png" alt="Mobile Logo" className="mobile-logo"/>
+            <img src="https://img1.pic.in.th/images/nhh.png" alt="Mobile Logo" className="mobile-logo" />
             <h2>ยินดีต้อนรับ</h2>
             <p>กรุณากรอกข้อมูลเพื่อเข้าสู่การจัดการระบบ</p>
           </div>
           <form onSubmit={login}>
             <div className="input-group">
               <label>ชื่อผู้ใช้</label>
-              <input type="text" value={u} onChange={e=>su(e.target.value)} className="modern-inp" placeholder="Username" />
+              <input type="text" value={u} onChange={e => su(e.target.value)} className="modern-inp" placeholder="Username" />
             </div>
-            <div className="input-group" style={{marginTop: 20}}>
+            <div className="input-group" style={{ marginTop: 20 }}>
               <label>รหัสผ่าน</label>
-              <input type="password" value={p} onChange={e=>sp(e.target.value)} className="modern-inp" placeholder="Password" />
+              <input type="password" value={p} onChange={e => sp(e.target.value)} className="modern-inp" placeholder="Password" />
             </div>
             {le && <div className="err-msg">⚠ {le}</div>}
             <button type="submit" className="btn-modern">เข้าสู่ระบบ</button>
           </form>
           <div className="login-footer">
             <a href="/nhh-request/">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
               กลับสู่หน้าแจ้งเรื่อง
             </a>
             <p>© {new Date().getFullYear()} โรงพยาบาลหนองหาน</p>
@@ -388,47 +392,47 @@ export default function AdminPage() {
 
   // ─── APP SHELL ───
   return (
-    <div className="admin-layout" style={{display:'flex',minHeight:'100vh',fontFamily:"'Sarabun',sans-serif",background:'#f1f5f9'}}>
+    <div className="admin-layout" style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Sarabun',sans-serif", background: '#f1f5f9' }}>
 
       {/* Mobile Sidebar Backdrop */}
       {sidebarOpen && <div className="admin-sidebar-backdrop active" onClick={closeSidebar} />}
 
       {/* SIDEBAR */}
-      <aside className={`admin-sidebar${sidebarOpen?' sidebar-open':''}`} style={{width:280,background:'linear-gradient(180deg, #00241c 0%, #001712 100%)',display:'flex',flexDirection:'column',position:'fixed',top:0,left:0,bottom:0,zIndex:100,borderRight:'1px solid rgba(255,255,255,0.05)',boxShadow:'10px 0 30px rgba(0,0,0,0.15)',overflowY:'auto'}}>
+      <aside className={`admin-sidebar${sidebarOpen ? ' sidebar-open' : ''}`} style={{ width: 280, background: 'linear-gradient(180deg, #00241c 0%, #001712 100%)', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, borderRight: '1px solid rgba(255,255,255,0.05)', boxShadow: '10px 0 30px rgba(0,0,0,0.15)', overflowY: 'auto' }}>
         {/* Logo */}
-        <div style={{padding:'40px 28px 28px',display:'flex',alignItems:'center',gap:16}}>
-          <div style={{width:52,height:52,borderRadius:14,background:'linear-gradient(135deg,#10b981,#005C4B)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:'0 8px 24px rgba(0,92,75,0.4)',border:'1px solid rgba(255,255,255,0.1)'}}>
-            <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{width:32,height:32,objectFit:'contain',filter:'brightness(200%)'}}/>
+        <div style={{ padding: '40px 28px 28px', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#10b981,#005C4B)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 8px 24px rgba(0,92,75,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <img src="https://img1.pic.in.th/images/nhh.png" alt="" style={{ width: 32, height: 32, objectFit: 'contain', filter: 'brightness(200%)' }} />
           </div>
           <div>
-            <div style={{color:'white',fontWeight:900,fontSize:'1.3rem',lineHeight:1.1,letterSpacing:'-0.5px'}}>NHH Admin</div>
-            <div style={{color:'#94a3b8',fontSize:'.8rem',fontWeight:600,marginTop:4,letterSpacing:'0.5px'}}>รพ.หนองหาน</div>
+            <div style={{ color: 'white', fontWeight: 900, fontSize: '1.3rem', lineHeight: 1.1, letterSpacing: '-0.5px' }}>NHH Admin</div>
+            <div style={{ color: '#94a3b8', fontSize: '.8rem', fontWeight: 600, marginTop: 4, letterSpacing: '0.5px' }}>รพ.หนองหาน</div>
           </div>
         </div>
         {/* Nav */}
-        <nav style={{flex:1,padding:'16px 20px'}}>
-          <div style={{fontSize:'.75rem',fontWeight:800,color:'#475569',letterSpacing:2,padding:'0 16px',marginBottom:16}}>MAIN MENU</div>
-          {([['dash','📊','Dashboard Analytics'],['list','📋','รายการเรื่องร้องเรียน'],['report','📑','รายงาน']] as ['dash'|'list'|'report',string,string][]).map(([id,ic,lb])=>(
-            <button key={id} onClick={()=>{sn(id);closeSidebar();}} className="sidebar-btn" style={{width:'100%',display:'flex',alignItems:'center',gap:14,padding:'16px 20px',borderRadius:16,border:'1px solid',borderColor:nav===id?'rgba(52,211,153,0.3)':'transparent',cursor:'pointer',marginBottom:12,background:nav===id?'linear-gradient(90deg, rgba(52,211,153,0.14) 0%, transparent 100%)':'transparent',color:nav===id?'#f8fafc':'#94a3b8',fontWeight:nav===id?800:600,fontSize:'1rem',fontFamily:"'Sarabun',sans-serif",textAlign:'left',transition:'all .3s cubic-bezier(0.4,0,0.2,1)',position:'relative',boxShadow:nav===id?'inset 4px 0 0 #34d399':'none'}}>
-              <span style={{fontSize:'1.3rem',filter:nav===id?'drop-shadow(0 2px 6px rgba(52,211,153,0.6))':'none',transition:'transform 0.3s',transform:nav===id?'scale(1.1)':'scale(1)'}}>{ic}</span>
+        <nav style={{ flex: 1, padding: '16px 20px' }}>
+          <div style={{ fontSize: '.75rem', fontWeight: 800, color: '#475569', letterSpacing: 2, padding: '0 16px', marginBottom: 16 }}>MAIN MENU</div>
+          {([['dash', '📊', 'Dashboard Analytics'], ['list', '📋', 'รายการเรื่องร้องเรียน'], ['report', '📑', 'รายงาน']] as ['dash' | 'list' | 'report', string, string][]).map(([id, ic, lb]) => (
+            <button key={id} onClick={() => { sn(id); closeSidebar(); }} className="sidebar-btn" style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', borderRadius: 16, border: '1px solid', borderColor: nav === id ? 'rgba(52,211,153,0.3)' : 'transparent', cursor: 'pointer', marginBottom: 12, background: nav === id ? 'linear-gradient(90deg, rgba(52,211,153,0.14) 0%, transparent 100%)' : 'transparent', color: nav === id ? '#f8fafc' : '#94a3b8', fontWeight: nav === id ? 800 : 600, fontSize: '1rem', fontFamily: "'Sarabun',sans-serif", textAlign: 'left', transition: 'all .3s cubic-bezier(0.4,0,0.2,1)', position: 'relative', boxShadow: nav === id ? 'inset 4px 0 0 #34d399' : 'none' }}>
+              <span style={{ fontSize: '1.3rem', filter: nav === id ? 'drop-shadow(0 2px 6px rgba(52,211,153,0.6))' : 'none', transition: 'transform 0.3s', transform: nav === id ? 'scale(1.1)' : 'scale(1)' }}>{ic}</span>
               {lb}
             </button>
           ))}
         </nav>
         {/* Bottom */}
-        <div style={{padding:'28px 24px',borderTop:'1px solid rgba(255,255,255,0.05)',background:'rgba(0,0,0,0.2)'}}>
-          <div style={{display:'flex',alignItems:'center',gap:14,padding:'16px',background:'rgba(255,255,255,0.03)',borderRadius:18,marginBottom:20,border:'1px solid rgba(255,255,255,0.02)'}}>
-            <div style={{width:42,height:42,borderRadius:'50%',background:'linear-gradient(135deg, #10b981, #059669)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.1rem',color:'white',fontWeight:900,flexShrink:0,boxShadow:'0 4px 12px rgba(16,185,129,0.3)'}}>A</div>
-            <div style={{flex:1,minWidth:0}}><div style={{color:'white',fontSize:'.95rem',fontWeight:800}}>Admin User</div><div style={{color:'#34d399',fontSize:'.75rem',fontWeight:700,display:'flex',alignItems:'center',gap:6,marginTop:2}}><span style={{width:8,height:8,borderRadius:'50%',background:'#34d399',boxShadow:'0 0 10px #34d399',animation:'pulse 2s infinite'}}/> Online</div></div>
+        <div style={{ padding: '28px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: 18, marginBottom: 20, border: '1px solid rgba(255,255,255,0.02)' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'white', fontWeight: 900, flexShrink: 0, boxShadow: '0 4px 12px rgba(16,185,129,0.3)' }}>A</div>
+            <div style={{ flex: 1, minWidth: 0 }}><div style={{ color: 'white', fontSize: '.95rem', fontWeight: 800 }}>Admin User</div><div style={{ color: '#34d399', fontSize: '.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399', boxShadow: '0 0 10px #34d399', animation: 'pulse 2s infinite' }} /> Online</div></div>
           </div>
-          <button className="sidebar-btn" onClick={()=>{sv('login');su('');sp('');sd([]);}} style={{width:'100%',padding:'16px',background:'rgba(239,68,68,0.08)',border:'1px solid rgba(239,68,68,0.2)',borderRadius:16,color:'#fca5a5',fontSize:'.95rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.3s'}}>
+          <button className="sidebar-btn" onClick={() => { sv('login'); su(''); sp(''); sd([]); }} style={{ width: '100%', padding: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 16, color: '#fca5a5', fontSize: '.95rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", transition: 'all 0.3s' }}>
             ออกจากระบบ
           </button>
         </div>
       </aside>
 
       {/* MAIN */}
-      <div className="admin-main" style={{marginLeft:280,flex:1,display:'flex',flexDirection:'column',minHeight:'100vh',background:'#f7faf8'}}>
+      <div className="admin-main" style={{ marginLeft: 280, flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#f7faf8' }}>
         <style>{`
           .sidebar-btn:hover { background: rgba(255,255,255,0.05) !important; transform: translateX(6px); }
           @media (max-width: 900px) {
@@ -445,160 +449,160 @@ export default function AdminPage() {
           }
         `}</style>
         {/* Topbar */}
-        <header className="admin-topbar" style={{background:'rgba(255,255,255,0.85)',backdropFilter:'blur(20px)',padding:'0 24px 0 48px',height:90,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:30,borderBottom:'1px solid #f1f5f9',boxShadow:'0 10px 40px rgba(0,0,0,0.03)'}}>
+        <header className="admin-topbar" style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(20px)', padding: '0 24px 0 48px', height: 90, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30, borderBottom: '1px solid #f1f5f9', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
           {/* Mobile sidebar toggle — only visible below 900px via CSS */}
-          <button onClick={toggleSidebar} style={{display:'none',alignItems:'center',justifyContent:'center',width:40,height:40,borderRadius:12,border:'1.5px solid #e2e8f0',background:'white',cursor:'pointer',marginRight:12,flexShrink:0}} className="admin-menu-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          <button onClick={toggleSidebar} style={{ display: 'none', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: 12, border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', marginRight: 12, flexShrink: 0 }} className="admin-menu-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
           </button>
           <div>
-            <h2 style={{margin:0,fontSize:'1.6rem',fontWeight:900,color:'#0f172a',letterSpacing:'-0.5px'}}>{nav==='dash'?'📊 Dashboard Analytics':nav==='list'?'📋 รายการเรื่องร้องเรียน':'📑 รายงาน'}</h2>
-            <p style={{margin:'6px 0 0',fontSize:'0.9rem',color:'#64748b',fontWeight:600}}>ระบบจัดการและรับฟังความคิดเห็น โรงพยาบาลหนองหาน</p>
+            <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>{nav === 'dash' ? '📊 Dashboard Analytics' : nav === 'list' ? '📋 รายการเรื่องร้องเรียน' : '📑 รายงาน'}</h2>
+            <p style={{ margin: '6px 0 0', fontSize: '0.9rem', color: '#64748b', fontWeight: 600 }}>ระบบจัดการและรับฟังความคิดเห็น โรงพยาบาลหนองหาน</p>
           </div>
-          <div style={{display:'flex',gap:16,alignItems:'center'}}>
-            {ferr&&<div style={{background:'#fef2f2',border:'1px solid #fca5a5',borderRadius:16,padding:'10px 20px',color:'#dc2626',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(220,38,38,0.1)'}}>⚠ {ferr}</div>}
-            {sav==='ok'&&<div style={{background:'#f0fdf4',border:'1px solid #86efac',borderRadius:16,padding:'10px 20px',color:'#16a34a',fontSize:'0.9rem',fontWeight:800,boxShadow:'0 4px 12px rgba(22,163,74,0.1)'}}>✅ บันทึกสำเร็จ</div>}
-            <button onClick={fetchD} disabled={load} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 16px',background:load?'#e2e8f0':'white',border:load?'none':'2px solid #e2e8f0',borderRadius:14,color:load?'#64748b':'#0f172a',fontSize:'0.85rem',fontWeight:800,cursor:load?'not-allowed':'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:load?'none':'0 8px 20px rgba(0,0,0,0.05)',transition:'all 0.2s',whiteSpace:'nowrap'}}>
-              {load?'⏳ โหลด...':'🔄 Refresh'}
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            {ferr && <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 16, padding: '10px 20px', color: '#dc2626', fontSize: '0.9rem', fontWeight: 800, boxShadow: '0 4px 12px rgba(220,38,38,0.1)' }}>⚠ {ferr}</div>}
+            {sav === 'ok' && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 16, padding: '10px 20px', color: '#16a34a', fontSize: '0.9rem', fontWeight: 800, boxShadow: '0 4px 12px rgba(22,163,74,0.1)' }}>✅ บันทึกสำเร็จ</div>}
+            <button onClick={fetchD} disabled={load} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px', background: load ? '#e2e8f0' : 'white', border: load ? 'none' : '2px solid #e2e8f0', borderRadius: 14, color: load ? '#64748b' : '#0f172a', fontSize: '0.85rem', fontWeight: 800, cursor: load ? 'not-allowed' : 'pointer', fontFamily: "'Sarabun',sans-serif", boxShadow: load ? 'none' : '0 8px 20px rgba(0,0,0,0.05)', transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
+              {load ? '⏳ โหลด...' : '🔄 Refresh'}
             </button>
           </div>
         </header>
 
-        <div className="admin-content-pad" style={{flex:1,padding:'32px 40px'}}>
+        <div className="admin-content-pad" style={{ flex: 1, padding: '32px 40px' }}>
 
           {/* ══ DASHBOARD ══ */}
           {/* ══ DASHBOARD ══ */}
-          {nav==='dash'&&(<>
+          {nav === 'dash' && (<>
             {/* Date filter */}
-            <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:24,flexWrap:'wrap',background:'white',padding:'12px 20px',borderRadius:16,boxShadow:'0 2px 10px rgba(0,0,0,0.02)',border:'1px solid #f1f5f9'}}>
-              <div style={{fontSize:'.85rem',fontWeight:800,color:'#0f172a',marginRight:8}}>📅 ตัวกรองวันที่:</div>
-              {[['จาก',ds,sds],['ถึง',de,sde]].map(([L,V,S])=>(
-                <div key={L as string} style={{display:'flex',alignItems:'center',gap:8}}>
-                  <label style={{fontSize:'.75rem',color:'#64748b',fontWeight:700,whiteSpace:'nowrap'}}>{L as string}</label>
-                  <input type="date" value={V as string} onChange={e=>(S as (v:string)=>void)(e.target.value)} style={{padding:'8px 12px',border:'1.5px solid #e2e8f0',borderRadius:10,fontSize:'.85rem',background:'#f8fafc',color:'#0f172a',fontWeight:600}}/>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', background: 'white', padding: '12px 20px', borderRadius: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f1f5f9' }}>
+              <div style={{ fontSize: '.85rem', fontWeight: 800, color: '#0f172a', marginRight: 8 }}>📅 ตัวกรองวันที่:</div>
+              {[['จาก', ds, sds], ['ถึง', de, sde]].map(([L, V, S]) => (
+                <div key={L as string} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, whiteSpace: 'nowrap' }}>{L as string}</label>
+                  <input type="date" value={V as string} onChange={e => (S as (v: string) => void)(e.target.value)} style={{ padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '.85rem', background: '#f8fafc', color: '#0f172a', fontWeight: 600 }} />
                 </div>
               ))}
-              <button onClick={()=>{sds('');sde('');}} style={{...ob,marginLeft:!ds&&!de?'auto':0,background:!ds&&!de?'#f8fafc':'#fef2f2',color:!ds&&!de?'#94a3b8':'#ef4444',borderColor:!ds&&!de?'#e2e8f0':'#fca5a5'}}>ล้างตัวกรอง</button>
+              <button onClick={() => { sds(''); sde(''); }} style={{ ...ob, marginLeft: !ds && !de ? 'auto' : 0, background: !ds && !de ? '#f8fafc' : '#fef2f2', color: !ds && !de ? '#94a3b8' : '#ef4444', borderColor: !ds && !de ? '#e2e8f0' : '#fca5a5' }}>ล้างตัวกรอง</button>
             </div>
 
             {/* Stat cards */}
-            <div className="grid-cols-mobile" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:16,marginBottom:28}}>
+            <div className="grid-cols-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 16, marginBottom: 28 }}>
               {/* total */}
-              <div style={{background:'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',borderRadius:20,padding:'24px',boxShadow:'0 10px 30px rgba(15,23,42,0.25)',position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
-                <div style={{position:'absolute',right:-20,bottom:-20,fontSize:'6rem',opacity:0.1,lineHeight:1}}>📋</div>
-                <div style={{fontSize:'.75rem',color:'#94a3b8',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>รวมทุกเรื่องร้องเรียน</div>
-                <div style={{fontSize:'3.2rem',fontWeight:900,color:'white',lineHeight:1,marginTop:12}}>{dashD.length}</div>
+              <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: 20, padding: '24px', boxShadow: '0 10px 30px rgba(15,23,42,0.25)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ position: 'absolute', right: -20, bottom: -20, fontSize: '6rem', opacity: 0.1, lineHeight: 1 }}>📋</div>
+                <div style={{ fontSize: '.75rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>รวมทุกเรื่องร้องเรียน</div>
+                <div style={{ fontSize: '3.2rem', fontWeight: 900, color: 'white', lineHeight: 1, marginTop: 12 }}>{dashD.length}</div>
               </div>
               {/* dept */}
-              <div style={{background:'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)',borderRadius:20,padding:'24px',boxShadow:'0 10px 30px rgba(14,165,233,0.3)',position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
-                <div style={{position:'absolute',right:-20,bottom:-20,fontSize:'6rem',opacity:0.15,lineHeight:1}}>🏥</div>
-                <div style={{fontSize:'.75rem',color:'#bae6fd',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>หน่วยงานที่เกี่ยวข้อง</div>
-                <div style={{fontSize:'3.2rem',fontWeight:900,color:'white',lineHeight:1,marginTop:12}}>{deptSet.size}</div>
+              <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)', borderRadius: 20, padding: '24px', boxShadow: '0 10px 30px rgba(14,165,233,0.3)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ position: 'absolute', right: -20, bottom: -20, fontSize: '6rem', opacity: 0.15, lineHeight: 1 }}>🏥</div>
+                <div style={{ fontSize: '.75rem', color: '#bae6fd', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>หน่วยงานที่เกี่ยวข้อง</div>
+                <div style={{ fontSize: '3.2rem', fontWeight: 900, color: 'white', lineHeight: 1, marginTop: 12 }}>{deptSet.size}</div>
               </div>
               {/* per status */}
-              {[['#f59e0b','#fff7ed'],['#3b82f6','#eff6ff'],['#10b981','#ecfdf5'],['#ef4444','#fef2f2'],['#8b5cf6','#f5f3ff'],['#06b6d4','#ecfeff']].map(([bg,lightBg],i)=>{
-                const [st,cnt]=Object.entries(stC)[i]??['',''];
-                if(!st)return null;
-                return(
-                  <div key={st} style={{background:'white',borderRadius:20,padding:'20px',border:'1px solid #f1f5f9',boxShadow:'0 4px 15px rgba(0,0,0,0.02)',position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
-                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-                      <div style={{fontSize:'.75rem',color:'#64748b',fontWeight:700,lineHeight:1.4,maxWidth:'70%'}}>{st}</div>
-                      <div style={{background:lightBg as string,color:bg as string,padding:'4px 8px',borderRadius:8,fontSize:'.7rem',fontWeight:800}}>{dashD.length?Math.round((cnt as number)/dashD.length*100):0}%</div>
+              {[['#f59e0b', '#fff7ed'], ['#3b82f6', '#eff6ff'], ['#10b981', '#ecfdf5'], ['#ef4444', '#fef2f2'], ['#8b5cf6', '#f5f3ff'], ['#06b6d4', '#ecfeff']].map(([bg, lightBg], i) => {
+                const [st, cnt] = Object.entries(stC)[i] ?? ['', ''];
+                if (!st) return null;
+                return (
+                  <div key={st} style={{ background: 'white', borderRadius: 20, padding: '20px', border: '1px solid #f1f5f9', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, lineHeight: 1.4, maxWidth: '70%' }}>{st}</div>
+                      <div style={{ background: lightBg as string, color: bg as string, padding: '4px 8px', borderRadius: 8, fontSize: '.7rem', fontWeight: 800 }}>{dashD.length ? Math.round((cnt as number) / dashD.length * 100) : 0}%</div>
                     </div>
-                    <div style={{fontSize:'2.4rem',fontWeight:900,color:bg as string,lineHeight:1,marginTop:16}}>{cnt}</div>
+                    <div style={{ fontSize: '2.4rem', fontWeight: 900, color: bg as string, lineHeight: 1, marginTop: 16 }}>{cnt}</div>
                   </div>
                 );
               })}
             </div>
 
             {/* Charts */}
-            <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
-              <ChartCard title="สัดส่วนสถานะการดำเนินการ" color="#6366f1" ref_={s1} h={280}/>
-              <ChartCard title="สัดส่วนประเภทบริการ" color="#f59e0b" ref_={s4} h={280}/>
+            <div className="grid-mobile-single" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+              <ChartCard title="สัดส่วนสถานะการดำเนินการ" color="#6366f1" ref_={s1} h={280} />
+              <ChartCard title="สัดส่วนประเภทบริการ" color="#f59e0b" ref_={s4} h={280} />
             </div>
-            <div className="grid-mobile-single" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:20}}>
-              <ChartCard title="สัดส่วนประเด็นที่ต้องการแจ้ง" color="#6366f1" ref_={s2} h={260}/>
-              <ChartCard title="หน่วยงานที่รับเรื่อง (ทั้งหมด)" color="#8b5cf6" ref_={s3} h={260}/>
+            <div className="grid-mobile-single" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+              <ChartCard title="สัดส่วนประเด็นที่ต้องการแจ้ง" color="#6366f1" ref_={s2} h={260} />
+              <ChartCard title="หน่วยงานที่รับเรื่อง (ทั้งหมด)" color="#8b5cf6" ref_={s3} h={260} />
             </div>
           </>)}
 
           {/* ══ LIST ══ */}
-          {nav==='list'&&(
-            <div style={{animation:'fadeIn 0.3s'}}>
+          {nav === 'list' && (
+            <div style={{ animation: 'fadeIn 0.3s' }}>
               {/* Quick Status Filter Tabs */}
-              <div style={{display:'flex',gap:10,marginBottom:16,overflowX:'auto',paddingBottom:4}}>
+              <div style={{ display: 'flex', gap: 10, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
                 {[
-                  {id:'all',lb:'ทั้งหมด',cnt:data.length,ic:'📋'},
-                  {id:'pending',lb:'รอดำเนินการ',cnt:pendingCount,ic:'⏳'},
-                  {id:'done',lb:'จัดการแล้ว',cnt:doneCount,ic:'✅'},
-                ].map(tab=>(
+                  { id: 'all', lb: 'ทั้งหมด', cnt: data.length, ic: '📋' },
+                  { id: 'pending', lb: 'รอดำเนินการ', cnt: pendingCount, ic: '⏳' },
+                  { id: 'done', lb: 'จัดการแล้ว', cnt: doneCount, ic: '✅' },
+                ].map(tab => (
                   <button
                     key={tab.id}
-                    onClick={()=>{setStatusFilter(tab.id as 'all'|'pending'|'done');spg(1);}}
+                    onClick={() => { setStatusFilter(tab.id as 'all' | 'pending' | 'done'); spg(1); }}
                     style={{
-                      padding:'9px 18px',
-                      borderRadius:14,
-                      border:'1.5px solid',
-                      borderColor:statusFilter===tab.id?'#2563eb':'#e2e8f0',
-                      background:statusFilter===tab.id?'#ecfdf5':'white',
-                      color:statusFilter===tab.id?'#005C4B':'#64748b',
-                      fontWeight:statusFilter===tab.id?800:600,
-                      fontSize:'0.85rem',
-                      cursor:'pointer',
-                      display:'flex',
-                      alignItems:'center',
-                      gap:8,
-                      transition:'all 0.2s',
-                      whiteSpace:'nowrap',
-                      boxShadow:statusFilter===tab.id?'0 4px 12px rgba(37,99,235,0.12)':'0 2px 6px rgba(0,0,0,0.02)'
+                      padding: '9px 18px',
+                      borderRadius: 14,
+                      border: '1.5px solid',
+                      borderColor: statusFilter === tab.id ? '#2563eb' : '#e2e8f0',
+                      background: statusFilter === tab.id ? '#ecfdf5' : 'white',
+                      color: statusFilter === tab.id ? '#005C4B' : '#64748b',
+                      fontWeight: statusFilter === tab.id ? 800 : 600,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      transition: 'all 0.2s',
+                      whiteSpace: 'nowrap',
+                      boxShadow: statusFilter === tab.id ? '0 4px 12px rgba(37,99,235,0.12)' : '0 2px 6px rgba(0,0,0,0.02)'
                     }}
                   >
                     <span>{tab.ic}</span>
                     <span>{tab.lb}</span>
                     <span style={{
-                      background:statusFilter===tab.id?'#2563eb':tab.id==='pending'&&tab.cnt>0?'#fee2e2':'#f1f5f9',
-                      color:statusFilter===tab.id?'white':tab.id==='pending'&&tab.cnt>0?'#dc2626':'#475569',
-                      padding:'2px 8px',
-                      borderRadius:100,
-                      fontSize:'0.75rem',
-                      fontWeight:800
+                      background: statusFilter === tab.id ? '#2563eb' : tab.id === 'pending' && tab.cnt > 0 ? '#fee2e2' : '#f1f5f9',
+                      color: statusFilter === tab.id ? 'white' : tab.id === 'pending' && tab.cnt > 0 ? '#dc2626' : '#475569',
+                      padding: '2px 8px',
+                      borderRadius: 100,
+                      fontSize: '0.75rem',
+                      fontWeight: 800
                     }}>{tab.cnt}</span>
                   </button>
                 ))}
               </div>
 
               {/* Filter bar */}
-              <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',padding:'16px 24px',marginBottom:20,display:'flex',gap:12,flexWrap:'wrap',alignItems:'center',boxShadow:'0 4px 15px rgba(0,0,0,0.02)'}}>
-                <div style={{position:'relative',flex:1,minWidth:220}}>
-                  <svg style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)'}} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                  <input value={q} onChange={e=>{sq(e.target.value);spg(1);}} placeholder="ค้นหารายการร้องเรียน..." style={{width:'100%',padding:'10px 14px 10px 38px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.9rem',fontFamily:"'Sarabun',sans-serif",outline:'none',background:'#f8fafc',transition:'all 0.2s',color:'#0f172a'}} onFocus={e=>{e.target.style.borderColor='#0ea5e9';e.target.style.background='white'}} onBlur={e=>{e.target.style.borderColor='#e2e8f0';e.target.style.background='#f8fafc'}}/>
+              <div style={{ background: 'white', borderRadius: 20, border: '1px solid #f1f5f9', padding: '16px 24px', marginBottom: 20, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
+                  <svg style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+                  <input value={q} onChange={e => { sq(e.target.value); spg(1); }} placeholder="ค้นหารายการร้องเรียน..." style={{ width: '100%', padding: '10px 14px 10px 38px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '.9rem', fontFamily: "'Sarabun',sans-serif", outline: 'none', background: '#f8fafc', transition: 'all 0.2s', color: '#0f172a' }} onFocus={e => { e.target.style.borderColor = '#0ea5e9'; e.target.style.background = 'white' }} onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.background = '#f8fafc' }} />
                 </div>
-                {[['จาก',ms,(v:string)=>{sms(v);spg(1);}],['ถึง',me,(v:string)=>{sme(v);spg(1);}]].map(([L,V,S])=>(
-                  <div key={L as string} style={{display:'flex',alignItems:'center',gap:8}}>
-                    <label style={{fontSize:'.75rem',color:'#64748b',fontWeight:700}}>{L as string}</label>
-                    <input type="date" value={V as string} onChange={e=>(S as (v:string)=>void)(e.target.value)} style={{padding:'9px 12px',border:'1.5px solid #e2e8f0',borderRadius:10,fontSize:'.85rem',color:'#0f172a',background:'#f8fafc',outline:'none'}}/>
+                {[['จาก', ms, (v: string) => { sms(v); spg(1); }], ['ถึง', me, (v: string) => { sme(v); spg(1); }]].map(([L, V, S]) => (
+                  <div key={L as string} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700 }}>{L as string}</label>
+                    <input type="date" value={V as string} onChange={e => (S as (v: string) => void)(e.target.value)} style={{ padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: 10, fontSize: '.85rem', color: '#0f172a', background: '#f8fafc', outline: 'none' }} />
                   </div>
                 ))}
-                <button onClick={()=>{sq('');sms('');sme('');spg(1);}} style={{...ob,border:'none',background:'#f1f5f9',color:'#475569'}}>ล้างทั้งหมด</button>
-                <div style={{display:'flex',alignItems:'center',gap:10,marginLeft:'auto',flexWrap:'wrap'}}>
-                  <div style={{background:'#f0fdf4',color:'#16a34a',padding:'6px 12px',borderRadius:10,fontSize:'.75rem',fontWeight:800}}>พบ {listD.length} รายการ</div>
-                  <div style={{display:'flex',background:'#f1f5f9',padding:3,borderRadius:10,border:'1px solid #e2e8f0'}}>
+                <button onClick={() => { sq(''); sms(''); sme(''); spg(1); }} style={{ ...ob, border: 'none', background: '#f1f5f9', color: '#475569' }}>ล้างทั้งหมด</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 'auto', flexWrap: 'wrap' }}>
+                  <div style={{ background: '#f0fdf4', color: '#16a34a', padding: '6px 12px', borderRadius: 10, fontSize: '.75rem', fontWeight: 800 }}>พบ {listD.length} รายการ</div>
+                  <div style={{ display: 'flex', background: '#f1f5f9', padding: 3, borderRadius: 10, border: '1px solid #e2e8f0' }}>
                     <button
                       type="button"
-                      onClick={()=>setViewMode('card')}
+                      onClick={() => setViewMode('card')}
                       style={{
-                        border:'none',
-                        background:viewMode==='card'?'white':'transparent',
-                        color:viewMode==='card'?'#0f172a':'#64748b',
-                        fontWeight:viewMode==='card'?800:600,
-                        fontSize:'0.75rem',
-                        padding:'4px 10px',
-                        borderRadius:8,
-                        cursor:'pointer',
-                        boxShadow:viewMode==='card'?'0 1px 3px rgba(0,0,0,0.1)':'none',
-                        display:'flex',
-                        alignItems:'center',
-                        gap:4,
-                        fontFamily:"'Sarabun',sans-serif"
+                        border: 'none',
+                        background: viewMode === 'card' ? 'white' : 'transparent',
+                        color: viewMode === 'card' ? '#0f172a' : '#64748b',
+                        fontWeight: viewMode === 'card' ? 800 : 600,
+                        fontSize: '0.75rem',
+                        padding: '4px 10px',
+                        borderRadius: 8,
+                        cursor: 'pointer',
+                        boxShadow: viewMode === 'card' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        fontFamily: "'Sarabun',sans-serif"
                       }}
                       title="มุมมองการ์ด (เหมาะกับมือถือ)"
                     >
@@ -606,21 +610,21 @@ export default function AdminPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={()=>setViewMode('table')}
+                      onClick={() => setViewMode('table')}
                       style={{
-                        border:'none',
-                        background:viewMode==='table'?'white':'transparent',
-                        color:viewMode==='table'?'#0f172a':'#64748b',
-                        fontWeight:viewMode==='table'?800:600,
-                        fontSize:'0.75rem',
-                        padding:'4px 10px',
-                        borderRadius:8,
-                        cursor:'pointer',
-                        boxShadow:viewMode==='table'?'0 1px 3px rgba(0,0,0,0.1)':'none',
-                        display:'flex',
-                        alignItems:'center',
-                        gap:4,
-                        fontFamily:"'Sarabun',sans-serif"
+                        border: 'none',
+                        background: viewMode === 'table' ? 'white' : 'transparent',
+                        color: viewMode === 'table' ? '#0f172a' : '#64748b',
+                        fontWeight: viewMode === 'table' ? 800 : 600,
+                        fontSize: '0.75rem',
+                        padding: '4px 10px',
+                        borderRadius: 8,
+                        cursor: 'pointer',
+                        boxShadow: viewMode === 'table' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        fontFamily: "'Sarabun',sans-serif"
                       }}
                       title="มุมมองตาราง"
                     >
@@ -631,12 +635,12 @@ export default function AdminPage() {
               </div>
 
               {/* Data Content: Card View vs Table View */}
-              <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',overflow:'hidden',boxShadow:'0 4px 24px rgba(0,0,0,0.03)'}}>
+              <div style={{ background: 'white', borderRadius: 20, border: '1px solid #f1f5f9', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.03)' }}>
                 {viewMode === 'card' ? (
                   /* ─── SMARTPHONE CARD VIEW ─── */
-                  <div className="admin-cards-grid" style={{padding:'14px',display:'flex',flexDirection:'column',gap:12}}>
-                    {load && <div style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>⏳ กำลังโหลดข้อมูล...</div>}
-                    {!load && pd.length === 0 && <div style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลที่ค้นหา</div>}
+                  <div className="admin-cards-grid" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {load && <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: '.9rem', fontWeight: 600 }}>⏳ กำลังโหลดข้อมูล...</div>}
+                    {!load && pd.length === 0 && <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: '.9rem', fontWeight: 600 }}>ไม่พบข้อมูลที่ค้นหา</div>}
                     {!load && pd.map((row, i) => {
                       const st = ns(row[8]);
                       const [bg, tc, bc] = sb(st);
@@ -662,38 +666,38 @@ export default function AdminPage() {
                           }}
                         >
                           {/* Card Top: Number, Date, Status */}
-                          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
-                            <div style={{display:'flex',alignItems:'center',gap:8}}>
-                              <span style={{background:'#f1f5f9',color:'#475569',fontWeight:800,fontSize:'0.75rem',padding:'3px 8px',borderRadius:8}}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ background: '#f1f5f9', color: '#475569', fontWeight: 800, fontSize: '0.75rem', padding: '3px 8px', borderRadius: 8 }}>
                                 #{(pg - 1) * rpp + i + 1}
                               </span>
-                              <span style={{fontSize:'0.8rem',color:'#64748b',fontWeight:600}}>
+                              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
                                 📅 {dt} {tm && `• ⏰ ${tm} น.`}
                               </span>
                             </div>
-                            <span style={{background:bg,color:tc,border:`1px solid ${bc}`,padding:'4px 10px',borderRadius:12,fontSize:'0.72rem',fontWeight:800,whiteSpace:'nowrap'}}>
+                            <span style={{ background: bg, color: tc, border: `1px solid ${bc}`, padding: '4px 10px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 800, whiteSpace: 'nowrap' }}>
                               {st}
                             </span>
                           </div>
 
                           {/* Subject & Description */}
                           <div>
-                            <h4 style={{margin:'0 0 6px',fontSize:'0.96rem',fontWeight:800,color:'#0f172a',lineHeight:1.45}}>
+                            <h4 style={{ margin: '0 0 6px', fontSize: '0.96rem', fontWeight: 800, color: '#0f172a', lineHeight: 1.45 }}>
                               {row[1] || 'ไม่ระบุหัวข้อ'}
                             </h4>
                             {row[3] && (
-                              <p style={{margin:'0 0 8px',fontSize:'0.84rem',color:'#64748b',lineHeight:1.5,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
+                              <p style={{ margin: '0 0 8px', fontSize: '0.84rem', color: '#64748b', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                 {row[3]}
                               </p>
                             )}
-                            <div style={{display:'flex',flexWrap:'wrap',gap:6,alignItems:'center'}}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
                               {row[2] && (
-                                <span style={{background:'#f0fdf4',color:'#005C4B',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
+                                <span style={{ background: '#f0fdf4', color: '#005C4B', fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: 6 }}>
                                   🏷️ {row[2]}
                                 </span>
                               )}
                               {row[9] && (
-                                <span style={{background:'#f0fdf4',color:'#16a34a',fontSize:'0.72rem',fontWeight:700,padding:'2px 8px',borderRadius:6}}>
+                                <span style={{ background: '#f0fdf4', color: '#16a34a', fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: 6 }}>
                                   🏥 {row[9]}
                                 </span>
                               )}
@@ -701,26 +705,26 @@ export default function AdminPage() {
                           </div>
 
                           {/* Complainant snippet */}
-                          <div style={{background:'#f8fafc',borderRadius:12,padding:'8px 12px',display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:'0.82rem',color:'#334155'}}>
-                            <div style={{display:'flex',alignItems:'center',gap:6,fontWeight:700,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                          <div style={{ background: '#f8fafc', borderRadius: 12, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', color: '#334155' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               <span>👤</span>
-                              <span style={{overflow:'hidden',textOverflow:'ellipsis'}}>{row[4] || (row[5] ? 'ไม่ระบุชื่อ' : '-')}</span>
+                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{row[4] || (row[5] ? 'ไม่ระบุชื่อ' : '-')}</span>
                             </div>
                             {row[5] ? (
-                              <a href={`tel:${row[5]}`} style={{color:'#0284c7',fontWeight:700,textDecoration:'none',display:'flex',alignItems:'center',gap:4,flexShrink:0}}>
+                              <a href={`tel:${row[5]}`} style={{ color: '#0284c7', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                                 <span>📞</span> {row[5]}
                               </a>
                             ) : (
-                              <span style={{color:'#94a3b8',fontSize:'0.75rem'}}>ไม่มีเบอร์</span>
+                              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>ไม่มีเบอร์</span>
                             )}
                           </div>
 
                           {/* Actions: 3 clean touch buttons */}
-                          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 44px',gap:8,paddingTop:8,borderTop:'1px solid #f1f5f9'}}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 44px', gap: 8, paddingTop: 8, borderTop: '1px solid #f1f5f9' }}>
                             <button
                               type="button"
                               onClick={() => sdR(row)}
-                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #a7f3d0',background:'#f0fdf4',color:'#065f46',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
+                              style={{ padding: '9px 12px', borderRadius: 12, border: '1px solid #a7f3d0', background: '#f0fdf4', color: '#065f46', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontFamily: "'Sarabun',sans-serif" }}
                             >
                               <span>👁</span> ดูข้อมูล
                             </button>
@@ -733,7 +737,7 @@ export default function AdminPage() {
                                 sen(row[10] || '');
                                 sef(null);
                               }}
-                              style={{padding:'9px 12px',borderRadius:12,border:'1px solid #fde68a',background:'#fffbeb',color:'#b45309',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:6,fontFamily:"'Sarabun',sans-serif"}}
+                              style={{ padding: '9px 12px', borderRadius: 12, border: '1px solid #fde68a', background: '#fffbeb', color: '#b45309', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontFamily: "'Sarabun',sans-serif" }}
                             >
                               <span>✏️</span> จัดการ
                             </button>
@@ -741,7 +745,7 @@ export default function AdminPage() {
                               type="button"
                               onClick={() => del(row[0])}
                               title="ลบ"
-                              style={{padding:'9px 0',borderRadius:12,border:'1px solid #fecaca',background:'#fef2f2',color:'#dc2626',fontSize:'0.9rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Sarabun',sans-serif"}}
+                              style={{ padding: '9px 0', borderRadius: 12, border: '1px solid #fecaca', background: '#fef2f2', color: '#dc2626', fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Sarabun',sans-serif" }}
                             >
                               🗑️
                             </button>
@@ -752,48 +756,48 @@ export default function AdminPage() {
                   </div>
                 ) : (
                   /* ─── FULL TABLE VIEW ─── */
-                  <div style={{overflowX:'auto'}}>
-                    <table style={{width:'100%',borderCollapse:'collapse',minWidth:800}}>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
                       <thead>
-                        <tr style={{background:'#f8fafc',borderBottom:'1px solid #e2e8f0'}}>
-                          {['ลำดับ','วันที่รับเรื่อง','เรื่องร้องเรียน / หมวดหมู่','ข้อมูลผู้แจ้งรับบริการ','สถานะดำเนินการ','จัดการ'].map((h,i)=>(
-                            <th key={h} style={{padding:'16px 20px',textAlign:i>=4?'center':'left',fontSize:'.75rem',fontWeight:800,color:'#475569',textTransform:'uppercase',letterSpacing:0.5,whiteSpace:'nowrap'}}>{h}</th>
+                        <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                          {['ลำดับ', 'วันที่รับเรื่อง', 'เรื่องร้องเรียน / หมวดหมู่', 'ข้อมูลผู้แจ้งรับบริการ', 'สถานะดำเนินการ', 'จัดการ'].map((h, i) => (
+                            <th key={h} style={{ padding: '16px 20px', textAlign: i >= 4 ? 'center' : 'left', fontSize: '.75rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: 0.5, whiteSpace: 'nowrap' }}>{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {load&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>⏳ กำลังโหลดข้อมูล...</td></tr>}
-                        {!load&&pd.length===0&&<tr><td colSpan={6} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลที่ค้นหา</td></tr>}
-                        {pd.map((row,i)=>{
-                          const st=ns(row[8]);const[bg,tc,bc]=sb(st);
-                          const d=new Date(row[0]);const isV=!isNaN(d.getTime());
-                          const dt=isV?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):row[0];
-                          const tm=isV?d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'';
-                          return(
+                        {load && <tr><td colSpan={6} style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: '.9rem', fontWeight: 600 }}>⏳ กำลังโหลดข้อมูล...</td></tr>}
+                        {!load && pd.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: '.9rem', fontWeight: 600 }}>ไม่พบข้อมูลที่ค้นหา</td></tr>}
+                        {pd.map((row, i) => {
+                          const st = ns(row[8]); const [bg, tc, bc] = sb(st);
+                          const d = new Date(row[0]); const isV = !isNaN(d.getTime());
+                          const dt = isV ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : row[0];
+                          const tm = isV ? d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '';
+                          return (
                             <tr key={i} className="admin-table-row">
-                              <td style={{padding:'16px 20px',fontSize:'.8rem',color:'#64748b',fontWeight:800,width:80}}>{(pg-1)*rpp+i+1}</td>
-                              <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:140}}>
-                                <div style={{fontWeight:800,fontSize:'.85rem',color:'#0f172a'}}>{dt}</div>
-                                <div style={{fontSize:'.75rem',color:'#94a3b8',marginTop:4}}>⏰ {tm} น.</div>
+                              <td style={{ padding: '16px 20px', fontSize: '.8rem', color: '#64748b', fontWeight: 800, width: 80 }}>{(pg - 1) * rpp + i + 1}</td>
+                              <td style={{ padding: '16px 20px', whiteSpace: 'nowrap', width: 140 }}>
+                                <div style={{ fontWeight: 800, fontSize: '.85rem', color: '#0f172a' }}>{dt}</div>
+                                <div style={{ fontSize: '.75rem', color: '#94a3b8', marginTop: 4 }}>⏰ {tm} น.</div>
                               </td>
-                              <td style={{padding:'16px 20px',maxWidth:320}}>
-                                <div style={{fontWeight:800,fontSize:'.9rem',color:'#0f172a',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:6}}>{row[1]}</div>
-                                <div style={{fontSize:'.75rem',color:'#64748b',display:'flex',gap:6,alignItems:'center'}}>
-                                  <span style={{background:'#f1f5f9',padding:'2px 8px',borderRadius:6,fontWeight:700,fontSize:'.65rem',color:'#475569'}}>{row[2]}</span>
-                                  <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:180}}>{row[3]||'-'}</span>
+                              <td style={{ padding: '16px 20px', maxWidth: 320 }}>
+                                <div style={{ fontWeight: 800, fontSize: '.9rem', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 6 }}>{row[1]}</div>
+                                <div style={{ fontSize: '.75rem', color: '#64748b', display: 'flex', gap: 6, alignItems: 'center' }}>
+                                  <span style={{ background: '#f1f5f9', padding: '2px 8px', borderRadius: 6, fontWeight: 700, fontSize: '.65rem', color: '#475569' }}>{row[2]}</span>
+                                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 180 }}>{row[3] || '-'}</span>
                                 </div>
                               </td>
-                              <td style={{padding:'16px 20px',whiteSpace:'nowrap',width:180}}>
-                                <div style={{fontSize:'.85rem',fontWeight:700,color:'#1e293b',display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>👤</span> {row[4]||(row[5]?'ไม่ระบุชื่อ':'-')}</div>
-                                {row[5]&&<div style={{fontSize:'.75rem',color:'#64748b',marginTop:4,display:'flex',alignItems:'center',gap:6}}><span style={{fontSize:'1rem'}}>📞</span> {row[5]}</div>}
+                              <td style={{ padding: '16px 20px', whiteSpace: 'nowrap', width: 180 }}>
+                                <div style={{ fontSize: '.85rem', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ fontSize: '1rem' }}>👤</span> {row[4] || (row[5] ? 'ไม่ระบุชื่อ' : '-')}</div>
+                                {row[5] && <div style={{ fontSize: '.75rem', color: '#64748b', marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ fontSize: '1rem' }}>📞</span> {row[5]}</div>}
                               </td>
-                              <td style={{padding:'16px 20px',textAlign:'center',width:150}}>
-                                <span style={{background:bg,color:tc,border:`1px solid ${bc}`,padding:'6px 12px',borderRadius:12,fontSize:'.75rem',fontWeight:800,whiteSpace:'nowrap',display:'inline-block'}}>{st}</span>
+                              <td style={{ padding: '16px 20px', textAlign: 'center', width: 150 }}>
+                                <span style={{ background: bg, color: tc, border: `1px solid ${bc}`, padding: '6px 12px', borderRadius: 12, fontSize: '.75rem', fontWeight: 800, whiteSpace: 'nowrap', display: 'inline-block' }}>{st}</span>
                               </td>
-                              <td style={{padding:'16px 20px',textAlign:'center',width:100}}>
-                                <div style={{display:'flex',gap:6,justifyContent:'center'}}>
-                                  {([['👁','#005C4B','ดูรายละเอียด',()=>sdR(row)],['✏️','#d97706','แก้ไข',()=>{seR(row);ses(ns(row[8]));sed(row[9]||'');sen(row[10]||'');sef(null);}],['🗑','#ef4444','ลบ',()=>del(row[0])]] as [string,string,string,()=>void][]).map(([em,c,t,fn])=>(
-                                    <button key={t} title={t} onClick={fn} style={{width:34,height:34,borderRadius:10,border:'none',background:'#f1f5f9',cursor:'pointer',fontSize:'.95rem',color:c,display:'flex',alignItems:'center',justifyContent:'center',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.background='white';e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'}} onMouseLeave={e=>{e.currentTarget.style.background='#f1f5f9';e.currentTarget.style.boxShadow='none'}}>{em}</button>
+                              <td style={{ padding: '16px 20px', textAlign: 'center', width: 100 }}>
+                                <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                                  {([['👁', '#005C4B', 'ดูรายละเอียด', () => sdR(row)], ['✏️', '#d97706', 'แก้ไข', () => { seR(row); ses(ns(row[8])); sed(row[9] || ''); sen(row[10] || ''); sef(null); }], ['🗑', '#ef4444', 'ลบ', () => del(row[0])]] as [string, string, string, () => void][]).map(([em, c, t, fn]) => (
+                                    <button key={t} title={t} onClick={fn} style={{ width: 34, height: 34, borderRadius: 10, border: 'none', background: '#f1f5f9', cursor: 'pointer', fontSize: '.95rem', color: c, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)' }} onMouseLeave={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.boxShadow = 'none' }}>{em}</button>
                                   ))}
                                 </div>
                               </td>
@@ -805,14 +809,14 @@ export default function AdminPage() {
                   </div>
                 )}
                 {/* Pagination */}
-                <div style={{padding:'16px 24px',borderTop:'1px solid #f1f5f9',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,background:'white'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:8,fontSize:'.8rem',color:'#64748b',fontWeight:600}}>
-                    แสดง <select value={rpp} onChange={e=>{srpp(Number(e.target.value));spg(1);}} style={{border:'1.5px solid #e2e8f0',borderRadius:8,padding:'4px 8px',fontSize:'.8rem',fontWeight:700,color:'#0f172a',outline:'none'}}>{[5,10,25,50].map(n=><option key={n} value={n}>{n}</option>)}</select> รายการ
+                <div style={{ padding: '16px 24px', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, background: 'white' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '.8rem', color: '#64748b', fontWeight: 600 }}>
+                    แสดง <select value={rpp} onChange={e => { srpp(Number(e.target.value)); spg(1); }} style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '4px 8px', fontSize: '.8rem', fontWeight: 700, color: '#0f172a', outline: 'none' }}>{[5, 10, 25, 50].map(n => <option key={n} value={n}>{n}</option>)}</select> รายการ
                   </div>
-                  <div style={{display:'flex',gap:6,alignItems:'center'}}>
-                    {[['«',1],['‹',pg-1]].map(([lbl,to])=><button key={lbl as string} disabled={pg<=1} onClick={()=>spg(to as number)} style={pb(pg<=1)}>{lbl}</button>)}
-                    <span style={{fontSize:'.85rem',color:'#0f172a',padding:'0 12px',fontWeight:800}}>หน้า {pg} / {tp||1}</span>
-                    {[['›',pg+1],['»',tp]].map(([lbl,to])=><button key={lbl as string} disabled={pg>=tp} onClick={()=>spg(to as number)} style={pb(pg>=tp)}>{lbl}</button>)}
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                    {[['«', 1], ['‹', pg - 1]].map(([lbl, to]) => <button key={lbl as string} disabled={pg <= 1} onClick={() => spg(to as number)} style={pb(pg <= 1)}>{lbl}</button>)}
+                    <span style={{ fontSize: '.85rem', color: '#0f172a', padding: '0 12px', fontWeight: 800 }}>หน้า {pg} / {tp || 1}</span>
+                    {[['›', pg + 1], ['»', tp]].map(([lbl, to]) => <button key={lbl as string} disabled={pg >= tp} onClick={() => spg(to as number)} style={pb(pg >= tp)}>{lbl}</button>)}
                   </div>
                 </div>
               </div>
@@ -820,111 +824,111 @@ export default function AdminPage() {
           )}
 
           {/* ══ REPORT ══ */}
-          {nav==='report'&&(()=>{
-            const rptData=data.filter(r=>ir(r[0],rptStart,rptEnd));
-            const stCount:Record<string,number>={};
-            const deptCount:Record<string,number>={};
-            const typeCount:Record<string,number>={};
-            rptData.forEach(r=>{
-              const st=ns(r[8]);stCount[st]=(stCount[st]||0)+1;
-              if(r[9])deptCount[r[9]]=(deptCount[r[9]]||0)+1;
-              if(r[2])typeCount[r[2]]=(typeCount[r[2]]||0)+1;
+          {nav === 'report' && (() => {
+            const rptData = data.filter(r => ir(r[0], rptStart, rptEnd));
+            const stCount: Record<string, number> = {};
+            const deptCount: Record<string, number> = {};
+            const typeCount: Record<string, number> = {};
+            rptData.forEach(r => {
+              const st = ns(r[8]); stCount[st] = (stCount[st] || 0) + 1;
+              if (r[9]) deptCount[r[9]] = (deptCount[r[9]] || 0) + 1;
+              if (r[2]) typeCount[r[2]] = (typeCount[r[2]] || 0) + 1;
             });
-            const closedCount=(stCount['ปิดเรื่องได้']||0);
-            const pendingCount=rptData.length-closedCount;
-            const rptDateLabel=rptStart&&rptEnd?`${new Date(rptStart).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})} - ${new Date(rptEnd).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:rptStart?`ตั้งแต่ ${new Date(rptStart).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:rptEnd?`ถึง ${new Date(rptEnd).toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'})}`:'ทั้งหมด';
+            const closedCount = (stCount['ปิดเรื่องได้'] || 0);
+            const pendingCount = rptData.length - closedCount;
+            const rptDateLabel = rptStart && rptEnd ? `${new Date(rptStart).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })} - ${new Date(rptEnd).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })}` : rptStart ? `ตั้งแต่ ${new Date(rptStart).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })}` : rptEnd ? `ถึง ${new Date(rptEnd).toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' })}` : 'ทั้งหมด';
 
-            const exportExcel=async()=>{
+            const exportExcel = async () => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              let XLSX=(window as any).XLSX;
-              if(!XLSX){
-                await new Promise<void>((res)=>{
-                  const sc=document.createElement('script');
-                  sc.src='https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
-                  sc.onload=()=>res();
+              let XLSX = (window as any).XLSX;
+              if (!XLSX) {
+                await new Promise<void>((res) => {
+                  const sc = document.createElement('script');
+                  sc.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+                  sc.onload = () => res();
                   document.head.appendChild(sc);
                 });
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                XLSX=(window as any).XLSX;
+                XLSX = (window as any).XLSX;
               }
-              const header=['ลำดับ','วดป.','หน่วยงานที่เกิด','ผู้เกี่ยวข้อง','ประเด็น','ประเภท','รายละเอียด'];
-              const rows=rptData.map((r,i)=>{
-                const issueText=(r[1]||'').toLowerCase();
-                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
-                const d=new Date(r[0]);
-                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+              const header = ['ลำดับ', 'วดป.', 'หน่วยงานที่เกิด', 'ผู้เกี่ยวข้อง', 'ประเด็น', 'ประเภท', 'รายละเอียด'];
+              const rows = rptData.map((r, i) => {
+                const issueText = (r[1] || '').toLowerCase();
+                const issueType = issueText.includes('ชมเชย') || issueText.includes('compliment') ? 'ข้อชมเชย' : issueText.includes('เสนอแนะ') || issueText.includes('suggest') ? 'ข้อเสนอแนะ' : 'ข้อร้องเรียน';
+                const d = new Date(r[0]);
+                const dt = !isNaN(d.getTime()) ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : r[0];
                 return [
-                  i+1,
+                  i + 1,
                   dt,
-                  r[9]||'-',
-                  r[4]||'-',
+                  r[9] || '-',
+                  r[4] || '-',
                   issueType,
-                  r[2]||'-',
-                  r[3]||r[1]||'-'
+                  r[2] || '-',
+                  r[3] || r[1] || '-'
                 ];
               });
-              const wsData=[header,...rows];
-              const ws=XLSX.utils.aoa_to_sheet(wsData);
-              ws['!cols']=[{wch:6},{wch:12},{wch:15},{wch:15},{wch:15},{wch:15},{wch:60}];
-              const wb=XLSX.utils.book_new();
-              XLSX.utils.book_append_sheet(wb,ws,'รายงาน');
-              const fname=`รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g,'_')}.xlsx`;
-              XLSX.writeFile(wb,fname);
+              const wsData = [header, ...rows];
+              const ws = XLSX.utils.aoa_to_sheet(wsData);
+              ws['!cols'] = [{ wch: 6 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 60 }];
+              const wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, 'รายงาน');
+              const fname = `รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g, '_')}.xlsx`;
+              XLSX.writeFile(wb, fname);
             };
 
-            const exportCSV=()=>{
-              const header='ลำดับ,วดป.,หน่วยงานที่เกิด,ผู้เกี่ยวข้อง,ประเด็น,ประเภท,รายละเอียด\n';
-              const rows=rptData.map((r,i)=>{
-                const issueText=(r[1]||'').toLowerCase();
-                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
-                const d=new Date(r[0]);
-                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+            const exportCSV = () => {
+              const header = 'ลำดับ,วดป.,หน่วยงานที่เกิด,ผู้เกี่ยวข้อง,ประเด็น,ประเภท,รายละเอียด\n';
+              const rows = rptData.map((r, i) => {
+                const issueText = (r[1] || '').toLowerCase();
+                const issueType = issueText.includes('ชมเชย') || issueText.includes('compliment') ? 'ข้อชมเชย' : issueText.includes('เสนอแนะ') || issueText.includes('suggest') ? 'ข้อเสนอแนะ' : 'ข้อร้องเรียน';
+                const d = new Date(r[0]);
+                const dt = !isNaN(d.getTime()) ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : r[0];
                 return [
-                  i+1,
-                  `"${dt.replace(/"/g,'""')}"`,
-                  `"${(r[9]||'-').replace(/"/g,'""')}"`,
-                  `"${(r[4]||'-').replace(/"/g,'""')}"`,
+                  i + 1,
+                  `"${dt.replace(/"/g, '""')}"`,
+                  `"${(r[9] || '-').replace(/"/g, '""')}"`,
+                  `"${(r[4] || '-').replace(/"/g, '""')}"`,
                   `"${issueType}"`,
-                  `"${(r[2]||'-').replace(/"/g,'""')}"`,
-                  `"${(r[3]||r[1]||'-').replace(/"/g,'""')}"`
+                  `"${(r[2] || '-').replace(/"/g, '""')}"`,
+                  `"${(r[3] || r[1] || '-').replace(/"/g, '""')}"`
                 ].join(',');
               }).join('\n');
-              const bom='\uFEFF';
-              const blob=new Blob([bom+header+rows],{type:'text/csv;charset=utf-8;'});
-              const url=URL.createObjectURL(blob);
-              const a=document.createElement('a');a.href=url;a.download=`รายงาน_${rptDateLabel.replace(/\s/g,'_')}.csv`;a.click();URL.revokeObjectURL(url);
+              const bom = '\uFEFF';
+              const blob = new Blob([bom + header + rows], { type: 'text/csv;charset=utf-8;' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a'); a.href = url; a.download = `รายงาน_${rptDateLabel.replace(/\s/g, '_')}.csv`; a.click(); URL.revokeObjectURL(url);
             };
 
-            const exportPDF=()=>{
-              const iframe=document.createElement('iframe');
-              iframe.style.display='none';
+            const exportPDF = () => {
+              const iframe = document.createElement('iframe');
+              iframe.style.display = 'none';
               document.body.appendChild(iframe);
-              const doc=iframe.contentWindow?.document;
-              if(!doc) return;
-              
-              const rowsHtml = rptData.map((r,i)=>{
-                const issueText=(r[1]||'').toLowerCase();
-                const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
-                const d=new Date(r[0]);
-                const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):r[0];
+              const doc = iframe.contentWindow?.document;
+              if (!doc) return;
+
+              const rowsHtml = rptData.map((r, i) => {
+                const issueText = (r[1] || '').toLowerCase();
+                const issueType = issueText.includes('ชมเชย') || issueText.includes('compliment') ? 'ข้อชมเชย' : issueText.includes('เสนอแนะ') || issueText.includes('suggest') ? 'ข้อเสนอแนะ' : 'ข้อร้องเรียน';
+                const d = new Date(r[0]);
+                const dt = !isNaN(d.getTime()) ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : r[0];
                 return `
                   <tr>
-                    <td class="center">${i+1}</td>
+                    <td class="center">${i + 1}</td>
                     <td>${dt}</td>
-                    <td>${r[9]||'-'}</td>
-                    <td>${r[4]||'-'}</td>
+                    <td>${r[9] || '-'}</td>
+                    <td>${r[4] || '-'}</td>
                     <td>${issueType}</td>
-                    <td>${r[2]||'-'}</td>
-                    <td>${r[3]||r[1]||'-'}</td>
+                    <td>${r[2] || '-'}</td>
+                    <td>${r[3] || r[1] || '-'}</td>
                   </tr>
                 `;
               }).join('');
 
-              const html=`
+              const html = `
                 <!DOCTYPE html>
                 <html>
                   <head>
-                    <title>รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g,'_')}</title>
+                    <title>รายงานเรื่องร้องเรียน_${rptDateLabel.replace(/\s/g, '_')}</title>
                     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
                     <style>
                       @page { size: A4 landscape; margin: 12mm; }
@@ -952,251 +956,263 @@ export default function AdminPage() {
                       </thead>
                       <tbody>
                         ${rowsHtml}
-                        ${rptData.length===0?'<tr><td colspan="7" class="center" style="padding: 30px;">ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>':''}
+                        ${rptData.length === 0 ? '<tr><td colspan="7" class="center" style="padding: 30px;">ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>' : ''}
                       </tbody>
                     </table>
                   </body>
                 </html>
               `;
-              
+
               doc.open();
               doc.write(html);
               doc.close();
-              
-              setTimeout(()=>{
+
+              setTimeout(() => {
                 iframe.contentWindow?.focus();
                 iframe.contentWindow?.print();
-                setTimeout(()=>document.body.removeChild(iframe), 2000);
+                setTimeout(() => document.body.removeChild(iframe), 2000);
               }, 600);
             };
 
-            return(
-            <div style={{animation:'fadeIn 0.3s'}}>
-              {/* Filter & Export bar */}
-              <div style={{background:'white',borderRadius:20,border:'1px solid #f1f5f9',padding:'20px 28px',marginBottom:24,boxShadow:'0 4px 15px rgba(0,0,0,0.02)'}}>
-                <div className="rpt-export-bar" style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:10,fontSize:'.9rem',fontWeight:800,color:'#0f172a'}}>
-                    <span style={{fontSize:'1.2rem'}}>📅</span> เลือกช่วงเวลา:
-                  </div>
-                  <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>จาก</label>
-                    <input type="date" value={rptStart} onChange={e=>setRptStart(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#005C4B'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
-                  </div>
-                  <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <label style={{fontSize:'.78rem',color:'#64748b',fontWeight:700}}>ถึง</label>
-                    <input type="date" value={rptEnd} onChange={e=>setRptEnd(e.target.value)} style={{padding:'10px 14px',border:'1.5px solid #e2e8f0',borderRadius:12,fontSize:'.88rem',background:'#f8fafc',color:'#0f172a',fontWeight:600,outline:'none',transition:'border-color 0.2s'}} onFocus={e=>e.target.style.borderColor='#005C4B'} onBlur={e=>e.target.style.borderColor='#e2e8f0'}/>
-                  </div>
-                  <button onClick={()=>{setRptStart('');setRptEnd('');}} style={{...ob,background:!rptStart&&!rptEnd?'#f8fafc':'#fef2f2',color:!rptStart&&!rptEnd?'#94a3b8':'#ef4444',borderColor:!rptStart&&!rptEnd?'#e2e8f0':'#fca5a5'}}>ล้างตัวกรอง</button>
-                  
-                  <div style={{marginLeft:'auto',display:'flex',gap:10,flexWrap:'wrap'}}>
-                    <button onClick={exportPDF} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',color:'white',border:'none',borderRadius:14,fontSize:'.88rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:'0 6px 20px rgba(239,68,68,0.3)',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 28px rgba(239,68,68,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 6px 20px rgba(239,68,68,0.3)'}}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-                      ส่งออก PDF
-                    </button>
-                    <button onClick={exportExcel} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'linear-gradient(135deg, #059669 0%, #047857 100%)',color:'white',border:'none',borderRadius:14,fontSize:'.88rem',fontWeight:800,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",boxShadow:'0 6px 20px rgba(5,150,105,0.3)',transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 10px 28px rgba(5,150,105,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 6px 20px rgba(5,150,105,0.3)'}}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
-                      ส่งออก Excel
-                    </button>
-                    <button onClick={exportCSV} style={{display:'flex',alignItems:'center',gap:8,padding:'10px 20px',background:'white',color:'#475569',border:'1.5px solid #e2e8f0',borderRadius:14,fontSize:'.88rem',fontWeight:700,cursor:'pointer',fontFamily:"'Sarabun',sans-serif",transition:'all 0.2s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#005C4B';e.currentTarget.style.color='#005C4B'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#e2e8f0';e.currentTarget.style.color='#475569'}}>
-                      📄 ส่งออก CSV
-                    </button>
-                  </div>
-                </div>
-              </div>
+            return (
+              <div style={{ animation: 'fadeIn 0.3s' }}>
+                {/* Filter & Export bar */}
+                <div style={{ background: 'white', borderRadius: 20, border: '1px solid #f1f5f9', padding: '20px 28px', marginBottom: 24, boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                  <div className="rpt-export-bar" style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '.9rem', fontWeight: 800, color: '#0f172a' }}>
+                      <span style={{ fontSize: '1.2rem' }}>📅</span> เลือกช่วงเวลา:
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <label style={{ fontSize: '.78rem', color: '#64748b', fontWeight: 700 }}>จาก</label>
+                      <input type="date" value={rptStart} onChange={e => setRptStart(e.target.value)} style={{ padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '.88rem', background: '#f8fafc', color: '#0f172a', fontWeight: 600, outline: 'none', transition: 'border-color 0.2s' }} onFocus={e => e.target.style.borderColor = '#005C4B'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <label style={{ fontSize: '.78rem', color: '#64748b', fontWeight: 700 }}>ถึง</label>
+                      <input type="date" value={rptEnd} onChange={e => setRptEnd(e.target.value)} style={{ padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 12, fontSize: '.88rem', background: '#f8fafc', color: '#0f172a', fontWeight: 600, outline: 'none', transition: 'border-color 0.2s' }} onFocus={e => e.target.style.borderColor = '#005C4B'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
+                    </div>
+                    <button onClick={() => { setRptStart(''); setRptEnd(''); }} style={{ ...ob, background: !rptStart && !rptEnd ? '#f8fafc' : '#fef2f2', color: !rptStart && !rptEnd ? '#94a3b8' : '#ef4444', borderColor: !rptStart && !rptEnd ? '#e2e8f0' : '#fca5a5' }}>ล้างตัวกรอง</button>
 
-              {/* Summary cards */}
-              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:16,marginBottom:24}}>
-                <div style={{background:'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(15,23,42,0.2)',position:'relative',overflow:'hidden'}}>
-                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.08,lineHeight:1}}>📋</div>
-                  <div style={{fontSize:'.72rem',color:'#94a3b8',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>ทั้งหมด</div>
-                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{rptData.length}</div>
-                  <div style={{fontSize:'.72rem',color:'#64748b',fontWeight:600,marginTop:6}}>{rptDateLabel}</div>
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      <button onClick={exportPDF} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)', color: 'white', border: 'none', borderRadius: 14, fontSize: '.88rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", boxShadow: '0 6px 20px rgba(239,68,68,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(239,68,68,0.4)' }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(239,68,68,0.3)' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" /></svg>
+                        ส่งออก PDF
+                      </button>
+                      <button onClick={exportExcel} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', color: 'white', border: 'none', borderRadius: 14, fontSize: '.88rem', fontWeight: 800, cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", boxShadow: '0 6px 20px rgba(5,150,105,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(5,150,105,0.4)' }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(5,150,105,0.3)' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2" /></svg>
+                        ส่งออก Excel
+                      </button>
+                      <button onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: 'white', color: '#475569', border: '1.5px solid #e2e8f0', borderRadius: 14, fontSize: '.88rem', fontWeight: 700, cursor: 'pointer', fontFamily: "'Sarabun',sans-serif", transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#005C4B'; e.currentTarget.style.color = '#005C4B' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.color = '#475569' }}>
+                        📄 ส่งออก CSV
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div style={{background:'linear-gradient(135deg, #059669 0%, #047857 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(5,150,105,0.25)',position:'relative',overflow:'hidden'}}>
-                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.1,lineHeight:1}}>✅</div>
-                  <div style={{fontSize:'.72rem',color:'#a7f3d0',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>ปิดเรื่องได้</div>
-                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{closedCount}</div>
-                  <div style={{fontSize:'.72rem',color:'rgba(255,255,255,0.6)',fontWeight:600,marginTop:6}}>{rptData.length?Math.round(closedCount/rptData.length*100):0}% ของทั้งหมด</div>
-                </div>
-                <div style={{background:'linear-gradient(135deg, #d97706 0%, #b45309 100%)',borderRadius:20,padding:'22px 24px',boxShadow:'0 10px 30px rgba(217,119,6,0.25)',position:'relative',overflow:'hidden'}}>
-                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.1,lineHeight:1}}>⏳</div>
-                  <div style={{fontSize:'.72rem',color:'#fde68a',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>อยู่ระหว่างดำเนินการ</div>
-                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'white',lineHeight:1,marginTop:8}}>{pendingCount}</div>
-                  <div style={{fontSize:'.72rem',color:'rgba(255,255,255,0.6)',fontWeight:600,marginTop:6}}>{rptData.length?Math.round(pendingCount/rptData.length*100):0}% ของทั้งหมด</div>
-                </div>
-                <div style={{background:'white',borderRadius:20,padding:'22px 24px',border:'1px solid #f1f5f9',boxShadow:'0 4px 15px rgba(0,0,0,0.02)',position:'relative',overflow:'hidden'}}>
-                  <div style={{position:'absolute',right:-16,bottom:-16,fontSize:'4.5rem',opacity:0.06,lineHeight:1}}>🏥</div>
-                  <div style={{fontSize:'.72rem',color:'#64748b',fontWeight:700,textTransform:'uppercase',letterSpacing:1}}>หน่วยงานที่เกี่ยวข้อง</div>
-                  <div style={{fontSize:'2.8rem',fontWeight:900,color:'#0f172a',lineHeight:1,marginTop:8}}>{Object.keys(deptCount).length}</div>
-                  <div style={{fontSize:'.72rem',color:'#94a3b8',fontWeight:600,marginTop:6}}>หน่วยงาน</div>
-                </div>
-              </div>
 
-              {/* Report Table - spreadsheet style */}
-              <div style={{background:'white',borderRadius:20,border:'1px solid #e2e8f0',overflow:'hidden',boxShadow:'0 4px 24px rgba(0,0,0,0.04)'}}>
-                <div style={{padding:'18px 24px',borderBottom:'2px solid #e2e8f0',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafbfc'}}>
-                  <div style={{display:'flex',alignItems:'center',gap:10}}>
-                    <span style={{fontSize:'1.1rem'}}>📊</span>
-                    <span style={{fontSize:'.95rem',fontWeight:900,color:'#0f172a'}}>ตารางรายงานเรื่องร้องเรียน / ข้อเสนอแนะ</span>
+                {/* Summary cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(200px,1fr))', gap: 16, marginBottom: 24 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: 20, padding: '22px 24px', boxShadow: '0 10px 30px rgba(15,23,42,0.2)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', right: -16, bottom: -16, fontSize: '4.5rem', opacity: 0.08, lineHeight: 1 }}>📋</div>
+                    <div style={{ fontSize: '.72rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>ทั้งหมด</div>
+                    <div style={{ fontSize: '2.8rem', fontWeight: 900, color: 'white', lineHeight: 1, marginTop: 8 }}>{rptData.length}</div>
+                    <div style={{ fontSize: '.72rem', color: '#64748b', fontWeight: 600, marginTop: 6 }}>{rptDateLabel}</div>
                   </div>
-                  <div style={{background:'#f0fdf4',color:'#16a34a',padding:'6px 14px',borderRadius:10,fontSize:'.78rem',fontWeight:800,border:'1px solid #bbf7d0'}}>
-                    พบ {rptData.length} รายการ
+                  <div style={{ background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', borderRadius: 20, padding: '22px 24px', boxShadow: '0 10px 30px rgba(5,150,105,0.25)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', right: -16, bottom: -16, fontSize: '4.5rem', opacity: 0.1, lineHeight: 1 }}>✅</div>
+                    <div style={{ fontSize: '.72rem', color: '#a7f3d0', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>ปิดเรื่องได้</div>
+                    <div style={{ fontSize: '2.8rem', fontWeight: 900, color: 'white', lineHeight: 1, marginTop: 8 }}>{closedCount}</div>
+                    <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600, marginTop: 6 }}>{rptData.length ? Math.round(closedCount / rptData.length * 100) : 0}% ของทั้งหมด</div>
+                  </div>
+                  <div style={{ background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)', borderRadius: 20, padding: '22px 24px', boxShadow: '0 10px 30px rgba(217,119,6,0.25)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', right: -16, bottom: -16, fontSize: '4.5rem', opacity: 0.1, lineHeight: 1 }}>⏳</div>
+                    <div style={{ fontSize: '.72rem', color: '#fde68a', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>อยู่ระหว่างดำเนินการ</div>
+                    <div style={{ fontSize: '2.8rem', fontWeight: 900, color: 'white', lineHeight: 1, marginTop: 8 }}>{pendingCount}</div>
+                    <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,0.6)', fontWeight: 600, marginTop: 6 }}>{rptData.length ? Math.round(pendingCount / rptData.length * 100) : 0}% ของทั้งหมด</div>
+                  </div>
+                  <div style={{ background: 'white', borderRadius: 20, padding: '22px 24px', border: '1px solid #f1f5f9', boxShadow: '0 4px 15px rgba(0,0,0,0.02)', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', right: -16, bottom: -16, fontSize: '4.5rem', opacity: 0.06, lineHeight: 1 }}>🏥</div>
+                    <div style={{ fontSize: '.72rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>หน่วยงานที่เกี่ยวข้อง</div>
+                    <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#0f172a', lineHeight: 1, marginTop: 8 }}>{Object.keys(deptCount).length}</div>
+                    <div style={{ fontSize: '.72rem', color: '#94a3b8', fontWeight: 600, marginTop: 6 }}>หน่วยงาน</div>
                   </div>
                 </div>
-                <div style={{overflowX:'auto'}}>
-                  <table style={{width:'100%',borderCollapse:'collapse',minWidth:1100}}>
-                    <thead>
-                      <tr>
-                        {['ลำดับ','วดป.','หน่วยงานที่เกิด','ผู้เกี่ยวข้อง','ประเด็น','ประเภท','รายละเอียด'].map((h,i)=>(
-                          <th key={h} style={{padding:'14px 16px',textAlign:i===0?'center':'left',fontSize:'.78rem',fontWeight:900,color:'#065f46',letterSpacing:0.3,whiteSpace:'nowrap',borderBottom:'2px solid #a7f3d0',borderRight:i<6?'1px solid #e2e8f0':'none',background:'#f0fdf4'}}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rptData.length===0&&<tr><td colSpan={7} style={{textAlign:'center',padding:60,color:'#94a3b8',fontSize:'.9rem',fontWeight:600}}>ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>}
-                      {rptData.map((row,i)=>{
-                        // Determine issue type label (ข้อร้องเรียน / ข้อชมเชย / ข้อเสนอแนะ)
-                        const issueText=(row[1]||'').toLowerCase();
-                        const issueType=issueText.includes('ชมเชย')||issueText.includes('compliment')?'ข้อชมเชย':issueText.includes('เสนอแนะ')||issueText.includes('suggest')?'ข้อเสนอแนะ':'ข้อร้องเรียน';
-                        const issueBg=issueType.includes('ชมเชย')?'#fef08a':issueType.includes('เสนอแนะ')?'#dbeafe':'#fee2e2'; // Yellow for ชมเชย as in image
-                        const issueCol=issueType.includes('ชมเชย')?'#854d0e':issueType.includes('เสนอแนะ')?'#1e40af':'#991b1b';
-                        
-                        const d=new Date(row[0]);
-                        const dt=!isNaN(d.getTime())?d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'2-digit'}):row[0];
-                        
-                        return(
-                          <tr key={i} className="rpt-table-row" style={{borderBottom:'1px solid #e5e7eb',transition:'background 0.15s'}}>
-                            {/* ลำดับ */}
-                            <td style={{padding:'12px 14px',textAlign:'center',fontSize:'.82rem',fontWeight:800,color:'#64748b',width:55,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>{i+1}</td>
-                            {/* วดป. */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:100,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              {dt}
-                            </td>
-                            {/* หน่วยงานที่เกิด */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              {row[9]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}
-                            </td>
-                            {/* ผู้เกี่ยวข้อง */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:600,color:'#374151',width:140,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              {row[4]||<span style={{color:'#cbd5e1',fontWeight:500}}>-</span>}
-                            </td>
-                            {/* ประเด็น */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#374151',width:110,borderRight:'1px solid #f1f5f9',verticalAlign:'top',background:issueBg}}>
-                              <span style={{color:issueCol,fontSize:'.78rem',fontWeight:800}}>{issueType}</span>
-                            </td>
-                            {/* ประเภท */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',fontWeight:700,color:'#1e293b',width:130,borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                              {row[2]||'-'}
-                            </td>
-                            {/* รายละเอียด */}
-                            <td style={{padding:'12px 14px',fontSize:'.82rem',color:'#374151',lineHeight:1.6,verticalAlign:'top'}}>
-                              <div style={{fontWeight:600,color:'#374151',fontSize:'.82rem',lineHeight:1.7}}>{row[3]||row[1]||'-'}</div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{padding:'16px 24px',borderTop:'2px solid #e2e8f0',background:'#fafbfc',display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'.82rem',color:'#64748b',fontWeight:600}}>
-                  <div>แสดงทั้งหมด {rptData.length} รายการ</div>
+
+                {/* Report Table - spreadsheet style */}
+                <div style={{ background: 'white', borderRadius: 20, border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}>
+                  <div style={{ padding: '18px 24px', borderBottom: '2px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafbfc' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: '1.1rem' }}>📊</span>
+                      <span style={{ fontSize: '.95rem', fontWeight: 900, color: '#0f172a' }}>ตารางรายงานเรื่องร้องเรียน / ข้อเสนอแนะ</span>
+                    </div>
+                    <div style={{ background: '#f0fdf4', color: '#16a34a', padding: '6px 14px', borderRadius: 10, fontSize: '.78rem', fontWeight: 800, border: '1px solid #bbf7d0' }}>
+                      พบ {rptData.length} รายการ
+                    </div>
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1100 }}>
+                      <thead>
+                        <tr>
+                          {['ลำดับ', 'วดป.', 'หน่วยงานที่เกิด', 'ผู้เกี่ยวข้อง', 'ประเด็น', 'ประเภท', 'รายละเอียด'].map((h, i) => (
+                            <th key={h} style={{ padding: '14px 16px', textAlign: i === 0 ? 'center' : 'left', fontSize: '.78rem', fontWeight: 900, color: '#065f46', letterSpacing: 0.3, whiteSpace: 'nowrap', borderBottom: '2px solid #a7f3d0', borderRight: i < 6 ? '1px solid #e2e8f0' : 'none', background: '#f0fdf4' }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rptData.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: '.9rem', fontWeight: 600 }}>ไม่พบข้อมูลในช่วงเวลาที่เลือก</td></tr>}
+                        {rptData.map((row, i) => {
+                          // Determine issue type label (ข้อร้องเรียน / ข้อชมเชย / ข้อเสนอแนะ)
+                          const issueText = (row[1] || '').toLowerCase();
+                          const issueType = issueText.includes('ชมเชย') || issueText.includes('compliment') ? 'ข้อชมเชย' : issueText.includes('เสนอแนะ') || issueText.includes('suggest') ? 'ข้อเสนอแนะ' : 'ข้อร้องเรียน';
+                          const issueBg = issueType.includes('ชมเชย') ? '#fef08a' : issueType.includes('เสนอแนะ') ? '#dbeafe' : '#fee2e2'; // Yellow for ชมเชย as in image
+                          const issueCol = issueType.includes('ชมเชย') ? '#854d0e' : issueType.includes('เสนอแนะ') ? '#1e40af' : '#991b1b';
+
+                          const d = new Date(row[0]);
+                          const dt = !isNaN(d.getTime()) ? d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: '2-digit' }) : row[0];
+
+                          return (
+                            <tr key={i} className="rpt-table-row" style={{ borderBottom: '1px solid #e5e7eb', transition: 'background 0.15s' }}>
+                              {/* ลำดับ */}
+                              <td style={{ padding: '12px 14px', textAlign: 'center', fontSize: '.82rem', fontWeight: 800, color: '#64748b', width: 55, borderRight: '1px solid #f1f5f9', verticalAlign: 'top' }}>{i + 1}</td>
+                              {/* วดป. */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', fontWeight: 700, color: '#1e293b', width: 100, borderRight: '1px solid #f1f5f9', verticalAlign: 'top' }}>
+                                {dt}
+                              </td>
+                              {/* หน่วยงานที่เกิด */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', fontWeight: 600, color: '#374151', width: 140, borderRight: '1px solid #f1f5f9', verticalAlign: 'top' }}>
+                                {row[9] || <span style={{ color: '#cbd5e1', fontWeight: 500 }}>-</span>}
+                              </td>
+                              {/* ผู้เกี่ยวข้อง */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', fontWeight: 600, color: '#374151', width: 140, borderRight: '1px solid #f1f5f9', verticalAlign: 'top' }}>
+                                {row[4] || <span style={{ color: '#cbd5e1', fontWeight: 500 }}>-</span>}
+                              </td>
+                              {/* ประเด็น */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', fontWeight: 700, color: '#374151', width: 110, borderRight: '1px solid #f1f5f9', verticalAlign: 'top', background: issueBg }}>
+                                <span style={{ color: issueCol, fontSize: '.78rem', fontWeight: 800 }}>{issueType}</span>
+                              </td>
+                              {/* ประเภท */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', fontWeight: 700, color: '#1e293b', width: 130, borderRight: '1px solid #f1f5f9', verticalAlign: 'top' }}>
+                                {row[2] || '-'}
+                              </td>
+                              {/* รายละเอียด */}
+                              <td style={{ padding: '12px 14px', fontSize: '.82rem', color: '#374151', lineHeight: 1.6, verticalAlign: 'top' }}>
+                                <div style={{ fontWeight: 600, color: '#374151', fontSize: '.82rem', lineHeight: 1.7 }}>{row[3] || row[1] || '-'}</div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ padding: '16px 24px', borderTop: '2px solid #e2e8f0', background: '#fafbfc', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '.82rem', color: '#64748b', fontWeight: 600 }}>
+                    <div>แสดงทั้งหมด {rptData.length} รายการ</div>
+                  </div>
                 </div>
               </div>
-            </div>
             );
           })()}
 
           {/* Footer */}
-          <div style={{textAlign:'center', marginTop:40, paddingTop:24, borderTop:'1px dashed #e2e8f0', color:'#94a3b8', fontSize:'0.85rem', fontWeight:600, letterSpacing:0.5}}>
+          <div style={{ textAlign: 'center', marginTop: 40, paddingTop: 24, borderTop: '1px dashed #e2e8f0', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 600, letterSpacing: 0.5 }}>
             พัฒนาโดย นายศุภชัย สุนารักษ์ · นักวิชาการสถิติ กลุ่มงานสุขภาพดิจิทัล
           </div>
         </div>
       </div>
 
       {/* ══ EDIT MODAL ══ */}
-      {editR&&(
-        <div style={ov} onClick={()=>seR(null)}>
-          <div style={mb} onClick={e=>e.stopPropagation()}>
-            <div style={mh}><span style={{fontWeight:800,color:'#0f172a',fontSize:'.95rem'}}>✏️ อัปเดตสถานะ</span><button onClick={()=>seR(null)} style={xb}>✕</button></div>
-            <div style={{padding:'18px 22px',display:'flex',flexDirection:'column',gap:13}}>
-              {([['สถานะ *',est,ses,STATUSES],['หน่วยงาน',edp,sed,DEPTS]] as [string,string,(v:string)=>void,string[]][]).map(([L,V,S,opts])=>(
-                <div key={L}><label style={ml}>{L}</label><select value={V} onChange={e=>S(e.target.value)} style={mi}>{opts.map(o=><option key={o} value={o}>{o||'-- เลือก --'}</option>)}</select></div>
+      {editR && (
+        <div style={ov} onClick={() => seR(null)}>
+          <div style={mb} onClick={e => e.stopPropagation()}>
+            <div style={mh}><span style={{ fontWeight: 800, color: '#0f172a', fontSize: '.95rem' }}>✏️ อัปเดตสถานะ</span><button onClick={() => seR(null)} style={xb}>✕</button></div>
+            <div style={{ padding: '18px 22px', display: 'flex', flexDirection: 'column', gap: 13 }}>
+              {([['สถานะ *', est, ses, STATUSES], ['หน่วยงาน', edp, sed, DEPTS]] as [string, string, (v: string) => void, string[]][]).map(([L, V, S, opts]) => (
+                <div key={L}><label style={ml}>{L}</label><select value={V} onChange={e => S(e.target.value)} style={mi}>{opts.map(o => <option key={o} value={o}>{o || '-- เลือก --'}</option>)}</select></div>
               ))}
-              <div><label style={ml}>หมายเหตุ / ผลดำเนินการ</label><textarea value={en} onChange={e=>sen(e.target.value)} rows={3} style={{...mi,resize:'vertical'}} placeholder="ระบุความคืบหน้า..."/></div>
+              <div><label style={ml}>หมายเหตุ / ผลดำเนินการ</label><textarea value={en} onChange={e => sen(e.target.value)} rows={3} style={{ ...mi, resize: 'vertical' }} placeholder="ระบุความคืบหน้า..." /></div>
               <div>
                 <label style={ml}>แนบเอกสาร (ถ้ามี)</label>
-                <label htmlFor="ef" style={{display:'flex',alignItems:'center',gap:8,padding:'9px 12px',border:'2px dashed #e5e7eb',borderRadius:9,background:'#f8fafc',cursor:'pointer'}}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
-                  <span style={{fontSize:'.8rem',color:ef?'#059669':'#9ca3af'}}>{ef?ef.name:'เลือกไฟล์...'}</span>
+                <label htmlFor="ef" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', border: '2px dashed #e5e7eb', borderRadius: 9, background: '#f8fafc', cursor: 'pointer' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                  <span style={{ fontSize: '.8rem', color: ef ? '#059669' : '#9ca3af' }}>{ef ? ef.name : 'เลือกไฟล์...'}</span>
                 </label>
-                <input id="ef" type="file" accept="image/*,.pdf" onChange={e=>sef(e.target.files?.[0]||null)} style={{display:'none'}}/>
+                <input id="ef" type="file" accept="image/*,.pdf" onChange={e => sef(e.target.files?.[0] || null)} style={{ display: 'none' }} />
               </div>
               <div>
-                <label style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',fontSize:'0.85rem',color:'#0f172a',fontWeight:700,padding:'8px 12px',background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:10}}>
-                  <input type="checkbox" checked={notifyLine} onChange={e=>setNotifyLine(e.target.checked)} style={{width:16,height:16,accentColor:'#16a34a',cursor:'pointer'}} />
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem', color: '#0f172a', fontWeight: 700, padding: '8px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10 }}>
+                  <input type="checkbox" checked={notifyLine} onChange={e => setNotifyLine(e.target.checked)} style={{ width: 16, height: 16, accentColor: '#16a34a', cursor: 'pointer' }} />
                   <span>📢 ส่งแจ้งเตือนอัปเดตไปยัง LINE</span>
                 </label>
               </div>
             </div>
-            <div style={{padding:'12px 22px',borderTop:'1px solid #f1f5f9',display:'flex',gap:8,justifyContent:'flex-end'}}>
-              <button onClick={()=>seR(null)} style={ob}>ยกเลิก</button>
-              <button onClick={save} disabled={sav==='saving'} style={{...ob,background:'#0f172a',color:'white',border:'none'}}>{sav==='saving'?'กำลังบันทึก...':'บันทึก'}</button>
+            <div style={{ padding: '12px 22px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => seR(null)} style={ob}>ยกเลิก</button>
+              <button onClick={save} disabled={sav === 'saving'} style={{ ...ob, background: '#0f172a', color: 'white', border: 'none' }}>{sav === 'saving' ? 'กำลังบันทึก...' : 'บันทึก'}</button>
             </div>
           </div>
         </div>
       )}
 
       {/* ══ DETAIL MODAL ══ */}
-      {detR&&(
-        <div style={ov} onClick={()=>sdR(null)}>
-          <div style={{...mb,maxWidth:560}} onClick={e=>e.stopPropagation()}>
-            <div style={mh}><span style={{fontWeight:800,color:'#0f172a'}}>📄 รายละเอียด</span><button onClick={()=>sdR(null)} style={xb}>✕</button></div>
-            <div style={{padding:'18px 22px',maxHeight:'68vh',overflowY:'auto'}}>
-              {(()=>{const r=detR;const st=ns(r[8]);const[bg,tc]=sb(st);const d=new Date(r[0]);const dt=isNaN(d.getTime())?r[0]:d.toLocaleString('th-TH',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-              return(<>
-                <div style={{display:'flex',gap:6,margin:'0 0 10px',flexWrap:'wrap'}}>
-                  <span style={{background:bg,color:tc,padding:'3px 12px',borderRadius:20,fontSize:'.7rem',fontWeight:700}}>{st}</span>
-                  <span style={{background:'#f1f5f9',color:'#475569',padding:'3px 12px',borderRadius:20,fontSize:'.7rem',fontWeight:700}}>{r[2]}</span>
-                </div>
-                <h3 style={{fontSize:'1rem',fontWeight:900,color:'#0f172a',margin:'0 0 14px'}}>{r[1]}</h3>
-                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,padding:'14px 0',borderTop:'1px solid #f1f5f9',borderBottom:'1px solid #f1f5f9',marginBottom:14}}>
-                  {[['ผู้แจ้ง',r[4]||'-'],['วันเวลา',dt+' น.'],['เบอร์',r[5]||'-'],['Line / Email',[r[6]?'Line:'+r[6]:'',r[7]].filter(Boolean).join(', ')||'-']].map(([k,v])=>(
-                    <div key={k}><p style={{fontSize:'.62rem',color:'#94a3b8',fontWeight:700,margin:'0 0 3px',textTransform:'uppercase',letterSpacing:1}}>{k}</p><p style={{fontSize:'.84rem',fontWeight:700,color:'#1e293b',margin:0}}>{v}</p></div>
-                  ))}
-                </div>
-                <p style={{fontSize:'.62rem',color:'#94a3b8',fontWeight:700,margin:'0 0 6px',textTransform:'uppercase',letterSpacing:1}}>รายละเอียด</p>
-                <div style={{background:'#f8fafc',border:'1px solid #e5e7eb',borderRadius:10,padding:'12px',fontSize:'.85rem',color:'#374151',whiteSpace:'pre-wrap',lineHeight:1.7,marginBottom:14}}>{r[3]}</div>
-                <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:10,padding:'12px 14px'}}>
-                  <p style={{fontSize:'.62rem',fontWeight:800,color:'#059669',margin:'0 0 8px',textTransform:'uppercase',letterSpacing:1}}>ผลดำเนินการ</p>
-                  <p style={{margin:'0 0 4px',fontSize:'.82rem'}}><strong style={{color:'#64748b'}}>หน่วยงาน: </strong>{r[9]||'-'}</p>
-                  <p style={{margin:'0 0 4px',fontSize:'.82rem'}}><strong style={{color:'#64748b'}}>หมายเหตุ: </strong>{r[10]||'-'}</p>
-                  {r[11]&&<a href={r[11]} target="_blank" rel="noreferrer" style={{color:'#059669',fontWeight:600,fontSize:'.82rem'}}>📎 เปิดเอกสาร</a>}
-                </div>
-              </>);})()}
+      {detR && (
+        <div style={ov} onClick={() => sdR(null)}>
+          <div style={{ ...mb, maxWidth: 560 }} onClick={e => e.stopPropagation()}>
+            <div style={mh}><span style={{ fontWeight: 800, color: '#0f172a' }}>📄 รายละเอียด</span><button onClick={() => sdR(null)} style={xb}>✕</button></div>
+            <div style={{ padding: '18px 22px', maxHeight: '68vh', overflowY: 'auto' }}>
+              {(() => {
+                const r = detR; const st = ns(r[8]); const [bg, tc] = sb(st); const d = new Date(r[0]); const dt = isNaN(d.getTime()) ? r[0] : d.toLocaleString('th-TH', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return (<>
+                  <div style={{ display: 'flex', gap: 6, margin: '0 0 10px', flexWrap: 'wrap' }}>
+                    <span style={{ background: bg, color: tc, padding: '3px 12px', borderRadius: 20, fontSize: '.7rem', fontWeight: 700 }}>{st}</span>
+                    <span style={{ background: '#f1f5f9', color: '#475569', padding: '3px 12px', borderRadius: 20, fontSize: '.7rem', fontWeight: 700 }}>{r[2]}</span>
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 900, color: '#0f172a', margin: '0 0 14px' }}>{r[1]}</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '14px 0', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', marginBottom: 14 }}>
+                    {[['ผู้แจ้ง', r[4] || '-'], ['วันเวลา', dt + ' น.'], ['เบอร์', r[5] || '-'], ['Line / Email', [r[6] ? 'Line:' + r[6] : '', r[7]].filter(Boolean).join(', ') || '-']].map(([k, v]) => (
+                      <div key={k}><p style={{ fontSize: '.62rem', color: '#94a3b8', fontWeight: 700, margin: '0 0 3px', textTransform: 'uppercase', letterSpacing: 1 }}>{k}</p><p style={{ fontSize: '.84rem', fontWeight: 700, color: '#1e293b', margin: 0 }}>{v}</p></div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: '.62rem', color: '#94a3b8', fontWeight: 700, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: 1 }}>รายละเอียด</p>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px', fontSize: '.85rem', color: '#374151', whiteSpace: 'pre-wrap', lineHeight: 1.7, marginBottom: 14 }}>{r[3]}</div>
+                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '12px 14px' }}>
+                    <p style={{ fontSize: '.62rem', fontWeight: 800, color: '#059669', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>ผลดำเนินการ</p>
+                    <p style={{ margin: '0 0 4px', fontSize: '.82rem' }}><strong style={{ color: '#64748b' }}>หน่วยงาน: </strong>{r[9] || '-'}</p>
+                    <p style={{ margin: '0 0 4px', fontSize: '.82rem' }}><strong style={{ color: '#64748b' }}>หมายเหตุ: </strong>{r[10] || '-'}</p>
+                    {r[11] && (
+                      r[11].startsWith('http') ? (
+                        <a href={r[11]} target="_blank" rel="noreferrer" style={{ color: '#059669', fontWeight: 700, fontSize: '.84rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                          📎 เปิดดูเอกสารแนบ
+                        </a>
+                      ) : (
+                        <div style={{ color: '#dc2626', fontSize: '.78rem', fontWeight: 600, marginTop: 4 }}>
+                          ⚠️ {r[11]}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </>);
+              })()}
             </div>
-            <div style={{padding:'12px 22px',borderTop:'1px solid #f1f5f9',display:'flex',justifyContent:'space-between',alignItems:'center',gap:10}}>
+            <div style={{ padding: '12px 22px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
               <button
                 type="button"
-                onClick={()=>sendLineAlert(detR)}
-                disabled={lineStatus==='sending'}
+                onClick={() => sendLineAlert(detR)}
+                disabled={lineStatus === 'sending'}
                 style={{
                   ...ob,
-                  background: lineStatus==='ok' ? '#16a34a' : lineStatus==='err' ? '#dc2626' : '#06c755',
-                  color:'white',
-                  border:'none',
-                  display:'flex',
-                  alignItems:'center',
-                  gap:6,
-                  fontWeight:700,
-                  cursor: lineStatus==='sending' ? 'not-allowed' : 'pointer',
-                  boxShadow:'0 2px 8px rgba(6,199,85,0.25)',
-                  transition:'all 0.2s'
+                  background: lineStatus === 'ok' ? '#16a34a' : lineStatus === 'err' ? '#dc2626' : '#06c755',
+                  color: 'white',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontWeight: 700,
+                  cursor: lineStatus === 'sending' ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 2px 8px rgba(6,199,85,0.25)',
+                  transition: 'all 0.2s'
                 }}
               >
-                <span>{lineStatus==='sending' ? '⏳' : lineStatus==='ok' ? '✅' : lineStatus==='err' ? '⚠' : '📢'}</span>
-                <span>{lineStatus==='sending' ? 'กำลังส่งแจ้งเตือน...' : lineStatus==='ok' ? 'ส่งเข้า LINE สำเร็จ!' : lineStatus==='err' ? 'ส่งไม่สำเร็จ' : 'แจ้งเตือน LINE'}</span>
+                <span>{lineStatus === 'sending' ? '⏳' : lineStatus === 'ok' ? '✅' : lineStatus === 'err' ? '⚠' : '📢'}</span>
+                <span>{lineStatus === 'sending' ? 'กำลังส่งแจ้งเตือน...' : lineStatus === 'ok' ? 'ส่งเข้า LINE สำเร็จ!' : lineStatus === 'err' ? 'ส่งไม่สำเร็จ' : 'แจ้งเตือน LINE'}</span>
               </button>
-              <button onClick={()=>sdR(null)} style={ob}>ปิด</button>
+              <button onClick={() => sdR(null)} style={ob}>ปิด</button>
             </div>
           </div>
         </div>
@@ -1338,22 +1354,22 @@ export default function AdminPage() {
   );
 }
 
-function ChartCard({title,color,ref_,h}:{title:string,color:string,ref_:React.RefObject<HTMLCanvasElement|null>,h:number}){
-  return(
+function ChartCard({ title, color, ref_, h }: { title: string, color: string, ref_: React.RefObject<HTMLCanvasElement | null>, h: number }) {
+  return (
     <div className="chart-card">
-      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:20,paddingBottom:16,borderBottom:'1px solid #f1f5f9'}}>
-        <div style={{width:10,height:10,borderRadius:'50%',background:color,boxShadow:`0 0 8px ${color}88`}}/>
-        <span style={{fontSize:'.9rem',fontWeight:800,color:'#0f172a',letterSpacing:'-0.01em'}}>{title}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid #f1f5f9' }}>
+        <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}88` }} />
+        <span style={{ fontSize: '.9rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.01em' }}>{title}</span>
       </div>
-      <div style={{height:h}}><canvas ref={ref_}/></div>
+      <div style={{ height: h }}><canvas ref={ref_} /></div>
     </div>
   );
 }
-const ob:React.CSSProperties={padding:'7px 14px',border:'1px solid #e5e7eb',borderRadius:8,background:'white',cursor:'pointer',fontSize:'.8rem',fontWeight:600,color:'#475569',fontFamily:"'Sarabun',sans-serif"};
-const pb=(d:boolean):React.CSSProperties=>({width:30,height:30,borderRadius:7,border:'1px solid #e5e7eb',background:d?'#f9fafb':'white',cursor:d?'not-allowed':'pointer',fontSize:'.82rem',opacity:d?.4:1,color:'#374151',display:'flex',alignItems:'center',justifyContent:'center'});
-const ov:React.CSSProperties={position:'fixed',inset:0,background:'rgba(0,0,0,.6)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center',padding:16};
-const mb:React.CSSProperties={background:'white',borderRadius:20,width:'100%',maxWidth:460,maxHeight:'90vh',overflowY:'auto',boxShadow:'0 32px 80px rgba(0,0,0,.3)',overflow:'hidden'};
-const mh:React.CSSProperties={padding:'15px 22px',borderBottom:'1px solid #f1f5f9',display:'flex',alignItems:'center',justifyContent:'space-between',background:'#fafafa'};
-const xb:React.CSSProperties={background:'none',border:'none',cursor:'pointer',fontSize:'1rem',color:'#9ca3af',width:28,height:28,borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center'};
-const ml:React.CSSProperties={display:'block',fontSize:'.76rem',fontWeight:700,color:'#374151',marginBottom:5};
-const mi:React.CSSProperties={width:'100%',padding:'9px 12px',border:'1.5px solid #e5e7eb',borderRadius:9,fontSize:'.86rem',background:'#fafafa',color:'#1e293b',fontFamily:"'Sarabun',sans-serif",outline:'none'};
+const ob: React.CSSProperties = { padding: '7px 14px', border: '1px solid #e5e7eb', borderRadius: 8, background: 'white', cursor: 'pointer', fontSize: '.8rem', fontWeight: 600, color: '#475569', fontFamily: "'Sarabun',sans-serif" };
+const pb = (d: boolean): React.CSSProperties => ({ width: 30, height: 30, borderRadius: 7, border: '1px solid #e5e7eb', background: d ? '#f9fafb' : 'white', cursor: d ? 'not-allowed' : 'pointer', fontSize: '.82rem', opacity: d ? .4 : 1, color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center' });
+const ov: React.CSSProperties = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(4px)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 };
+const mb: React.CSSProperties = { background: 'white', borderRadius: 20, width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 32px 80px rgba(0,0,0,.3)', overflow: 'hidden' };
+const mh: React.CSSProperties = { padding: '15px 22px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' };
+const xb: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#9ca3af', width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' };
+const ml: React.CSSProperties = { display: 'block', fontSize: '.76rem', fontWeight: 700, color: '#374151', marginBottom: 5 };
+const mi: React.CSSProperties = { width: '100%', padding: '9px 12px', border: '1.5px solid #e5e7eb', borderRadius: 9, fontSize: '.86rem', background: '#fafafa', color: '#1e293b', fontFamily: "'Sarabun',sans-serif", outline: 'none' };
