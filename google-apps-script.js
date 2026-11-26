@@ -21,13 +21,18 @@ const CONFIG = {
 
 /**
  * ⚡ ฟังก์ชันสำหรับรันเพื่อขอสิทธิ์การเข้าถึง (สำคัญมาก!)
- * ให้เลือกฟังก์ชันนี้ด้านบน แล้วกด "เรียกใช้" (Run) 1 ครั้ง เพื่อกดยอมรับสิทธิ์ Drive, Sheet, Mail
+ * ให้เลือกฟังก์ชัน "setupSystem" ด้านบน แล้วกด "เรียกใช้" (Run) 1 ครั้ง
+ * เพื่อกดยอมรับสิทธิ์ Drive, Sheet, Mail ในบัญชี Google
  */
 function setupSystem() {
   SpreadsheetApp.openById(CONFIG.SHEET_ID);
-  const folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
-  const dummyFile = folder.createFile('dummy.txt', 'This is a test file for authorization.', MimeType.PLAIN_TEXT);
-  dummyFile.setTrashed(true);
+  try {
+    const folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+    const dummyFile = folder.createFile('dummy.txt', 'This is a test file for authorization.', MimeType.PLAIN_TEXT);
+    dummyFile.setTrashed(true);
+  } catch (e) {
+    Logger.log("⚠️ Drive check note: " + e.message);
+  }
   MailApp.getRemainingDailyQuota();
   UrlFetchApp.fetch("https://www.google.com");
   Logger.log("✅ ระบบได้รับสิทธิ์การเข้าถึงแบบเต็มรูปแบบ (อ่าน/เขียน) เรียบร้อยแล้ว");
@@ -112,38 +117,43 @@ function doPost(e) {
 
 /**
  * 🟢 รับข้อมูลจากหน้าฟอร์มประชาชน
+ * (ปรับปรุง: บันทึกข้อมูลลง Sheet และเตือน LINE เสมอ แม้ไฟล์แนบจะมีปัญหา เพื่อไม่ให้เรื่องร้องเรียนสูญหาย)
  */
 function submitForm(formData) {
   try {
     const sheet = getSheet();
     let fileUrl = '';
+    let fileUploadError = '';
     
     // ถ้ารับไฟล์แนบมาจากหน้าฟอร์ม ให้อัปโหลดเข้า Drive
     if (formData.fileInfo && formData.fileInfo.base64) {
       try {
         fileUrl = uploadFileToDrive(formData.fileInfo);
       } catch (e) {
-        throw new Error('บันทึกไฟล์ลง Google Drive ไม่สำเร็จ: ' + e.message + ' (โปรดตรวจสอบว่าตอน Deploy ตั้งค่า Execute As เป็น "ฉัน/Me" แล้วหรือยัง)');
+        fileUploadError = e.message;
+        fileUrl = '(แนบไฟล์ไม่สำเร็จ: ' + e.message + ')';
+        Logger.log('⚠️ อัปโหลดไฟล์ลง Drive ล้มเหลว: ' + e.message);
       }
     }
 
     const timestampObj = new Date();
-    const timestampISO = timestampObj.toISOString();
 
     const newRow = [
       timestampObj, // บันทึกเป็น Date Object ตามปกติ
-      formData.papade,
-      formData.type,
-      formData.detail,
-      formData.name,
-      formData.tel,
-      formData.line,
-      formData.email,
+      formData.papade || '-',
+      formData.type || '-',
+      formData.detail || '-',
+      formData.name || 'ไม่ระบุชื่อ',
+      formData.tel || '-',
+      formData.line || '-',
+      formData.email || '-',
       'รอดำเนินการ', '', '', fileUrl // 11=หมายเหตุ, 12=ไฟล์แนบ
     ];
+    
+    // บันทึกลง Sheet เสมอ!
     sheet.appendRow(newRow);
 
-    // ปรับรูปแบบข้อความ LINE: แสดงรายละเอียดแบบปลอดภัยไม่เกินโควต้า 5000 ตัวอักษรของ LINE API
+    // ปรับรูปแบบข้อความ LINE: แสดงรายละเอียดแบบปลอดภัยไม่เกินโควต้า 5,000 ตัวอักษรของ LINE API
     const msg = `📣 มีเรื่องร้องเรียนใหม่!\n` +
                 `-----------------------------\n` +
                 `📌 เรื่อง: ${formData.papade || '-'}\n` +
@@ -155,11 +165,15 @@ function submitForm(formData) {
                 `📧 Email: ${formData.email || '-'}\n` +
                 `-----------------------------\n` +
                 `🔗 ตรวจสอบรายละเอียด (Admin):\n${CONFIG.ADMIN_URL}` +
-                (fileUrl ? `\n📎 มีไฟล์แนบในระบบ` : ``);
+                (fileUrl && !fileUploadError ? `\n📎 มีไฟล์แนบในระบบ` : (fileUploadError ? `\n⚠️ บันทึกไฟล์แนบไม่สำเร็จ (โปรดตั้งค่าสิทธิ์ Drive)` : ``));
     
+    // ส่งแจ้งเตือน LINE เสมอ!
     sendLineNotify(msg);
 
-    return { success: true, message: 'ส่งข้อมูลสำเร็จแล้ว' };
+    return { 
+      success: true, 
+      message: 'ส่งข้อมูลสำเร็จแล้ว' + (fileUploadError ? ' (บันทึกข้อมูลแล้ว แต่ไฟล์แนบล้มเหลว: ' + fileUploadError + ')' : '') 
+    };
   } catch (error) {
     Logger.log('🔴 Error in submitForm: ' + error.toString());
     return { success: false, message: 'เกิดข้อผิดพลาด: ' + error.message };
@@ -210,7 +224,7 @@ function updateComplaintData(payload) {
       try {
         uploadedFileUrl = uploadFileToDrive(payload.fileInfo);
       } catch (e) {
-        return { success: false, message: 'บันทึกไฟล์ลง Google Drive ไม่สำเร็จ: ' + e.message };
+        Logger.log('⚠️ อัปโหลดไฟล์จาก Admin ล้มเหลว: ' + e.message);
       }
     }
 
